@@ -9,12 +9,14 @@ module.exports = {
     },
     extend: {
       colors: {
-        purpleDark: '#170127',
-        purpleWine: '#300b3f',
-        purpleScarf: '#420c58',
-        purpleLight: '#a15baa',
-        pinkSolid: '#e3a4a8',
-        yellowFizz: '#dfb77d',
+        purpleLight: '#36254B',
+        purpleGray: '#281B38',
+        purpleDark: '#1F152B',
+        krispyPurple: '#931DF0',
+        jacketBlue: '#2C41FF',
+        lessPurple: '#7F18D0',
+        hoverPurple: '#483164',
+        squeezeRed: '#F0431D'
       },
     }
   },
