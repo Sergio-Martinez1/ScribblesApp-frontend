@@ -1,0 +1,26 @@
+<script lang="ts">
+	export let signup_url: string = '/signup';
+	export let login_url: string = '/login';
+	import ArrowRight from '$lib/components/Icon/ArrowRight.svelte';
+</script>
+
+<div class="grid grid-cols-2 h-fit gap-4">
+	<div class="bg-purpleGray rounded-2xl flex items-center justify-center gap-2 p-4">
+		<p class="text-white font-bold flex items-center justify-center text-center">Are you new here?</p>
+		<ArrowRight />
+		<a
+			href={signup_url}
+			class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-2xl w-[120px] h-[40px] text-white font-bold flex items-center justify-center"
+			>SignUp</a
+		>
+	</div>
+	<div class="bg-purpleGray rounded-2xl flex items-center justify-center gap-2 p-4">
+		<p class="text-white font-bold flex items-center justify-center text-center">Have an account?</p>
+		<ArrowRight />
+		<a
+			href={login_url}
+			class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-2xl w-[120px] h-[40px] text-white font-bold flex items-center justify-center"
+			>Login</a
+		>
+	</div>
+</div>
