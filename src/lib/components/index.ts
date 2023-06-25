@@ -12,3 +12,6 @@ export {default as PublicationBar} from "./PublicationBar.component.svelte";
 export {default as Reactions} from "./Reactions.component.svelte";
 export {default as Tags} from "./Tags.component.svelte";
 export {default as TextAreaAutosize} from "./TextAreaAutosize.svelte";
+export {default as CoverPhoto} from "./CoverPhoto.component.svelte";
+export {default as ProfilePhoto} from "./ProfilePhoto.component.svelte";
+export {default as UserDescription} from "./UserDescription.component.svelte";
