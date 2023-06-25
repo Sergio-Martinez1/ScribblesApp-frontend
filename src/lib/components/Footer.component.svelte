@@ -1,4 +1,4 @@
-<div class="py-4 px-9 flex flex-col items-center gap-y-2 bg-purpleGray rounded-2xl m-auto max-h-fit">
+<div class="py-4 px-9 flex flex-col items-center gap-y-2 bg-purpleGray rounded-2xl m-auto max-h-fit min-w-full">
 	<h1 class="text-white text-xl font-bold">Scribbles Team</h1>
     <div class="flex flex-col items-center gap-y-0">
     <span class="text-white">user@mail.com</span>

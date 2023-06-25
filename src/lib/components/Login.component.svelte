@@ -5,7 +5,7 @@
 </script>
 <div class="bg-black m-auto border-solid border-2 rounded-3xl border-black">
 
-  <form class="px-8 py-9 flex flex-col items-start gap-y-4" action="?/login" use:enhance>
+  <form class="px-8 py-9 flex flex-col items-start gap-y-4" action="?/login" method="POST" use:enhance>
     <h1 class="text-krispyPurple text-4xl font-bold">Log in with your <br> account</h1>
     <div class="flex flex-col gap-y-4">
       <span class="text-krispyPurple font-bold">E-mail</span>

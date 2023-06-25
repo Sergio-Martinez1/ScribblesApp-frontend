@@ -5,7 +5,7 @@
 </script>
 
 <div class="bg-krispyPurple m-auto border-solid border-2 rounded-3xl border-krispyPurple">
-	<form class="px-8 py-9 flex flex-col items-start gap-y-2" action="?/signup" use:enhance>
+	<form class="px-8 py-9 flex flex-col items-start gap-y-2" action="?/signup" method="POST" use:enhance>
 		<h1 class="text-black text-4xl font-bold">Create an account in<br /> Scribbles</h1>
 		<div class="flex flex-col gap-y-4">
 			<span class="text-black font-bold">Username</span>
