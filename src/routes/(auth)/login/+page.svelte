@@ -1,9 +1,10 @@
 <script lang="ts">
   import {Login} from "$components";
+  let form: any;
 </script>
 
 <div class="col-span-6  bg-krispyPurple flex">
-  <Login />
+  <Login {form} />
 </div>
 <div class="col-span-6  bg-black flex">
 
