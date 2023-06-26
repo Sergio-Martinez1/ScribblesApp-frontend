@@ -6,7 +6,7 @@
 		'https://img.freepik.com/free-photo/wide-angle-shot-single-tree-growing-clouded-sky-during-sunset-surrounded-by-grass_181624-22807.jpg';
 </script>
 
-<div class="w-[174px] h-[228px]">
+<div class="w-[174px] h-fit">
 	<div class="w-[174px] h-[174px] mb-2.5 relative">
 		{#if profilePhoto}
 			<img class="w-full h-full object-cover rounded-full" src={profilePhoto} alt="User face" />

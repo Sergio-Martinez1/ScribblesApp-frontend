@@ -11,9 +11,10 @@
 	export let comments_count: number = 0;
 	export let tags_count: number = 0;
 	export let post_url: string = '#';
+	export let vertical: boolean = false;
 
 	let like_fill: string = 'none';
-	let like_stroke: string = '#ffffff';
+	let like_stroke: string = like_on ? '#2C41FF' : '#ffffff';
 	export let tag_toogle: boolean = false;
 
 	function toggle_like() {
@@ -28,27 +29,36 @@
 	}
 </script>
 
-<div class="bg-purpleLight flex rounded-2xl px-2 py-2 relative">
-	<div on:keypress={() => {}} on:click={toggle_like} class="like cursor-pointer">
+<div class="bg-purpleLight flex rounded-2xl px-2 relative {vertical ? 'gap-2 py-1.5' : 'py-2'}">
+	<div
+		on:keypress={() => {}}
+		on:click={toggle_like}
+		class="like cursor-pointer {vertical ? 'flex-col items-center' : ''}"
+	>
 		<div class="w-[20px]">
 			<Like fill={like_fill} stroke={like_stroke} />
 		</div>
+		<!-- Likes Count -->
 		{#key likes_count}
 			<p in:fly|local={{ y: 10 }} class:active={like_on}>{likes_count}</p>
 		{/key}
 	</div>
 
-	<a href={post_url} class="message">
+	<!-- Comments -->
+	<a href={post_url} class="message {vertical ? 'flex-col items-center' : ''}">
+		<!-- Comments Icons -->
 		<div class="w-[22px]">
 			<Message />
 		</div>
+		<!-- Comments count -->
 		{#key comments_count}
 			<p in:fly|local={{ y: 10 }}>{comments_count}</p>
 		{/key}
 	</a>
 
+	<!-- Tags -->
 	<div
-		class="tag cursor-pointer"
+		class="tag cursor-pointer {vertical ? 'flex-col items-center' : ''}"
 		on:click={() => {
 			tag_toogle = !tag_toogle;
 		}}
@@ -56,14 +66,17 @@
 		use:clickOutside={'.tags-component'}
 		on:click_outside={handleClickOutside}
 	>
+		<!-- Tags icon -->
 		<div class="w-[22px]">
 			<Tag />
 		</div>
+		<!-- Tags count -->
 		{#key tags_count}
 			<p in:fly|local={{ y: 10 }}>{tags_count}</p>
 		{/key}
 	</div>
 
+	<!-- TOGGLE TAG COMPONENT -->
 	{#if tag_toogle}
 		<div in:fly|local={{ y: 10 }} class="absolute top-9 right-2 z-10">
 			<Tags />

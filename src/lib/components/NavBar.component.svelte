@@ -14,42 +14,42 @@
 </script>
 
 <nav
-	class="group bg-purpleGray p-3 rounded-2xl w-[97px] transition-[width] hover:w-full overflow-hidden"
+	class="group bg-purpleGray p-3 rounded-2xl w-[97px] transition-[width] lg:hover:w-full overflow-hidden"
 >
 	<ul>
 		<li>
-			<a class:active={$page.url.pathname === home_url} href={home_url}
+			<a class:active={$page.url.pathname === home_url} href={home_url} title="Home"
 				><div class="w-[70px]"><Logo fill="#36254B" /></div>
-				<span class="opacity-0 group-hover:opacity-100">Home</span></a
+				<span class="opacity-0 lg:group-hover:opacity-100">Home</span></a
 			>
 		</li>
     {#if login}
       <li>
-        <a class:active={$page.url.pathname === profile_url} href={profile_url}
+        <a class:active={$page.url.pathname === profile_url} href={profile_url} title="Profile"
           ><div class="w-[59px]"><User /></div>
-          <span class="opacity-0 group-hover:opacity-100">Profile</span></a
+          <span class="opacity-0 lg:group-hover:opacity-100">Profile</span></a
         >
       </li>
     {/if}
 		<li>
-			<a class:active={$page.url.pathname === settings_url} href={settings_url}
+			<a class:active={$page.url.pathname === settings_url} href={settings_url} title="Settings"
 				><div class="w-[59px]"><Settings /></div>
-				<span class="opacity-0 group-hover:opacity-100">Settings</span></a
+				<span class="opacity-0 lg:group-hover:opacity-100">Settings</span></a
 			>
 		</li>
     {#if login}
       <li>
         <!-- REVISAR LOGOUT CON FORMACTIONS -->
-        <a class:active={$page.url.pathname === '/logout'} href="/logout"
+        <a class:active={$page.url.pathname === '/logout'} href="/logout" title="Log out"
           ><div class="w-[59px]"><LogOut /></div>
-          <span class="opacity-0 group-hover:opacity-100">Log Out</span></a
+          <span class="opacity-0 lg:group-hover:opacity-100">Log Out</span></a
         >
       </li>
     {:else}
       <li>
         <a class:active={$page.url.pathname === login_url} href={login_url}
           ><div class="w-[59px]"><LogIn /></div>
-          <span class="opacity-0 group-hover:opacity-100">Log In</span></a
+          <span class="opacity-0 lg:group-hover:opacity-100">Log In</span></a
         >
       </li>
     {/if}
