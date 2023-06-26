@@ -27,14 +27,9 @@
 		top_two: 'ChatGpt',
 		top_three: 'Weather'
 	};
-	let isLogin: boolean = false;
+	let isLogin: boolean = true;
 </script>
 
-<div class="col-span-2">
-	<div class="mt-8">
-		<NavBar />
-	</div>
-</div>
 <div class="col-span-7">
 	<div class="flex flex-col gap-y-4 mt-8">
 		{#if isLogin}
@@ -48,14 +43,12 @@
 	</div>
 </div>
 <div class="col-span-3">
-  <div class="h-72">
-	<div class="flex flex-col gap-y-2 items-start mt-32 sticky">
-		<div class="bg-purpleGray rounded-2xl px-4 py-5 min-w-full">
-			<h1 class="text-white font-bold">Welcome</h1>
+	<div class="flex flex-col gap-y-2 items-start mt-32 sticky top-1 max-h-screen overflow-y-auto">
+		<div class="bg-purpleGray rounded-2xl px-2.5 py-2.5 min-w-full">
+			<h1 class="text-white font-bold text-lg">Welcome</h1>
 			<p class="text-white">This is your home page. Checkout the new updates.</p>
 		</div>
 		<Tops {...top_tags} />
 		<Footer />
 	</div>
-  </div>
 </div>

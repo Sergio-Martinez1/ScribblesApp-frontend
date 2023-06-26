@@ -24,16 +24,15 @@
 	let num_posts = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 </script>
 
-<div class="col-span-2">
-	<div class="mt-8">
-		<NavBar />
-	</div>
-</div>
-<div class="col-span-10">
-	<div class="flex flex-col gap-y-4 mt-8">
-    <CoverPhoto />
-		<div class="flex flex-row gap-x-8">
-      <ProfilePhoto />
+<div class="col-span-9">
+	<div class="flex flex-col gap-y-6 mt-8 mb-6">
+		<div class="relative">
+			<CoverPhoto />
+			<div class="absolute top-[206px] left-[49px]">
+				<ProfilePhoto />
+			</div>
+		</div>
+		<div class="ml-60">
 			<UserDescription />
 		</div>
 	</div>
