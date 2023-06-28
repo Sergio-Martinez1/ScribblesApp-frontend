@@ -16,7 +16,6 @@
 				value={form?.username ?? ''}
 			/>
 			{#if form?.usernameMissing}<p class="error text-white">Username required</p>{/if}
-			<p class="error text-white">Username required</p>
 			<span class="text-black font-bold">E-mail</span>
 			<input
 				type="text"
@@ -25,22 +24,22 @@
 				value={form?.email ?? ''}
 			/>
 			{#if form?.emailMissing}<p class="error text-white">Email required</p>{/if}
-			<p class="error text-white">Email required</p>
 
 			<span class="text-black font-bold">Password</span>
 			<input
 				type="password"
 				class="px-4 bg-black rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
+				name="password"
 			/>
 			{#if form?.passwordMissing}<p class="error text-white">Password required</p>{/if}
-			<p class="error text-white">Password required</p>
 			<span class="text-black font-bold">Confirm password</span>
 			<input
 				type="password"
 				class="px-4 bg-black rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
+				name="confirm"
 			/>
+      {#if form?.passwordConfirmMissing}<p class="error text-white">Password confirmation required</p>{/if}
 			{#if form?.passwordConfirm}<p class="error text-white">Passwords doesn't match</p>{/if}
-			<p class="error text-white">Passwords doesn't match</p>
 
 			<span class="text-black font-bold">Avatar</span>
 			<input
