@@ -1,6 +1,7 @@
 <script lang="ts">
+  import type { PageData, ActionData } from './$types';
   import {Login} from "$components";
-  let form: any;
+  export let form: ActionData;
 </script>
 
 <div class="col-span-6  bg-krispyPurple flex">
