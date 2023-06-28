@@ -8,14 +8,13 @@
   <form class="px-8 py-9 flex flex-col items-start gap-y-4" action="?/login" method="POST" use:enhance>
     <h1 class="text-krispyPurple text-4xl font-bold">Log in with your <br> account</h1>
     <div class="flex flex-col gap-y-4">
-      <span class="text-krispyPurple font-bold">E-mail</span>
-      <input type="email" class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold" name="email" value={form?.email ?? ''}>
-      {#if form?.missing}<p class="error text-red-500">Email required</p>{/if}
-      <p class="error text-red-500">Email required</p>
+      <span class="text-krispyPurple font-bold">username</span>
+      <input type="text" class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold" name="username" value={form?.username ?? ''}>
+      {#if form?.usernameMissing}<p class="error text-red-500">Username required</p>{/if}
       <span class="text-krispyPurple font-bold">Password</span>
       <input type="password" class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold" name="password">
-      {#if form?.incorrect}<p class="error text-red-500">Incorrect password</p>{/if}
-      <p class="error text-red-500">Incorrect password</p>
+      {#if form?.passwordMissing}<p class="error text-red-500">Password Missing</p>{/if}
+      {#if form?.passwordIncorrect}<p class="error text-red-500">Incorrect password</p>{/if}
     </div>
       <button class="bg-krispyPurple text-black rounded-xl w-32 h-10" type="submit">
       <span class="px-auto font-bold">Log in</span>
