@@ -15,3 +15,6 @@ export {default as TextAreaAutosize} from "./TextAreaAutosize.svelte";
 export {default as CoverPhoto} from "./CoverPhoto.component.svelte";
 export {default as ProfilePhoto} from "./ProfilePhoto.component.svelte";
 export {default as UserDescription} from "./UserDescription.component.svelte";
+export {default as ChangePassword} from "./ChangePassword.component.svelte";
+export {default as DeleteAccount} from "./DeleteAccount.component.svelte";
+export {default as EditProfile} from "./EditProfile.component.svelte";
