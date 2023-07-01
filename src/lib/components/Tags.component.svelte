@@ -8,7 +8,7 @@
   <div class="flex flex-wrap mb-1">
     {#if tags}
       {#each tags as tag}
-        <a href="{posts_url}/{tag.slice(1)}" class="font-bold text-white mr-2.5 hover:underline">{tag}</a>
+        <a href="{posts_url}/{tag}" class="font-bold text-white mr-2.5 hover:underline">{tag}</a>
       {/each}
     {:else}
       <p class="font-bold text-white mx-auto">No tags</p>
