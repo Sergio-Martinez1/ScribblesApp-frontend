@@ -68,6 +68,9 @@ export const actions: Actions = {
     if (is_there_profile_photo) {
       profile_photo_url = await image_url_request(profile_photo);
       console.log(profile_photo_url);
+      cookies.set('profile_photo', profile_photo_url, {
+        path: '/',
+      });
     }
     if (is_there_cover_photo) {
       cover_photo_url = await image_url_request(cover_photo);
@@ -215,6 +218,6 @@ export const actions: Actions = {
     const response = await fetch(url, options);
     if (response.ok) {
       throw redirect(303, '/logout');
-    }
+    } 
   }
 };
