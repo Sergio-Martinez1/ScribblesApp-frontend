@@ -3,17 +3,22 @@
 	import { fly } from 'svelte/transition';
 	import { clickOutside } from '$lib/utils/clickOutside';
 	import Slash from '$lib/components/Icon/Slash.svelte';
-  import Edit from '$lib/components/Icon/Edit.svelte';
-  import Trash from '$lib/components/Icon/Trash.svelte';
+	import Edit from '$lib/components/Icon/Edit.svelte';
+	import Trash from '$lib/components/Icon/Trash.svelte';
 
-	export let editable: boolean;
+	let editable: boolean = false;
 	export let creator_id: number;
-	export let user_id: number;
+	export let myUser_id: number;
 
 	let options_toogle: boolean = false;
 
 	function handleClickOutside() {
 		options_toogle = false;
+	}
+	function handleDialog() {
+		options_toogle = false;
+		let element = document.getElementById('delete-dialog') as HTMLDialogElement;
+    element.showModal();
 	}
 </script>
 
@@ -34,7 +39,7 @@
 			<div
 				class="options-component bg-purpleGray p-5 w-48 rounded-2xl shadow-[0px_0px_10px_1px_black]"
 			>
-				{#if user_id && user_id == creator_id}
+				{#if myUser_id && myUser_id == creator_id}
 					<button
 						on:click={() => {
 							editable = !editable;
@@ -42,20 +47,18 @@
 						}}
 						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 mb-3.5 rounded-2xl w-full flex items-center justify-center gap-2"
 					>
-						<Edit width={18} height={18}/>Edit post
+						<Edit width={18} height={18} />Edit post
 					</button>
 					<button
-						on:click={() => {
-							options_toogle = false;
-              document.getElementById("delete-dialog").showModal();
-						}}
+						on:click={handleDialog}
 						class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full flex items-center justify-center gap-2"
 					>
-						<Trash width={18} height={18}/>Delete post
+						<Trash width={18} height={18} />Delete post
 					</button>
 				{:else}
-					<button class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 rounded-2xl w-full flex items-center gap-2"
-						><Slash width={18} height={18}/>Don't show this</button
+					<button
+						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 rounded-2xl w-full flex items-center gap-2"
+						><Slash width={18} height={18} />Don't show this</button
 					>
 				{/if}
 			</div>
