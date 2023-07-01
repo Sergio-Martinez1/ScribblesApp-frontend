@@ -18,3 +18,4 @@ export {default as UserDescription} from "./UserDescription.component.svelte";
 export {default as ChangePassword} from "./ChangePassword.component.svelte";
 export {default as DeleteAccount} from "./DeleteAccount.component.svelte";
 export {default as EditProfile} from "./EditProfile.component.svelte";
+export {default as ChangeUsername} from "./ChangeUsername.component.svelte";
