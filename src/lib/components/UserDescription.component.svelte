@@ -3,14 +3,12 @@
 	import Calendar from '$lib/components/Icon/Calendar.svelte';
 	import Gift from '$lib/components/Icon/Gift.svelte';
 	import MapPin from '$lib/components/Icon/MapPin.svelte';
-	import { split } from 'postcss/lib/list';
 
-	export let content: string =
-		'Trabajé en Ogilvy, Y&R, Publicis y Mother | Te cuento secretos de marketing, Copywriting & Storytelling para que puedas convertir las palabras en dinero. Trabajé en Ogilvy, Y&R, Publicis y Mother. Trabajé en Ogilvy, Y&R, Publicis y Mother. ';
-	export let webSite: string = 'https://www.facebook.com/';
-	export let birthDay: string = '1990/08/13';
-	export let location: string = 'Xalapa, Mexico';
-	export let userCreationDate: string = '2023/08/13';
+	export let content: string = '';
+	export let webSite: string = '';
+	export let birthDay: string = '';
+	export let location: string = '';
+	export let userCreationDate: string = '';
 
 	const monthNames: string[] = [
 		'January',
@@ -43,8 +41,8 @@
 			<div class="flex gap-1.5 items-center w-fit">
 				<div><Gift width={16} height={16} /></div>
 				<p class="text-white">
-					Born {monthNames[Number(birthDay.split('/')[1]) - 1]}
-					{birthDay.split('/')[2]}, {birthDay.split('/')[0]}
+					Born {monthNames[Number(birthDay.split('-')[1]) - 1]}
+					{birthDay.split('-')[2]}, {birthDay.split('-')[0]}
 				</p>
 			</div>
 		{/if}
@@ -60,8 +58,8 @@
 			<div class="flex gap-1 items-center w-fit">
 				<div><Calendar width={15} height={15} /></div>
 				<p class="text-white">
-					Joined {monthNames[Number(userCreationDate.split('/')[1]) - 1]}
-					{userCreationDate.split('/')[2]}, {userCreationDate.split('/')[0]}
+					Joined {monthNames[Number(userCreationDate.split('-')[1]) - 1]}
+					{userCreationDate.split('-')[2]}, {userCreationDate.split('-')[0]}
 				</p>
 			</div>
 		{/if}
