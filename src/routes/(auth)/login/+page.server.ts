@@ -40,6 +40,9 @@ export const actions: Actions = {
       cookies.set('username', responseJSON.username, {
         path: '/',
       });
+      cookies.set('profile_photo', responseJSON.profile_photo, {
+        path: '/',
+      });
       throw redirect(303, "/home");
 		}
 	}
