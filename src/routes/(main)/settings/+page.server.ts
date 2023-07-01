@@ -24,51 +24,9 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 };
 
 export const actions: Actions = {
-  changePassword: async ({ request, fetch, cookies }) => {
-    const form = await request.formData();
-    const password = form.get('password');
-    const newPassword = form.get('new_password');
-    const confirm = form.get('confirm');
-
-    if (!password) {
-      return fail(400, { passwordMissing: true });
-    }
-    if (!newPassword) {
-      return fail(400, { newPasswordMissing: true });
-    }
-    if (!confirm) {
-      return fail(400, { confirmMissing: true });
-    }
-    if (newPassword !== confirm) {
-      return fail(400, { passwordConfirm: true });
-    }
-
-    const base_api_url: string = env.API_URL;
-    const url = `${base_api_url}/users/passsword`;
-    const access_token = cookies.get('access_token');
-    if (access_token) {
-      const body = {
-        password: password,
-        new_password: newPassword
-      };
-      const options = {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      };
-      const response = await fetch(url, options);
-      if (response.ok) {
-       throw redirect(303, '/settings');
-      }
-    }
-  },
   editProfile: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
-    const username = form.get('username') as File;
-    const email = form.get('email') as File;
+    const email = form.get('email');
     const profile_photo = form.get('profile_photo') as File;
     const cover_photo = form.get('cover_photo') as File;
     const description = form.get('description');
@@ -76,12 +34,8 @@ export const actions: Actions = {
     const location = form.get('location');
     const birthday = form.get('birthday');
 
-    
-    if (!username) {
-      return fail(400, { usernameMissing: true, email });
-    }
     if (!email) {
-      return fail(400, { emailMissing: true, username});
+      return fail(400, { emailMissing: true });
     }
 
     const is_there_profile_photo = profile_photo?.size > 0 ? true : false;
@@ -121,16 +75,49 @@ export const actions: Actions = {
     }
 
     const body = {
-        username,
-        email,
-        ...(is_there_profile_photo ? { profile_photo: profile_photo_url } : {}),
-        ...(is_there_cover_photo ? { cover_photo: cover_photo_url } : {}),
-        ...(description !== undefined ? { description } : {}),
-        ...(personal_url !== undefined ? { personal_url } : {}),
-        ...(location !== undefined ? { location } : {}),
-        ...(birthday !== undefined ? { birthday } : {}),
-      };
+      ...(email !== undefined ? { email } : {}),
+      ...(is_there_profile_photo ? { profile_photo: profile_photo_url } : {}),
+      ...(is_there_cover_photo ? { cover_photo: cover_photo_url } : {}),
+      ...(description !== undefined ? { description } : {}),
+      ...(personal_url !== undefined ? { personal_url } : {}),
+      ...(location !== undefined ? { location } : {}),
+      ...(birthday !== undefined ? { birthday } : {})
+    };
     const options = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    };
+    const response = await fetch(update_url, options);
+    if (response.ok) {
+      throw redirect(303, '/settings');
+    }
+  },
+  changeUsername: async ({ request, fetch, cookies }) => {
+    const form = await request.formData();
+    const username = form.get('username');
+    const password = form.get('password');
+
+    if (!username) {
+      return fail(400, { usernameMissing: true });
+    }
+
+    if (!password) {
+      return fail(400, { passwordMissing: true });
+    }
+
+    const base_api_url: string = env.API_URL;
+    const url = `${base_api_url}/users/username`;
+    const access_token = cookies.get('access_token');
+    if (access_token) {
+      const body = {
+        username,
+        password
+      };
+      const options = {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${access_token}`,
@@ -138,9 +125,96 @@ export const actions: Actions = {
         },
         body: JSON.stringify(body)
       };
-     const response = await fetch(update_url, options);
-      if (response.ok) {
-       throw redirect(303, '/settings');
+      const response = await fetch(url, options);
+      if (response.status === 400) {
+        return fail(400, { usernameExists: true });
+      } else if (response.status === 404) {
+        return fail(404, { usernameNotFound: true });
+      } else if (response.status === 401) {
+        return fail(401, { wrongPassword: true });
+      } else if (response.ok) {
+        const body = new URLSearchParams();
+        body.append('username', username.toString());
+        body.append('password', password.toString());
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: body.toString()
+        };
+        const url = `${base_api_url}/users/signin`;
+        const response = await fetch(url, options);
+        if (response.ok) {
+          const responseJSON = await response.json();
+          cookies.set('access_token', responseJSON.access_token, {
+            path: '/'
+          });
+          cookies.set('username', responseJSON.username, {
+            path: '/'
+          });
+          throw redirect(303, '/settings');
+        }
       }
+    }
+  },
+  changePassword: async ({ request, fetch, cookies }) => {
+    const form = await request.formData();
+    const password = form.get('password');
+    const newPassword = form.get('new_password');
+    const confirm = form.get('confirm');
+
+    if (!password) {
+      return fail(400, { passwordMissing: true });
+    }
+    if (!newPassword) {
+      return fail(400, { newPasswordMissing: true });
+    }
+    if (!confirm) {
+      return fail(400, { confirmMissing: true });
+    }
+    if (newPassword !== confirm) {
+      return fail(400, { passwordConfirm: true });
+    }
+
+    const base_api_url: string = env.API_URL;
+    const url = `${base_api_url}/users/passsword`;
+    const access_token = cookies.get('access_token');
+    if (access_token) {
+      const body = {
+        password: password,
+        new_password: newPassword
+      };
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      };
+      const response = await fetch(url, options);
+      if (response.ok) {
+        throw redirect(303, '/settings');
+      }
+    }
+  },
+  deleteAccount: async ({ fetch, cookies }) => {
+    const base_api_url: string = env.API_URL;
+    const url = `${base_api_url}/users/`;
+    const access_token = cookies.get('access_token');
+    if (access_token) {
+    }
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      }
+    };
+    const response = await fetch(url, options);
+    if (response.ok) {
+      throw redirect(303, '/logout');
+    }
   }
 };
