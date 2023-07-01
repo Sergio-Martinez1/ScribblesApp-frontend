@@ -20,17 +20,6 @@
 	use:enhance
 >
 	<h1 class="text-white text-4xl font-bold">Edit Profile</h1>
-	<label for="username">
-		<h1 class="text-white font-bold">Username</h1>
-		<input
-			type="text"
-			name="username"
-      value={username}
-			class="px-4 py-6 min-w-full bg-krispyPurple rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
-			placeholder="username"
-		/>
-		{#if form?.usernameMissing}<p class="error text-white">Username can not be empty</p>{/if}
-	</label>
 	<label for="email">
 		<h1 class="text-white font-bold">Email</h1>
 		<input
