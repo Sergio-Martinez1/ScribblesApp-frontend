@@ -1,33 +1,27 @@
 <script lang="ts">
-	import { NavBar } from '$components';
 	import { Post } from '$components';
 	import { Tops } from '$components';
 	import { Footer } from '$components';
 	import { PublicationBar } from '$components';
 	import { LoginInHome } from '$components';
+	import type { PageData } from './$types';
+  
+	export let data: PageData;
+	$: posts = data.posts;
+	$: top_tags = data.top_tags;
+	$: isLogin = data.username ? true : false;
+	$: id = Number(data.id);
+  $: my_reactions = data.my_reactions;
 
-	const post_data = {
-		user_photo_url:
-			'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJr94g26anSnYVgCnaDlZvKLRA51Fk6HLIsw&usqp=CAU',
-		user_name: 'mutska',
-		user_url: '#',
-		post_url: '#',
-		posted_ago: '1d',
-		post_content: 'Este es un ejemplo del texto de un post',
-		post_thumbnail_url:
-			'https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg',
-		like_on: true,
-		likes_count: 65,
-		comments_count: 10,
-		tags_count: 3
-	};
-	let num_posts = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-	const top_tags = {
-		top_one: 'Music',
-		top_two: 'ChatGpt',
-		top_three: 'Weather'
-	};
-	let isLogin: boolean = true;
+	function handleLike(my_reactions: any[], post_id: number) {
+		if (my_reactions) {
+			let reaction_exits = my_reactions.filter((reaction) => reaction.post_id == post_id);
+			if (reaction_exits.length > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 </script>
 
 <div class="col-span-7">
@@ -37,8 +31,28 @@
 		{:else}
 			<LoginInHome />
 		{/if}
-		{#each num_posts as post}
-			<Post {...post_data} />
+		{#each posts as post}
+			<!-- REVISAR -->
+			<!-- post_by_tags_url -->
+			<Post
+				user_photo_url={post.user.profile_photo}
+				user_name={post.user.username}
+				user_url="/profile/{post.user.id}"
+				post_url="/post/{post.id}"
+				publication_date={post.publication_date}
+				post_content={post.content}
+				post_thumbnail_url={post.thumbnail}
+				like_on={handleLike(my_reactions, post.id)}
+				likes_count={post.reactions.length}
+				comments_count={post.num_comments}
+				tags_count={post.tags.length}
+				vertical={false}
+				tags={post.tags.map((tag) => tag.content)}
+				post_by_tags_url="/home"
+				creator_id={post.user.id}
+				myUser_id={id}
+        post_id={post.id}
+			/>
 		{/each}
 	</div>
 </div>
@@ -48,7 +62,11 @@
 			<h1 class="text-white font-bold text-lg">Welcome</h1>
 			<p class="text-white">This is your home page. Checkout the new updates.</p>
 		</div>
-		<Tops {...top_tags} />
+		<Tops
+			top_one={top_tags[0].content}
+			top_two={top_tags[1].content}
+			top_three={top_tags[2].content}
+		/>
 		<Footer />
 	</div>
 </div>
