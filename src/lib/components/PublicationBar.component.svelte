@@ -6,9 +6,14 @@
 	import X from '$lib/components/Icon/X.svelte';
 	import CreateTags from '$lib/components/CreateTags.component.svelte';
 	import { fly } from 'svelte/transition';
+	import { applyAction, enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { invalidateAll } from '$app/navigation';
 
 	//STYLES
 	export let maxContent: number = 500;
+  export let user_url: string = '';
+  export let user_photo_url: string = '';
 
 	//STATE
 	let focus: boolean = false;
@@ -26,7 +31,7 @@
 	//TEXT TO API
 	let outputText: string = '';
 	let selectedImage: string | undefined;
-  let tags: string[] = [];
+	let tags: string[] = [];
 
 	$: validContent =
 		(outputText.trim() || selectedImage) && outputText.length <= maxContent ? true : false;
@@ -42,19 +47,37 @@
 			reader.readAsDataURL(file);
 		}
 	}
+
+	function handleClose() {
+		innerText = '';
+		showPlaceHolder = true;
+		selectedImage = '';
+		tags_toggle = false;
+		focus = false;
+	}
+  
+	const submit: SubmitFunction = () => {
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				await invalidateAll();
+				await applyAction(result);
+        handleClose();
+			}
+		};
+	};
 </script>
 
-<div class="bg-purpleGray rounded-2xl p-2.5 h-fit relative">
+<form
+	class="bg-purpleGray rounded-2xl p-2.5 h-fit relative"
+	method="POST"
+	action="/home?/createPost"
+	use:enhance={submit}
+>
 	{#if focus}
-		<!-- DELETE BUTTON -->
+		<!-- CLOSE BUTTON -->
 		<button
-			on:click={() => {
-				innerText = '';
-				showPlaceHolder = true;
-				selectedImage = '';
-				tags_toggle = false;
-				focus = false;
-			}}
+			type="button"
+			on:click={handleClose}
 			class="absolute right-5 rounded-full bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1"
 			><X width={16} height={16} /></button
 		>
@@ -64,11 +87,15 @@
 	{/if}
 	<div class="items-center grid grid-cols-[58px_minmax(0,_1fr)_50px_50px] h-fit">
 		<!-- USER ICON -->
-		<div class="w-[59px] h-[58px] self-start">
-			<User />
-		</div>
+		<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden">
+			{#if user_photo_url}
+				<img class="w-full h-full object-cover" src={user_photo_url} alt="User" />
+			{:else}
+				<User />
+			{/if}
+		</a>
 		<!-- TEXTAREA -->
-		<form
+		<div
 			class="h-fit mx-2.5 self-start mt-2 bg-purpleLight rounded-2xl px-3 py-2 relative border {focus_text
 				? 'border-krispyPurple'
 				: 'border-transparent'}"
@@ -91,6 +118,8 @@
 					bind:showPlaceHolder
 					bind:outputText
 				/>
+				<!-- CONTENT INPUT -->
+				<input type="hidden" name="content" bind:value={outputText} />
 			</div>
 			{#if selectedImage}
 				<!-- IMAGE PREVIEW -->
@@ -108,9 +137,10 @@
 					/>
 				</div>
 			{/if}
-		</form>
+		</div>
 		<!-- IMAGE BUTTON -->
 		<button
+			type="button"
 			class="mx-1 mt-2 cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent self-start relative"
 			on:click={() => {
 				focus = true;
@@ -118,9 +148,11 @@
 			}}
 		>
 			<Image />
+			<!-- IMAGE INPUT -->
 			<input
 				tabindex="-1"
 				type="file"
+				name="thumbnail"
 				accept="image/*"
 				class="w-0 h-0 t absolute"
 				on:change={handleFileChange}
@@ -129,6 +161,7 @@
 		</button>
 		<!-- TAG BUTTON -->
 		<button
+			type="button"
 			tabindex="0"
 			on:click={() => {
 				focus = true;
@@ -140,6 +173,8 @@
 		</button>
 	</div>
 	<div class="grid grid-cols-[1fr_112px] ml-[59px] mr-[39px]">
+		<!-- TAGS INPUT -->
+		<input type="hidden" name="tags" bind:value={tags} />
 		{#if tags_toggle}
 			<!-- TAG CREATION -->
 			<div in:fly|local={{ y: -10 }} class="ml-2.5 mr-9 my-2">
@@ -149,6 +184,7 @@
 		{#if focus}
 			<!-- POST BUTTON -->
 			<button
+				type="submit"
 				disabled={!validContent}
 				in:fly|local={{ y: -10 }}
 				class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessPurple disabled:opacity-[0.5]"
@@ -156,4 +192,4 @@
 			>
 		{/if}
 	</div>
-</div>
+</form>
