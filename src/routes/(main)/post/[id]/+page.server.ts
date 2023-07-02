@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
 };
 
 export const actions: Actions = {
-  createComment: async ({ request, cookies }) => {
+  createComment: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
     const content = form.get('content');
     const post_id = form.get('post_id');
@@ -49,7 +49,7 @@ export const actions: Actions = {
     }
     const response = await fetch(url, options);
   },
-  deleteComment: async ({ request, cookies }) => {
+  deleteComment: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
     const comment_id = form.get('comment_id');
     const base_api_url: string | undefined = env.API_URL;
@@ -67,6 +67,27 @@ export const actions: Actions = {
       }
     }
     const response = await fetch(url, options);
-  }
+  },
+  deletePost: async ({ request, fetch, cookies, url }) => {
+    const form = await request.formData();
+    const post_id = form.get('post_id');
+    const base_api_url: string | undefined = env.API_URL;
+    const access_token = cookies.get('access_token');
+    if (!access_token) throw redirect(303, "/login");
+    if (!base_api_url) throw error(404, 'No api provided');
+    if (!post_id) return fail(400, { postIdMissing: true });
 
+    const posts_url = `${base_api_url}/posts/${post_id}`;
+    const options = {
+      method: 'DELETE',
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${access_token}`
+      }
+    }
+    const response = await fetch(posts_url, options);
+    if(response.ok && url){
+      throw redirect(303, "/home");
+    }
+  }
 }
