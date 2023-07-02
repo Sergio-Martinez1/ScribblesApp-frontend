@@ -2,7 +2,6 @@
 	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	export let form: ActionData;
-  export let username: string = "username";
   export let email: string = "email";
   export let profile_photo: string = "profile_photo";
   export let cover_photo: string = "cover_photo";
