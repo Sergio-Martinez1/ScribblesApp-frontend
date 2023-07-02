@@ -60,5 +60,80 @@ export const actions: Actions = {
       const response = await fetch(url, options);
       if (response.ok) return;
     }
+  },
+  createPost: async ({ request, fetch, cookies }) => {
+
+    const form = await request.formData();
+    const content = form.get('content');
+    const thumbnail = form.get('thumbnail') as File;
+    const raw_tags = form.get('tags')?.toString();
+    const tags = raw_tags ? raw_tags?.split(',') : [];
+    const is_there_thumbnail = thumbnail?.size > 0 ? true : false;
+
+    const base_api_url: string = env.API_URL;
+    const post_url = `${base_api_url}/posts/`;
+    const files_url = `${base_api_url}/files/`;
+    const access_token = cookies.get('access_token');
+
+    let image_url_request = async (file: File) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      const options = {
+        method: 'POST',
+        headers: new Headers({
+          Authorization: `Bearer ${access_token}`
+        }),
+        body: formData
+      };
+      let response = await fetch(files_url, options);
+      if (response.ok) {
+        let img = await response.json();
+        return img.url;
+      } else {
+        return '';
+      }
+    };
+
+    let thumbnail_url: string = '';
+    if (is_there_thumbnail) {
+      thumbnail_url = await image_url_request(thumbnail);
+      console.log(thumbnail_url);
+    }
+
+    const body = {
+      ...(content !== undefined ? { content } : {}),
+      ...(is_there_thumbnail ? { thumbnail: thumbnail_url } : {}),
+      ...(tags !== undefined ? { tags } : [])
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    };
+    await fetch(post_url, options);
+  },
+  deletePost: async ({ request, fetch, cookies, url }) => {
+    const form = await request.formData();
+    const post_id = form.get('post_id');
+    const base_api_url: string | undefined = env.API_URL;
+    const access_token = cookies.get('access_token');
+    if (!access_token) throw redirect(303, "/login");
+    if (!base_api_url) throw error(404, 'No api provided');
+    if (!post_id) return fail(400, { postIdMissing: true });
+
+    const posts_url = `${base_api_url}/posts/${post_id}`;
+    const options = {
+      method: 'DELETE',
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${access_token}`
+      }
+    }
+    const response = await fetch(posts_url, options);
   }
 }
