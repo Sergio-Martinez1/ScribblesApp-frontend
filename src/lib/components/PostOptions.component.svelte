@@ -9,6 +9,7 @@
 	let editable: boolean = false;
 	export let creator_id: number;
 	export let myUser_id: number;
+  export let dialog_id: string;
 
 	let options_toogle: boolean = false;
 
@@ -17,7 +18,7 @@
 	}
 	function handleDialog() {
 		options_toogle = false;
-		let element = document.getElementById('delete-dialog') as HTMLDialogElement;
+		let element = document.getElementById(dialog_id) as HTMLDialogElement;
     element.showModal();
 	}
 </script>
