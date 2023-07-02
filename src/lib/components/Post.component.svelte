@@ -3,6 +3,7 @@
 	import Reactions from '$lib/components/Reactions.component.svelte';
 	import PostOptions from '$lib/components/PostOptions.component.svelte';
 	import { calculate_posted_time } from '$lib/utils/calculate_posted_time';
+	import { enhance } from '$app/forms';
 
 	//POST
 	export let user_photo_url: string;
@@ -12,7 +13,7 @@
 	export let publication_date: string = '0d';
 	export let post_content: string = '';
 	export let post_thumbnail_url: string;
-  export let post_id: number;
+	export let post_id: number;
 
 	// REACTIONS
 	export let like_on: boolean = false;
@@ -26,6 +27,12 @@
 	//POST OPTIONS
 	export let creator_id: number;
 	export let myUser_id: number;
+  let dialog_id: string = `delete-dialog-post-${post_id}`;
+
+	function handleClose(post_id: Number) {
+		let element = document.getElementById(dialog_id) as HTMLDialogElement;
+		element.close();
+	}
 </script>
 
 <div class="bg-purpleGray rounded-2xl">
@@ -53,11 +60,11 @@
 				{vertical}
 				{tags}
 				{post_by_tags_url}
-        {post_id}
+				{post_id}
 			/>
 		</div>
 		<div class="mr-7">
-			<PostOptions {myUser_id} {creator_id} />
+			<PostOptions {myUser_id} {creator_id} {dialog_id}/>
 		</div>
 	</div>
 	<div class="flex px-5 py-2.5">
@@ -73,12 +80,20 @@
 		</a>
 	</div>
 
-	<dialog class="bg-purpleGray rounded-2xl shadow-[0px_0px_10px_1px_black]" id="delete-dialog">
-		<form>
+	<dialog
+		class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
+		id={dialog_id}
+	>
+		<form method="POST" action="/home?/deletePost" use:enhance>
+			<input type="hidden" value={post_id} name="post_id" />
 			<p class="text-white font-bold mb-2 mx-auto w-fit text-lg">Delete post?</p>
 			<p class="text-white mb-3">This action will delete the post permanently.</p>
 			<div class="flex gap-3">
 				<button
+					on:click={() => {
+						handleClose(post_id);
+					}}
+					type="button"
 					value="cancel"
 					formmethod="dialog"
 					class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 rounded-2xl w-full"
@@ -86,6 +101,9 @@
 					Cancel
 				</button>
 				<button
+					on:click={() => {
+						handleClose(post_id);
+					}}
 					type="submit"
 					value="default"
 					class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full"
