@@ -8,6 +8,18 @@
 	export let data: PageData;
 	$: user = data.user;
 	$: posts = data.posts;
+	$: id = Number(data.id);
+  $: my_reactions = data.my_reactions;
+  
+	function handleLike(my_reactions: any[], post_id: number) {
+		if (my_reactions) {
+			let reaction_exits = my_reactions.filter((reaction) => reaction.post_id == post_id);
+			if (reaction_exits.length > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 </script>
 
 <div class="col-span-9">
@@ -42,15 +54,16 @@
 				publication_date={post.publication_date}
 				post_content={post.content}
 				post_thumbnail_url={post.thumbnail}
-				like_on={true}
+				like_on={handleLike(my_reactions, post.id)}
 				likes_count={post.reactions.length}
-				comments_count={post.comments.length}
+				comments_count={post.num_comments}
 				tags_count={post.tags.length}
 				vertical={false}
 				tags={post.tags.map((tag) => tag.content)}
 				post_by_tags_url="/home"
 				creator_id={post.user.id}
-				myUser_id={2}
+				myUser_id={id}
+        post_id={post.id}
 			/>
 		{/each}
 	</div>
