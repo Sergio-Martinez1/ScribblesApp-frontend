@@ -16,8 +16,8 @@
 	export let maxContent: number = 300;
 	export let my_user_id: number;
 	let outputText: string = '';
-  let innerText: string = '';
-  let showPlaceHolder: boolean = true;
+	let innerText: string = '';
+	let showPlaceHolder: boolean = true;
 
 	$: validContent = outputText.trim() && outputText.length <= maxContent ? true : false;
 
@@ -39,8 +39,8 @@
 			if (result.type === 'success') {
 				await invalidateAll();
 				await applyAction(result);
-        innerText = '';
-        showPlaceHolder = true;
+				innerText = '';
+				showPlaceHolder = true;
 			}
 		};
 	};
@@ -62,11 +62,16 @@
 		<form
 			class="bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2"
 			method="POST"
-			action="?/createComment"
+			action="/post/[id]?/createComment"
 			use:enhance={submit}
 		>
 			<div class="grow self-center">
-				<TextAreaAutosize placeHolder="Write a comment..." bind:outputText bind:innerText bind:showPlaceHolder/>
+				<TextAreaAutosize
+					placeHolder="Write a comment..."
+					bind:outputText
+					bind:innerText
+					bind:showPlaceHolder
+				/>
 			</div>
 			<input type="hidden" value={outputText} name="content" />
 			<input type="hidden" value={post_id} name="post_id" />
@@ -121,11 +126,12 @@
 			class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 			id="delete-dialog-comment-{comment.id}"
 		>
-			<form method="POST" action="?/deleteComment" use:enhance>
+			<form method="POST" action="/post/[id]?/deleteComment" use:enhance>
 				<p class="text-white font-bold mb-2 mx-auto w-fit text-lg">Delete comment?</p>
 				<p class="text-white mb-3">This action will delete the comment permanently.</p>
 				<div class="flex gap-3">
 					<button
+						type="button"
 						class="bg-purpleLight hover:bg-hoverPurple active:bg-purpleLight text-white p-2.5 rounded-2xl w-full"
 						on:click={() => {
 							handleClose(comment.id);
