@@ -20,5 +20,5 @@
 			>
 		{/if}
 	</div>
-	<p class="text-white font-bold w-fit mx-auto text-lg">{username}</p>
+	<p class="text-white font-bold w-fit mx-auto text-xl">{username}</p>
 </div>
