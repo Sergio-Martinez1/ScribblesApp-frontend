@@ -5,13 +5,14 @@
 	import { PublicationBar } from '$components';
 	import { LoginInHome } from '$components';
 	import type { PageData } from './$types';
-  
+
 	export let data: PageData;
 	$: posts = data.posts;
 	$: top_tags = data.top_tags;
 	$: isLogin = data.username ? true : false;
 	$: id = Number(data.id);
-  $: my_reactions = data.my_reactions;
+	$: my_reactions = data.my_reactions;
+	$: profile_photo = data.profile_photo;
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -27,7 +28,7 @@
 <div class="col-span-7">
 	<div class="flex flex-col gap-y-4 mt-8">
 		{#if isLogin}
-			<PublicationBar />
+			<PublicationBar user_url={'/profile'} user_photo_url={profile_photo} />
 		{:else}
 			<LoginInHome />
 		{/if}
@@ -51,7 +52,7 @@
 				post_by_tags_url="/home"
 				creator_id={post.user.id}
 				myUser_id={id}
-        post_id={post.id}
+				post_id={post.id}
 			/>
 		{/each}
 	</div>
