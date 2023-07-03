@@ -4,10 +4,11 @@
 	import PostOptions from '$lib/components/PostOptions.component.svelte';
 	import { calculate_posted_time } from '$lib/utils/calculate_posted_time';
 	import { enhance } from '$app/forms';
+	import EditPost from '$lib/components/EditPost.componente.svelte';
 
 	//POST
 	export let user_photo_url: string;
-	export let user_name: string = 'user';
+	export let user_name: string = '';
 	export let user_url: string = '#';
 	export let post_url: string = '#';
 	export let publication_date: string = '0d';
@@ -27,10 +28,11 @@
 	//POST OPTIONS
 	export let creator_id: number;
 	export let myUser_id: number;
-  let dialog_id: string = `delete-dialog-post-${post_id}`;
+	let delete_dialog_id: string = `delete-dialog-post-${post_id}`;
+	let edit_dialog_id: string = `edit-dialog-post-${post_id}`;
 
-	function handleClose(post_id: Number) {
-		let element = document.getElementById(dialog_id) as HTMLDialogElement;
+	function handleClose() {
+		let element = document.getElementById(delete_dialog_id) as HTMLDialogElement;
 		element.close();
 	}
 </script>
@@ -64,12 +66,12 @@
 			/>
 		</div>
 		<div class="mr-7">
-			<PostOptions {myUser_id} {creator_id} {dialog_id}/>
+			<PostOptions {myUser_id} {creator_id} {delete_dialog_id} {edit_dialog_id}/>
 		</div>
 	</div>
 	<div class="flex px-5 py-2.5">
 		<a href={post_url} class="bg-purpleLight w-full rounded-2xl p-3.5 text-white cursor-pointer">
-			<p class="mb-2.5 break-all">{post_content}</p>
+			<p class="mb-2.5 whitespace-break-spaces">{post_content}</p>
 			{#if post_thumbnail_url}
 				<img
 					class="rounded-2xl overflow-hidden max-h-96 mx-auto"
@@ -82,7 +84,7 @@
 
 	<dialog
 		class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
-		id={dialog_id}
+		id={delete_dialog_id}
 	>
 		<form method="POST" action="/home?/deletePost" use:enhance>
 			<input type="hidden" value={post_id} name="post_id" />
@@ -91,7 +93,7 @@
 			<div class="flex gap-3">
 				<button
 					on:click={() => {
-						handleClose(post_id);
+						handleClose();
 					}}
 					type="button"
 					value="cancel"
@@ -102,7 +104,7 @@
 				</button>
 				<button
 					on:click={() => {
-						handleClose(post_id);
+						handleClose();
 					}}
 					type="submit"
 					value="default"
@@ -112,5 +114,18 @@
 				</button>
 			</div>
 		</form>
+	</dialog>
+	<dialog
+		class="bg-purpleGray rounded-2xl w-[500px] shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
+		id={edit_dialog_id}
+  >
+		<EditPost
+			{user_photo_url}
+      username={user_name}
+			{post_id}
+			innerText={post_content}
+			selectedImage={post_thumbnail_url}
+			{tags}
+		/>
 	</dialog>
 </div>
