@@ -6,8 +6,6 @@ export const actions: Actions = {
 		const form = await request.formData();
 		const username = form.get('username');
 		const password = form.get('password');
-		console.log(username);
-		console.log(password);
 		if (!username) {
 			return fail(400, { usernameMissing: true });
 		}
@@ -44,6 +42,10 @@ export const actions: Actions = {
         path: '/',
       });
       throw redirect(303, "/home");
-		}
+    } else if (response.status === 404) {
+        return fail(400, { usernameDontExists: true});
+    } else if (response.status === 400) {
+        return fail(400, { wrongPassword: true, username });
+    }
 	}
 };

@@ -10,11 +10,12 @@
     <div class="flex flex-col gap-y-4">
       <span class="text-krispyPurple font-bold">username</span>
       <input type="text" class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold" name="username" value={form?.username ?? ''}>
-      {#if form?.usernameMissing}<p class="error text-red-500">Username required</p>{/if}
+      {#if form?.usernameMissing}<p class="error text-white">Username required</p>{/if}
+      {#if form?.usernameDontExists}<p class="error text-white">Username does not exists</p>{/if}
       <span class="text-krispyPurple font-bold">Password</span>
       <input type="password" class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold" name="password">
-      {#if form?.passwordMissing}<p class="error text-red-500">Password Missing</p>{/if}
-      {#if form?.passwordIncorrect}<p class="error text-red-500">Incorrect password</p>{/if}
+      {#if form?.passwordMissing}<p class="error text-white">Password Missing</p>{/if}
+	    {#if form?.wrongPassword}<p class="error text-white">Invalid Password</p>{/if}
     </div>
       <button class="bg-krispyPurple text-black rounded-xl w-32 h-10" type="submit">
       <span class="px-auto font-bold">Log in</span>
