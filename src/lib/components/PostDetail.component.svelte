@@ -2,6 +2,7 @@
 	import UserIcon from '$lib/components/Icon/User.svelte';
 	import Reactions from '$lib/components/Reactions.component.svelte';
 	import PostOptions from '$lib/components/PostOptions.component.svelte';
+	import EditPost from '$lib/components/EditPost.componente.svelte';
 	import { calculate_posted_time } from '$lib/utils/calculate_posted_time';
 	import { enhance } from '$app/forms';
 
@@ -28,10 +29,11 @@
 	//POST OPTIONS
 	export let creator_id: number;
 	export let myUser_id: number;
-  let dialog_id: string = `delete-dialog-post-${post_id}`;
+  let edit_dialog_id: string = `edit-dialog-post-${post_id}`;
+  let delete_dialog_id: string = `delete-dialog-post-${post_id}`;
 
-	function handleClose(post_id: Number) {
-		let element = document.getElementById(dialog_id) as HTMLDialogElement;
+	function handleClose() {
+		let element = document.getElementById(delete_dialog_id) as HTMLDialogElement;
 		element.close();
 	}
 </script>
@@ -70,7 +72,7 @@
 		</div>
 		<!-- PostOptions -->
 		<div class="mr-7">
-			<PostOptions {myUser_id} {creator_id} {dialog_id}/>
+			<PostOptions {myUser_id} {creator_id} {delete_dialog_id} {edit_dialog_id}/>
 		</div>
 	</div>
 	<div class="flex px-9 mt-3">
@@ -86,7 +88,7 @@
 
 	<dialog
 		class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
-		id={dialog_id}
+		id={delete_dialog_id}
 	>
 		<form method="POST" action="/post/[id]?/deletePost" use:enhance>
 			<input type="hidden" value={post_id} name="post_id" />
@@ -95,7 +97,7 @@
 			<div class="flex gap-3">
 				<button
 					on:click={() => {
-						handleClose(post_id);
+						handleClose();
 					}}
 					type="button"
 					value="cancel"
@@ -106,7 +108,7 @@
 				</button>
 				<button
 					on:click={() => {
-						handleClose(post_id);
+						handleClose();
 					}}
 					type="submit"
 					value="default"
@@ -116,5 +118,18 @@
 				</button>
 			</div>
 		</form>
+	</dialog>
+	<dialog
+		class="bg-purpleGray rounded-2xl w-[500px] shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
+		id={edit_dialog_id}
+  >
+		<EditPost
+			{user_photo_url}
+      username={user_name}
+			{post_id}
+			innerText={post_content}
+			selectedImage={post_thumbnail_url}
+			{tags}
+		/>
 	</dialog>
 </div>
