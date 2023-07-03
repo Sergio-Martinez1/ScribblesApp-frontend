@@ -6,20 +6,25 @@
 	import Edit from '$lib/components/Icon/Edit.svelte';
 	import Trash from '$lib/components/Icon/Trash.svelte';
 
-	let editable: boolean = false;
 	export let creator_id: number;
 	export let myUser_id: number;
-  export let dialog_id: string;
+	export let delete_dialog_id: string;
+	export let edit_dialog_id: string;
 
 	let options_toogle: boolean = false;
 
 	function handleClickOutside() {
 		options_toogle = false;
 	}
-	function handleDialog() {
+	function handle_edit_dialog() {
 		options_toogle = false;
-		let element = document.getElementById(dialog_id) as HTMLDialogElement;
-    element.showModal();
+		let element = document.getElementById(edit_dialog_id) as HTMLDialogElement;
+		element.showModal();
+	}
+	function handle_delete_dialog() {
+		options_toogle = false;
+		let element = document.getElementById(delete_dialog_id) as HTMLDialogElement;
+		element.showModal();
 	}
 </script>
 
@@ -42,16 +47,13 @@
 			>
 				{#if myUser_id && myUser_id == creator_id}
 					<button
-						on:click={() => {
-							editable = !editable;
-							options_toogle = false;
-						}}
+						on:click={handle_edit_dialog}
 						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 mb-3.5 rounded-2xl w-full flex items-center justify-center gap-2"
 					>
 						<Edit width={18} height={18} />Edit post
 					</button>
 					<button
-						on:click={handleDialog}
+						on:click={handle_delete_dialog}
 						class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full flex items-center justify-center gap-2"
 					>
 						<Trash width={18} height={18} />Delete post
