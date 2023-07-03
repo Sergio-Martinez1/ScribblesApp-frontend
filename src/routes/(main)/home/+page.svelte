@@ -8,11 +8,12 @@
 
 	export let data: PageData;
 	$: posts = data.posts;
-	$: top_tags = data.top_tags;
+	$: tops = data.top_tags;
 	$: isLogin = data.username ? true : false;
 	$: id = Number(data.id);
 	$: my_reactions = data.my_reactions;
 	$: profile_photo = data.profile_photo;
+
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -64,9 +65,7 @@
 			<p class="text-white">This is your home page. Checkout the new updates.</p>
 		</div>
 		<Tops
-			top_one={top_tags[0].content}
-			top_two={top_tags[1].content}
-			top_three={top_tags[2].content}
+      {tops}
 		/>
 		<Footer />
 	</div>
