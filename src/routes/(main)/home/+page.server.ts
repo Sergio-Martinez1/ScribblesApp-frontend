@@ -1,7 +1,7 @@
-import { type Actions, fail, redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
-import { env } from "$env/dynamic/private";
-import { error } from "@sveltejs/kit";
+import { type Actions, fail, redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+import { env } from '$env/dynamic/private';
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ fetch }) => {
   const base_api_url: string | undefined = env.API_URL;
@@ -10,12 +10,10 @@ export const load: PageServerLoad = async ({ fetch }) => {
   const posts_response = await fetch(`${base_api_url}/posts/pagination?limit=20&offset=0`);
   const top_tags_response = await fetch(`${base_api_url}/tags/top`);
 
-  if (posts_response.ok && top_tags_response.ok) {
-    return {
-      posts: posts_response.json(),
-      top_tags: top_tags_response.json()
-    };
-  }
+  return {
+    posts: posts_response.ok ? posts_response.json() : undefined,
+    top_tags: top_tags_response.ok ? top_tags_response.json() : undefined
+  };
 };
 
 export const actions: Actions = {
@@ -30,19 +28,19 @@ export const actions: Actions = {
       return fail(400, { stateMissing: true });
     }
     const access_token = cookies.get('access_token');
-    if (!access_token) throw redirect(303, "/login");
+    if (!access_token) throw redirect(303, '/login');
     const base_api_url: string = env.API_URL;
     if (state_on === 'true') {
       const url = `${base_api_url}/reactions/`;
       const body = {
-        "post_id": Number(post_id)
-      }
+        post_id: Number(post_id)
+      };
       const options = {
         method: 'POST',
         headers: {
-          accept: "application/json",
+          accept: 'application/json',
           Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
       };
@@ -53,8 +51,8 @@ export const actions: Actions = {
       const options = {
         method: 'DELETE',
         headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${access_token}`,
+          accept: 'application/json',
+          Authorization: `Bearer ${access_token}`
         }
       };
       const response = await fetch(url, options);
@@ -62,7 +60,6 @@ export const actions: Actions = {
     }
   },
   createPost: async ({ request, fetch, cookies }) => {
-
     const form = await request.formData();
     const content = form.get('content');
     const thumbnail = form.get('thumbnail') as File;
@@ -122,7 +119,7 @@ export const actions: Actions = {
     const post_id = form.get('post_id');
     const base_api_url: string | undefined = env.API_URL;
     const access_token = cookies.get('access_token');
-    if (!access_token) throw redirect(303, "/login");
+    if (!access_token) throw redirect(303, '/login');
     if (!base_api_url) throw error(404, 'No api provided');
     if (!post_id) return fail(400, { postIdMissing: true });
 
@@ -130,10 +127,10 @@ export const actions: Actions = {
     const options = {
       method: 'DELETE',
       headers: {
-        accept: "application/json",
+        accept: 'application/json',
         Authorization: `Bearer ${access_token}`
       }
-    }
+    };
     const response = await fetch(posts_url, options);
   },
   editPost: async ({ request, fetch, cookies }) => {
@@ -194,4 +191,12 @@ export const actions: Actions = {
     };
     await fetch(post_url, options);
   },
-}
+  logout: async ({ request, cookies }) => {
+    cookies.delete('access_token', { path: '/' });
+    cookies.delete('username', { path: '/' });
+    cookies.delete('profile_photo', { path: '/' });
+    cookies.delete('user_id', { path: '/' });
+    cookies.delete('refresh_token', { path: '/' });
+    throw redirect(303, '/logout');
+  }
+};
