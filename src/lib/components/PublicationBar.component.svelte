@@ -16,7 +16,7 @@
   export let user_photo_url: string = '';
 
 	//STATE
-	let focus: boolean = false;
+	export let focus: boolean = false;
 	let focus_text: boolean = false;
 	let tags_toggle: boolean = false;
 	let showPlaceHolder: boolean = true;
@@ -29,9 +29,9 @@
 	let innerText: string = '';
 
 	//TEXT TO API
-	let outputText: string = '';
-	let selectedImage: string | undefined;
-	let tags: string[] = [];
+	export let outputText: string = '';
+	export let selectedImage: string = '';
+	export let tags: string[] = [];
 
 	$: validContent =
 		(outputText.trim() || selectedImage) && outputText.length <= maxContent ? true : false;
@@ -125,6 +125,7 @@
 				<!-- IMAGE PREVIEW -->
 				<div class="relative w-fit mx-auto">
 					<button
+            type="button"
 						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
 						on:click={() => {
 							selectedImage = '';
