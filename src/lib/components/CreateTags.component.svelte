@@ -4,15 +4,16 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-    input.focus();
+		input.focus();
 	});
-  
+
 	export let tags: string[] = [];
 
 	let inputText = '';
 	let key: string;
 	let focus_text: boolean = false;
-  let input: HTMLElement;
+	let input: HTMLDivElement;
+	export let maxSize: string = '';
 
 	function handleSubmit() {
 		if (!inputText) return;
@@ -34,18 +35,21 @@
 </script>
 
 <div
+  id="tags-container"
 	class="flex bg-purpleLight rounded-2xl flex-wrap pt-1 pr-2 border {focus_text
 		? 'border-krispyPurple'
-		: 'border-transparent'}"
+		: 'border-transparent'} overflow-y-auto"
+	style="max-height: {maxSize};"
 >
 	{#each tags as tag}
 		<div
-			class="border border-krispyPurple rounded-2xl px-2 text-white ml-2 mb-1 flex items-center gap-1.5 text-sm h-[25pxj] self-center"
+			class="border border-krispyPurple rounded-2xl px-2 text-white ml-2 mb-1 flex items-center gap-1.5 text-sm self-center"
 			in:fly|local={{ x: -5 }}
 			out:fly|local={{ x: -5, duration: 140 }}
 		>
 			{tag}
 			<button
+        type="button"
 				class="cursor-pointer hover:bg-lessPurple rounded-full"
 				on:click={() => {
 					tags = tags.filter((element) => element !== tag);
@@ -59,7 +63,7 @@
 		<input
 			type="text"
 			bind:value={inputText}
-      bind:this={input}
+			bind:this={input}
 			placeholder="Write tags for your post..."
 			class="bg-transparent text-white outline-none w-full text-sm"
 			on:keydown={handleInput}
