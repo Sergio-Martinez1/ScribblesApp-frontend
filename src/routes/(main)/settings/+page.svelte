@@ -9,7 +9,6 @@
 	let toggle_theme_view: boolean = false;
   export let data: PageData;
   $: user = data.user;
-  console.log(data.user);
 </script>
 
 <div class="col-span-5 flex flex-col items-center gap-y-4">
@@ -91,7 +90,7 @@
 			/>
 		</label>
 	{:else}
-		<DeleteAccount {form} />
+		<DeleteAccount/>
 	{/if}
 </div>
 

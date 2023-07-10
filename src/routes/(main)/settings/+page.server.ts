@@ -206,8 +206,6 @@ export const actions: Actions = {
     const base_api_url: string = env.API_URL;
     const url = `${base_api_url}/users/`;
     const access_token = cookies.get('access_token');
-    if (access_token) {
-    }
     const options = {
       method: 'DELETE',
       headers: {
@@ -217,7 +215,12 @@ export const actions: Actions = {
     };
     const response = await fetch(url, options);
     if (response.ok) {
-      throw redirect(303, '/logout');
+      cookies.delete('access_token', { path: '/' });
+      cookies.delete('username', { path: '/' });
+      cookies.delete('profile_photo', { path: '/' });
+      cookies.delete('user_id', { path: '/' });
+      cookies.delete('refresh_token', { path: '/' });
+      throw redirect(303, '/home');
     } 
   }
 };
