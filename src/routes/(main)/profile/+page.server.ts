@@ -35,8 +35,10 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 
       }
       return {
-        myUser: data.myUser,
-        myPosts: data.myPosts
+        streamed: {
+          myUser: data.myUser,
+          myPosts: data.myPosts
+        }
       }
     }
   }
