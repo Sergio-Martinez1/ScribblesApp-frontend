@@ -9,6 +9,7 @@
 	export let birthDay: string = '';
 	export let location: string = '';
 	export let userCreationDate: string = '';
+  export let loading: boolean = false;
 
 	const monthNames: string[] = [
 		'January',
@@ -26,42 +27,59 @@
 	];
 </script>
 
-<div class="w-[454px] h-fit bg-purpleGray rounded-2xl p-3.5">
-	<p class="text-white w-full max-h-[96px] mb-3 overflow-y-auto break-words">
-		{content}
-	</p>
-	<div class="flex gap-x-5 flex-wrap opacity-70">
-		{#if webSite}
-			<div class="flex gap-1.5 items-center w-fit">
-				<div><Link width={14} height={14} /></div>
-				<a class="text-krispyPurple underline" href={webSite}>{webSite}</a>
-			</div>
-		{/if}
-		{#if birthDay}
-			<div class="flex gap-1.5 items-center w-fit">
-				<div><Gift width={16} height={16} /></div>
-				<p class="text-white">
-					Born {monthNames[Number(birthDay.split('-')[1]) - 1]}
-					{birthDay.split('-')[2]}, {birthDay.split('-')[0]}
-				</p>
-			</div>
-		{/if}
-		{#if location}
-			<div class="flex gap-1 items-center w-fit">
-				<div><MapPin width={14} height={14} /></div>
-				<p class="text-white">
-          {location}
-				</p>
-			</div>
-		{/if}
-		{#if userCreationDate}
-			<div class="flex gap-1 items-center w-fit">
-				<div><Calendar width={15} height={15} /></div>
-				<p class="text-white">
-					Joined {monthNames[Number(userCreationDate.split('-')[1]) - 1]}
-					{userCreationDate.split('-')[2]}, {userCreationDate.split('-')[0]}
-				</p>
-			</div>
-		{/if}
-	</div>
-</div>
+{#if loading}
+  <div class="w-[454px] h-fit bg-purpleGray rounded-2xl p-3.5">
+    <div class="animate-pulse flex space-x-4">
+      <div class="flex-1 space-y-6 py-1">
+        <div class="h-2 bg-purpleLight rounded"></div>
+        <div class="space-y-3">
+          <div class="grid grid-cols-3 gap-4">
+            <div class="h-2 bg-purpleLight rounded col-span-2"></div>
+            <div class="h-2 bg-purpleLight rounded col-span-1"></div>
+          </div>
+          <div class="h-2 bg-purpleLight rounded"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+{:else}
+  <div class="w-[454px] h-fit bg-purpleGray rounded-2xl p-3.5">
+    <p class="text-white w-full max-h-[96px] mb-3 overflow-y-auto break-words">
+      {content}
+    </p>
+    <div class="flex gap-x-5 flex-wrap opacity-70">
+      {#if webSite}
+        <div class="flex gap-1.5 items-center w-fit">
+          <div><Link width={14} height={14} /></div>
+          <a class="text-krispyPurple underline" href={webSite}>{webSite}</a>
+        </div>
+      {/if}
+      {#if birthDay}
+        <div class="flex gap-1.5 items-center w-fit">
+          <div><Gift width={16} height={16} /></div>
+          <p class="text-white">
+            Born {monthNames[Number(birthDay.split('-')[1]) - 1]}
+            {birthDay.split('-')[2]}, {birthDay.split('-')[0]}
+          </p>
+        </div>
+      {/if}
+      {#if location}
+        <div class="flex gap-1 items-center w-fit">
+          <div><MapPin width={14} height={14} /></div>
+          <p class="text-white">
+            {location}
+          </p>
+        </div>
+      {/if}
+      {#if userCreationDate}
+        <div class="flex gap-1 items-center w-fit">
+          <div><Calendar width={15} height={15} /></div>
+          <p class="text-white">
+            Joined {monthNames[Number(userCreationDate.split('-')[1]) - 1]}
+            {userCreationDate.split('-')[2]}, {userCreationDate.split('-')[0]}
+          </p>
+        </div>
+      {/if}
+    </div>
+  </div>
+{/if}

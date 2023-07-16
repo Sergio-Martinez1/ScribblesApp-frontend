@@ -2,10 +2,13 @@
 	import Image from '$lib/components/Icon/Image.svelte';
 	export let coverPhotoUrl: string = '';
 	export let editable: boolean = false;
+  export let loading: boolean = false;
 </script>
 
 <div class="w-full h-[283px] relative">
-	{#if coverPhotoUrl}
+  {#if loading}
+		<div class="w-full h-full rounded-2xl bg-purpleLight animate-pulse" />
+	{:else if coverPhotoUrl}
 		<img class="w-full h-full rounded-2xl object-cover" src={coverPhotoUrl} alt="User cover" />
 	{:else}
 		<div class="w-full h-full rounded-2xl bg-purpleGray" />
