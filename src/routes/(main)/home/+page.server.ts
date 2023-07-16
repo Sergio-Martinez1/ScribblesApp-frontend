@@ -11,8 +11,10 @@ export const load: PageServerLoad = async ({ fetch }) => {
   const top_tags_response = await fetch(`${base_api_url}/tags/top`);
 
   return {
-    posts: posts_response.ok ? posts_response.json() : undefined,
-    top_tags: top_tags_response.ok ? top_tags_response.json() : undefined
+    streamed: {
+      posts: posts_response.ok ? posts_response.json() : null,
+      top_tags: top_tags_response.ok ? top_tags_response.json() : null
+    }
   };
 };
 

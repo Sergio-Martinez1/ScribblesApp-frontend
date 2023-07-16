@@ -7,13 +7,10 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	$: posts = data.posts;
-	$: tops = data.top_tags;
-	$: isLogin = data.username ? true : false;
+	$: isLogin = data.username;
 	$: id = Number(data.id);
 	$: my_reactions = data.my_reactions;
-	$: profile_photo = data.profile_photo;
-
+	$: profile_photo = data.profile_photo === 'null' ? '' : data.profile_photo;
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -33,40 +30,46 @@
 		{:else}
 			<LoginInHome />
 		{/if}
-		{#each posts as post}
-			<!-- REVISAR -->
-			<!-- post_by_tags_url -->
-			<Post
-				user_photo_url={post.user.profile_photo}
-				user_name={post.user.username}
-				user_url="/profile/{post.user.id}"
-				post_url="/post/{post.id}"
-				publication_date={post.publication_date}
-				post_content={post.content}
-				post_thumbnail_url={post.thumbnail}
-				like_on={handleLike(my_reactions, post.id)}
-				likes_count={post.reactions.length}
-				comments_count={post.num_comments}
-				tags_count={post.tags.length}
-				vertical={false}
-				tags={post.tags.map((tag) => tag.content)}
-				post_by_tags_url="/home"
-				creator_id={post.user.id}
-				myUser_id={id}
-				post_id={post.id}
-			/>
-		{/each}
+		{#await data.streamed.posts}
+			{#each Array(2) as _}
+				<Post loading={true}/>
+			{/each}
+		{:then posts}
+			{#each posts as post}
+				<Post
+					user_photo_url={post.user.profile_photo}
+					user_name={post.user.username}
+					user_url="/profile/{post.user.id}"
+					post_url="/post/{post.id}"
+					publication_date={post.publication_date}
+					post_content={post.content}
+					post_thumbnail_url={post.thumbnail}
+					like_on={handleLike(my_reactions, post.id)}
+					likes_count={post.reactions.length}
+					comments_count={post.num_comments}
+					tags_count={post.tags.length}
+					vertical={false}
+					tags={post.tags.map((tag) => tag.content)}
+					post_by_tags_url="/home"
+					creator_id={post.user.id}
+					myUser_id={id}
+					post_id={post.id}
+				/>
+			{/each}
+		{/await}
 	</div>
 </div>
 <div class="col-span-3">
-	<div class="flex flex-col gap-y-2 items-start mt-32 sticky top-1 max-h-screen overflow-y-auto">
-		<div class="bg-purpleGray rounded-2xl px-2.5 py-2.5 min-w-full">
+	<div class="flex flex-col gap-y-2 items-start mt-24 sticky top-6 max-h-screen overflow-y-auto">
+		<div class="bg-purpleGray rounded-2xl px-4 py-2.5 min-w-full">
 			<h1 class="text-white font-bold text-lg">Welcome</h1>
 			<p class="text-white">This is your home page. Checkout the new updates.</p>
 		</div>
-		<Tops
-      {tops}
-		/>
+    {#await data.streamed.top_tags}
+      <Tops loading={true} />
+    {:then tops}
+      <Tops {tops} />
+    {/await}
 		<Footer />
 	</div>
 </div>
