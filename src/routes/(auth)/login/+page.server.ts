@@ -32,15 +32,6 @@ export const actions: Actions = {
       cookies.set('access_token', responseJSON.access_token, {
         path: '/',
       });
-      cookies.set('id', responseJSON.user_id, {
-        path: '/',
-      });
-      cookies.set('username', responseJSON.username, {
-        path: '/',
-      });
-      cookies.set('profile_photo', responseJSON.profile_photo, {
-        path: '/',
-      });
       throw redirect(303, "/home");
     } else if (response.status === 404) {
         return fail(400, { usernameDontExists: true});
