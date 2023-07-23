@@ -6,6 +6,7 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
   const base_api_url: string = env.API_URL;
   const url = `${base_api_url}/users/myUser`;
   const access_token = cookies.get('access_token');
+  
   if (access_token) {
     const options = {
       method: 'GET',
@@ -15,11 +16,17 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
       }
     };
     const response = await fetch(url, options);
+    
     if (response.ok) {
       return {
-        user: response.json()
+        streamed: {
+          user: response.json()
+        }
       };
-    }
+    } else if (response.status === 401) throw redirect(303, "/login");
+    
+  } else {
+    throw redirect(303, "/login")
   }
 };
 
@@ -221,6 +228,6 @@ export const actions: Actions = {
       cookies.delete('user_id', { path: '/' });
       cookies.delete('refresh_token', { path: '/' });
       throw redirect(303, '/home');
-    } 
+    }
   }
 };

@@ -2,6 +2,6 @@ import type { PageLoad } from "./$types";
 
 export const load: PageLoad = ({ data }) => {
   return {
-    user: data.user
+    streamed : 'streamed' in data ? data.streamed : null
   }
 };
