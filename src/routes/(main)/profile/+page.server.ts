@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private';
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ fetch, cookies }) => {
@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
   const data: { myUser: any; myPosts: any; } = { myUser: null, myPosts: null };
 
   if (access_token) {
-
+    
     const myUser_url = `${base_api_url}/users/myUser`;
     const options = {
       method: "GET",
@@ -21,6 +21,7 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
         Authorization: `Bearer ${access_token}`
       }
     };
+    
     const myUser_response = await fetch(myUser_url, options);
 
     if (myUser_response.ok) {
@@ -32,14 +33,17 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
       if (myPosts_response.ok) {
 
         data.myPosts = myPosts_response.json();
-
       }
+
       return {
         streamed: {
           myUser: data.myUser,
           myPosts: data.myPosts
         }
       }
-    }
+    } else if (myUser_response.status === 401) throw redirect(303, "/login");
+    
+  } else {
+    throw redirect(303, "/login");
   }
 };
