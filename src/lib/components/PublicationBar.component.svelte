@@ -21,20 +21,21 @@
 	let tags_toggle: boolean = false;
 	let showPlaceHolder: boolean = true;
 	let validContent: boolean = false;
+  let selectedImage: string  = '';
 
 	//DOM
-	let uploadFile: HTMLElement;
+	let uploadFile: HTMLInputElement;
 
 	//RAW TEXT
 	let innerText: string = '';
 
 	//TEXT TO API
 	export let outputText: string = '';
-	export let selectedImage: string = '';
+	export let imagePreview: string = '';
 	export let tags: string[] = [];
 
 	$: validContent =
-		(outputText.trim() || selectedImage) && outputText.length <= maxContent ? true : false;
+		(outputText.trim() || imagePreview) && outputText.length <= maxContent ? true : false;
 
 	function handleFileChange(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -42,7 +43,7 @@
 		if (file) {
 			const reader = new FileReader();
 			reader.onload = (event) => {
-				selectedImage = event.target?.result as string;
+				imagePreview = event.target?.result as string;
 			};
 			reader.readAsDataURL(file);
 		}
@@ -51,9 +52,12 @@
 	function handleClose() {
 		innerText = '';
 		showPlaceHolder = true;
-		selectedImage = '';
+		imagePreview = '';
+    selectedImage = "";
+    tags = [];
 		tags_toggle = false;
 		focus = false;
+    uploadFile.value = "";
 	}
   
 	const submit: SubmitFunction = () => {
@@ -62,7 +66,10 @@
 				await invalidateAll();
 				await applyAction(result);
         handleClose();
-			}
+			} else if (result.type === 'redirect') {
+        await applyAction(result);
+        handleClose();
+      }
 		};
 	};
 </script>
@@ -70,6 +77,7 @@
 <form
 	class="bg-purpleGray rounded-2xl p-2.5 h-fit relative"
 	method="POST"
+  enctype="multipart/form-data"
 	action="/home?/createPost"
 	use:enhance={submit}
 >
@@ -78,8 +86,8 @@
 		<button
 			type="button"
 			on:click={handleClose}
-			class="absolute right-5 rounded-full bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1"
-			><X width={16} height={16} /></button
+			class="absolute top-0 right-0 rounded-tr-2xl rounded-bl-2xl bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 w-14 h-8 justify-center flex items-center"
+			><X width={18} height={18} /></button
 		>
 		<p in:fly|local={{ y: -10 }} class="text-white font-bold text-lg mx-auto w-fit mb-2">
 			Create Post
@@ -87,7 +95,7 @@
 	{/if}
 	<div class="items-center grid grid-cols-[58px_minmax(0,_1fr)_50px_50px] h-fit">
 		<!-- USER ICON -->
-		<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden">
+		<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden self-start">
 			{#if user_photo_url}
 				<img class="w-full h-full object-cover" src={user_photo_url} alt="User" />
 			{:else}
@@ -121,18 +129,18 @@
 				<!-- CONTENT INPUT -->
 				<input type="hidden" name="content" bind:value={outputText} />
 			</div>
-			{#if selectedImage}
+			{#if imagePreview}
 				<!-- IMAGE PREVIEW -->
 				<div class="relative w-fit mx-auto">
 					<button
             type="button"
 						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
 						on:click={() => {
-							selectedImage = '';
+							imagePreview = '';
 						}}><X width={16} height={16} /></button
 					>
 					<img
-						src={selectedImage}
+						src={imagePreview}
 						alt="Vista previa de la imagen"
 						class="rounded-2xl mb-2 mt-5 max-h-96"
 					/>
@@ -158,6 +166,7 @@
 				class="w-0 h-0 t absolute"
 				on:change={handleFileChange}
 				bind:this={uploadFile}
+        bind:value={selectedImage}
 			/>
 		</button>
 		<!-- TAG BUTTON -->
