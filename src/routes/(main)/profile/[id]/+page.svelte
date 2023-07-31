@@ -7,7 +7,8 @@
 
 	import type { PageData } from './$types';
 	export let data: PageData;
-	$: id = Number(data.id);
+  $: plainMyUser = data.plainMyUser; 
+	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
 	$: my_reactions = data.my_reactions;
 
 	function handleLike(my_reactions: any[], post_id: number) {
@@ -69,8 +70,8 @@
 					user_url="/profile/{post.user.id}"
 					post_url="/post/{post.id}"
 					publication_date={post.publication_date}
-					post_content={post.content}
-					post_thumbnail_url={post.thumbnail}
+          post_content={post.content ? post.content : ''}
+          post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
 					like_on={handleLike(my_reactions, post.id)}
 					likes_count={post.reactions.length}
 					comments_count={post.num_comments}
