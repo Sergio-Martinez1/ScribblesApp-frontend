@@ -9,11 +9,12 @@
 	import { applyAction, enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { invalidateAll } from '$app/navigation';
-  
+
 	//RAW TEXT
 	export let innerText: string = '';
 	export let outputText: string = '';
-	export let selectedImage: string = '';
+	export let imagePreview: string = '';
+  let old_image = imagePreview;
 	export let tags: string[] = [];
 	export let post_id: number;
 	let dialog_id: string = `edit-dialog-post-${post_id}`;
@@ -22,23 +23,21 @@
 	export let maxContent: number = 500;
 	export let user_photo_url: string = '';
 	export let username: string = '';
-	let maxSize: string = selectedImage ? '' : '120px';
+	$: maxSize = imagePreview ? '' : '120px';
 
 	//STATE
 	let focus_text: boolean = false;
-	let tags_toggle: boolean = false;
+	let tags_toggle: boolean = tags ? true : false;
 	let validContent: boolean = false;
-  
+
 	let showPlaceHolder: boolean =
 		innerText.trim().length === 0 && (innerText.match(/\n|\s/g) || []).length === 1 ? true : false;
 
 	//DOM
-	let uploadFile: HTMLElement;
-
-
+	let uploadFile: HTMLInputElement;
 
 	$: validContent =
-		(outputText.trim() || selectedImage) && outputText.length <= maxContent ? true : false;
+		(outputText.trim() || imagePreview) && outputText.length <= maxContent ? true : false;
 
 	function handleFileChange(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -47,7 +46,7 @@
 			const reader = new FileReader();
 			reader.onload = (event) => {
 				maxSize = '';
-				selectedImage = event.target?.result as string;
+				imagePreview = event.target?.result as string;
 			};
 			reader.readAsDataURL(file);
 		}
@@ -57,21 +56,34 @@
 		tags_toggle = false;
 		let element = document.getElementById(dialog_id) as HTMLDialogElement;
 		element.close();
+		uploadFile.value = '';
+
+		innerText = '';
+		showPlaceHolder = true;
+		imagePreview = old_image;
+		tags = [];
+	}
+
+	function isValidImageUrl(url: string) {
+		return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image');
 	}
 
 	const submit: SubmitFunction = () => {
 		return async ({ result }) => {
 			if (result.type === 'success') {
+				handleClose();
 				await invalidateAll();
 				await applyAction(result);
+			} else if (result.type === 'redirect') {
 				handleClose();
+				await applyAction(result);
 			}
 		};
 	};
 </script>
 
 <form
-	class="bg-purpleGray rounded-2xl p-2.5 h-fit relative max-h-[520px]"
+	class="bg-purpleGray rounded-2xl h-fit relative max-h-[520px] p-4"
 	method="POST"
 	action="/home?/editPost"
 	use:enhance={submit}
@@ -80,7 +92,7 @@
 	<button
 		type="button"
 		on:click={handleClose}
-		class="absolute right-5 rounded-full bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1"
+		class="absolute top-0 right-0 rounded-tr-2xl rounded-bl-2xl bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 w-14 h-8 justify-center flex items-center"
 		><X width={16} height={16} /></button
 	>
 	<p in:fly|local={{ y: -10 }} class="text-white font-bold text-lg mx-auto w-fit mb-2">Edit Post</p>
@@ -124,22 +136,31 @@
 				<input type="hidden" name="post_id" bind:value={post_id} />
 				<input type="hidden" name="content" bind:value={outputText} />
 			</div>
-			{#if selectedImage}
+			{#if imagePreview}
 				<!-- IMAGE PREVIEW -->
 				<div class="relative w-fit mx-auto">
 					<button
 						type="button"
 						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
 						on:click={() => {
-							selectedImage = '';
+							imagePreview = '';
 							maxSize = '120px';
 						}}><X width={16} height={16} /></button
 					>
-					<img
-						src={selectedImage}
-						alt="Vista previa de la imagen"
-						class="rounded-2xl mb-2 mt-5 max-h-96"
-					/>
+					{#if isValidImageUrl(imagePreview)}
+						<img
+							src={imagePreview}
+							alt="Vista previa de la imagen"
+							class="rounded-2xl mb-2 mt-5 max-h-96"
+						/>
+					{:else}
+						<div class="bg-purpleGray rounded-2xl p-6 w-fit mx-auto">
+							<div class="mx-auto w-fit mb-6">
+								<Image width={60} height={60} />
+							</div>
+							<p class="font-bold text-white">Image can't be loaded.</p>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		</div>
@@ -160,10 +181,11 @@
 					type="file"
 					name="thumbnail"
 					accept="image/*"
-					class="w-0 h-0 t absolute"
+					class="w-0 h-0 absolute"
 					on:change={handleFileChange}
 					bind:this={uploadFile}
 				/>
+				<input type="hidden" name="old_image" bind:value={imagePreview} />
 			</button>
 			<!-- TAG BUTTON -->
 			<button
