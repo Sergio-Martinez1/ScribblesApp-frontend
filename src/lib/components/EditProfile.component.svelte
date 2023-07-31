@@ -3,8 +3,8 @@
 	import { enhance } from '$app/forms';
 	export let form: ActionData;
   export let email: string = "email";
-  export let profile_photo: string = "profile_photo";
-  export let cover_photo: string = "cover_photo";
+  export let profile_photo: string = "";
+  export let cover_photo: string = "";
   export let description: string = "description";
   export let personal_url: string = "https://personal_url.com";
   export let location: string = "location";
@@ -73,7 +73,7 @@
 		<h1 class="text-white font-bold">Personal URL</h1>
 		<input
 			type="text"
-			name="url"
+			name="personal_url"
       value={personal_url}
 			class="px-4 py-6 min-w-full bg-krispyPurple rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
 			placeholder="Personal URL"
