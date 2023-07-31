@@ -6,8 +6,9 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	$: id = data ? Number(data.id) : 0;
-	$: my_reactions = data ? data.my_reactions : undefined;
+  $: plainMyUser = data.plainMyUser; 
+	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
+	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -36,18 +37,18 @@
 	</div>
 {:then user}
 	<div class="col-start-3 col-span-9 block mt-8">
-		<CoverPhoto coverPhotoUrl={user.cover_photo} />
+		<CoverPhoto coverPhotoUrl={user.cover_photo} editable={true} />
 	</div>
 	<div class="col-start-3 col-span-3">
 		<div class="relative h-full w-full">
 			<div class="absolute right-0 bottom-0">
-				<ProfilePhoto profilePhoto={user.profile_photo} username={user.username} />
+				<ProfilePhoto profilePhoto={user.profile_photo} username={user.username} editable={true} />
 			</div>
 		</div>
 	</div>
 	<div class="col-start-6 col-span-5">
 		<UserDescription
-			content={user.description}
+			content={user.description ? user.description : ''}
 			webSite={user.personal_url}
 			birthDay={user.birthday}
 			location={user.location}
@@ -69,8 +70,8 @@
 						user_url="/profile/{post.user.id}"
 						post_url="/post/{post.id}"
 						publication_date={post.publication_date}
-						post_content={post.content}
-						post_thumbnail_url={post.thumbnail}
+            post_content={post.content ? post.content : ''}
+            post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
 						like_on={handleLike(my_reactions, post.id)}
 						likes_count={post.reactions.length}
 						comments_count={post.num_comments}
