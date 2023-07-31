@@ -10,6 +10,7 @@
 	export let myUser_id: number;
 	export let delete_dialog_id: string;
 	export let edit_dialog_id: string;
+  export let dont_show_dialog_id: string;
 
 	let options_toogle: boolean = false;
 
@@ -26,6 +27,11 @@
 		let element = document.getElementById(delete_dialog_id) as HTMLDialogElement;
 		element.showModal();
 	}
+  function handle_dont_show_dialog() {
+    options_toogle = false;
+    let element = document.getElementById(dont_show_dialog_id) as HTMLDialogElement;
+    element.showModal();
+  }
 </script>
 
 <div class="relative">
@@ -60,6 +66,7 @@
 					</button>
 				{:else}
 					<button
+            on:click={handle_dont_show_dialog}
 						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 rounded-2xl w-full flex items-center gap-2"
 						><Slash width={18} height={18} />Don't show this</button
 					>
