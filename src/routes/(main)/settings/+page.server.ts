@@ -74,24 +74,19 @@ export const actions: Actions = {
     let cover_photo_url: string = '';
     if (is_there_profile_photo) {
       profile_photo_url = await image_url_request(profile_photo);
-      console.log(profile_photo_url);
-      cookies.set('profile_photo', profile_photo_url, {
-        path: '/',
-      });
     }
     if (is_there_cover_photo) {
       cover_photo_url = await image_url_request(cover_photo);
-      console.log(cover_photo_url);
     }
 
     const body = {
-      ...(email !== undefined ? { email } : {}),
+      ...(email ? { email } : {}),
       ...(is_there_profile_photo ? { profile_photo: profile_photo_url } : {}),
       ...(is_there_cover_photo ? { cover_photo: cover_photo_url } : {}),
-      ...(description !== undefined ? { description } : {}),
-      ...(personal_url !== undefined ? { personal_url } : {}),
-      ...(location !== undefined ? { location } : {}),
-      ...(birthday !== undefined ? { birthday } : {})
+      ...(description ? { description } : {}),
+      ...(personal_url ? { personal_url } : {}),
+      ...(location ? { location } : {}),
+      ...(birthday ? { birthday } : {})
     };
     const options = {
       method: 'PUT',
