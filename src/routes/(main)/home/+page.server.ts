@@ -8,11 +8,12 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
   if (!base_api_url) throw error(404, 'No api provided');
 
   const access_token = cookies.get('access_token');
+  let posts_response: Response | null = null;
+  const top_tags_response = await fetch(`${base_api_url}/tags/top`);
 
   if (access_token) {
 
     const home_url = `${base_api_url}/posts/home?offset=0&limit=20`;
-
     const options = {
       method: "GET",
       headers: {
@@ -21,27 +22,21 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
       }
     };
 
-    const posts_response = await fetch(home_url, options);
-    const top_tags_response = await fetch(`${base_api_url}/tags/top`);
-
-    return {
-      streamed: {
-        posts: posts_response.ok ? posts_response.json() : null,
-        top_tags: top_tags_response.ok ? top_tags_response.json() : null
-      }
+    const response = await fetch(home_url, options);
+    if (response.ok) {
+      posts_response = response;
+    } else if (response.status === 401) {
+      posts_response = await fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`);
     }
-
   } else {
+    posts_response = await fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`);
+  }
 
-    const posts_response = await fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`);
-    const top_tags_response = await fetch(`${base_api_url}/tags/top`);
-
-    return {
-      streamed: {
-        posts: posts_response.ok ? posts_response.json() : null,
-        top_tags: top_tags_response.ok ? top_tags_response.json() : null
-      }
-    };
+  return {
+    streamed: {
+      posts: posts_response ? posts_response.json() : null,
+      top_tags: top_tags_response.ok ? top_tags_response.json() : null
+    }
   }
 
 };
