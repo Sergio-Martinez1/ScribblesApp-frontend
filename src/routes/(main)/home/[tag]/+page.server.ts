@@ -9,10 +9,10 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
   const posts_response = await fetch(`${base_api_url}/posts/tags/${params.tag}`);
   const top_tags_response = await fetch(`${base_api_url}/tags/top`);
 
-  if (posts_response.ok && top_tags_response.ok) {
-    return {
-      posts: posts_response.json(),
-      top_tags: top_tags_response.json()
-    };
-  }
+  return {
+    streamed: {
+      posts: posts_response.ok ? posts_response.json() : null,
+      top_tags: top_tags_response.ok ? top_tags_response.json() : null
+    }
+  };
 };
