@@ -10,11 +10,13 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { invalidateAll } from '$app/navigation';
 
-	export let comments: any[];
+	export let comments: any[] = [];
 	export let my_user_photo: string = '';
-	export let post_id: number;
+	export let post_id: number = 0;
 	export let maxContent: number = 300;
-	export let my_user_id: number;
+	export let my_user_id: number = 0;
+	export let isLogin: boolean = false;
+	export let loading: boolean = false;
 	let outputText: string = '';
 	let innerText: string = '';
 	let showPlaceHolder: boolean = true;
@@ -41,116 +43,142 @@
 				await applyAction(result);
 				innerText = '';
 				showPlaceHolder = true;
-			}
+			} else if (result.type === 'redirect') {
+        await applyAction(result);
+				innerText = '';
+				showPlaceHolder = true;
+      }
 		};
 	};
 </script>
 
 <div>
 	<p class="text-white font-bold text-xl w-fit mx-auto mb-4">Comments</p>
-	<!-- Post comment -->
-	<div class="grid grid-cols-[50px_1fr] gap-x-[17px] mb-4 items-center">
-		{#if my_user_photo}
-			<div class="w-[50px] h-[50px] col-start-1">
-				<img class="w-full h-full object-cover rounded-full" src={my_user_photo} alt="User face" />
+	{#if loading}
+		{#each Array(6) as _}
+			<div class="flex gap-4 mb-4">
+				<div class="animate-pulse rounded-full bg-purpleLight h-[50px] min-w-[50px]" />
+				<div class="animate-pulse w-full h-fit bg-purpleGray rounded-2xl p-3 gap-y-2 flex flex-col" >
+          <div class="h-3 bg-purpleLight rounded-xl block"></div>
+          <div class="h-3 bg-purpleLight rounded-xl block"></div>
+          <div class="h-3 bg-purpleLight rounded-xl block"></div>
+        </div>
 			</div>
-		{:else}
-			<div class="w-[50px] h-[50px] col-start-1">
-				<User width={50} height={50} />
-			</div>
-		{/if}
-		<form
-			class="bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2"
-			method="POST"
-			action="/post/[id]?/createComment"
-			use:enhance={submit}
-		>
-			<div class="grow self-center">
-				<TextAreaAutosize
-					placeHolder="Write a comment..."
-					bind:outputText
-					bind:innerText
-					bind:showPlaceHolder
-				/>
-			</div>
-			<input type="hidden" value={outputText} name="content" />
-			<input type="hidden" value={post_id} name="post_id" />
-			<button
-				disabled={!validContent}
-				type="submit"
-				class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-xl pr-1.5 w-fit h-fit self-end disabled:bg-lessPurple disabled:opacity-[0.5]"
-				><Send /></button
-			>
-		</form>
-		{#if outputText.length > maxContent}
-			<div in:fly|local={{ y: 10 }} out:fly|local={{ y: 10 }} class="text-squeezeRed col-start-2">
-				Only up to {maxContent} chars
-			</div>
-		{/if}
-	</div>
-	<!-- COMMENTS -->
-	{#each comments as comment}
-		<div in:fly|local={{ y: 10 }} class="grid grid-cols-[50px_1fr] gap-x-[17px] mb-4 w-full">
-			{#if comment.user.profile_photo}
-				<div class="w-[50px] h-[50px] col-start-1">
-					<img
-						class="w-full h-full object-cover rounded-full"
-						src={comment.user.profile_photo}
-						alt="User face"
-					/>
-				</div>
-			{:else}
-				<div class="w-[50px] h-[50px] col-start-1">
-					<User width={50} height={50} />
-				</div>
-			{/if}
-			<div class="bg-purpleLight rounded-2xl p-3 col-start-2 relative">
-				{#if comment.user.id === my_user_id}
-					<button
-						on:click={() => {
-							handleDialog(comment.id);
-						}}
-						class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full absolute right-2.5 top-2.5"
-						><X width={20} height={20} /></button
-					>
+		{/each}
+	{:else}
+		{#if isLogin}
+			<div class="grid grid-cols-[50px_1fr] gap-x-[17px] mb-4 items-center">
+				{#if my_user_photo}
+					<div class="w-[50px] h-[50px] col-start-1">
+						<img
+							class="w-full h-full object-cover rounded-full"
+							src={my_user_photo}
+							alt="User face"
+						/>
+					</div>
+				{:else}
+					<div class="w-[50px] h-[50px] col-start-1">
+						<User width={50} height={50} />
+					</div>
 				{/if}
-				<p class="text-white font-bold mb-2">
-					{comment.user.username} · {calculate_posted_time(comment.creation_date)}
-				</p>
-				<p class="text-white break-words w-full">
-					{comment.content}
-				</p>
-			</div>
-		</div>
-		<dialog
-			class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
-			id="delete-dialog-comment-{comment.id}"
-		>
-			<form method="POST" action="/post/[id]?/deleteComment" use:enhance>
-				<p class="text-white font-bold mb-2 mx-auto w-fit text-lg">Delete comment?</p>
-				<p class="text-white mb-3">This action will delete the comment permanently.</p>
-				<div class="flex gap-3">
+				<form
+					class="bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2"
+					method="POST"
+					action="/post/[id]?/createComment"
+					use:enhance={submit}
+				>
+					<div class="grow self-center">
+						<TextAreaAutosize
+							placeHolder="Write a comment..."
+							bind:outputText
+							bind:innerText
+							bind:showPlaceHolder
+						/>
+					</div>
+					<input type="hidden" value={outputText} name="content" />
+					<input type="hidden" value={post_id} name="post_id" />
 					<button
-						type="button"
-						class="bg-purpleLight hover:bg-hoverPurple active:bg-purpleLight text-white p-2.5 rounded-2xl w-full"
-						on:click={() => {
-							handleClose(comment.id);
-						}}
-					>
-						Cancel
-					</button>
-					<button
+						disabled={!validContent}
 						type="submit"
-						class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full"
-						on:click={() => {
-							handleClose(comment.id);
-						}}
+						class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-xl pr-1.5 w-fit h-fit self-end disabled:bg-lessPurple disabled:opacity-[0.5]"
+						><Send /></button
 					>
-						Delete
-					</button>
-					<input type="hidden" value={comment.id} name="comment_id" />
+				</form>
+				{#if outputText.length > maxContent}
+					<div
+						in:fly|local={{ y: 10 }}
+						out:fly|local={{ y: 10 }}
+						class="text-squeezeRed col-start-2"
+					>
+						Only up to {maxContent} chars
+					</div>
+				{/if}
+			</div>
+		{/if}
+		<!-- COMMENTS -->
+		{#each comments as comment}
+			<div in:fly|local={{ y: 10 }} class="grid grid-cols-[50px_1fr] gap-x-[17px] mb-4 w-full">
+				{#if comment.user.profile_photo}
+					<div class="w-[50px] h-[50px] col-start-1">
+						<img
+							class="w-full h-full object-cover rounded-full"
+							src={comment.user.profile_photo}
+							alt="User face"
+						/>
+					</div>
+				{:else}
+					<div class="w-[50px] h-[50px] col-start-1">
+						<User width={50} height={50} />
+					</div>
+				{/if}
+				<div class="bg-purpleLight rounded-2xl p-3 col-start-2 relative">
+					{#if comment.user.id === my_user_id}
+						<button
+							on:click={() => {
+								handleDialog(comment.id);
+							}}
+							class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full absolute right-2.5 top-2.5"
+							><X width={20} height={20} /></button
+						>
+					{/if}
+					<p class="text-white font-bold mb-2">
+						{comment.user.username} · {calculate_posted_time(comment.creation_date)}
+					</p>
+					<p class="text-white break-words w-full">
+						{comment.content}
+					</p>
 				</div>
-			</form>
-		</dialog>
-	{/each}
+			</div>
+			<dialog
+				class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
+				id="delete-dialog-comment-{comment.id}"
+			>
+				<form method="POST" action="/post/[id]?/deleteComment" use:enhance>
+					<p class="text-white font-bold mb-2 mx-auto w-fit text-lg">Delete comment?</p>
+					<p class="text-white mb-3">This action will delete the comment permanently.</p>
+					<div class="flex gap-3">
+						<button
+							type="button"
+							class="bg-purpleLight hover:bg-hoverPurple active:bg-purpleLight text-white p-2.5 rounded-2xl w-full"
+							on:click={() => {
+								handleClose(comment.id);
+							}}
+						>
+							Cancel
+						</button>
+						<button
+							type="submit"
+							class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full"
+							on:click={() => {
+								handleClose(comment.id);
+							}}
+						>
+							Delete
+						</button>
+						<input type="hidden" value={comment.id} name="comment_id" />
+					</div>
+				</form>
+			</dialog>
+		{/each}
+	{/if}
 </div>
