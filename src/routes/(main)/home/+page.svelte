@@ -7,10 +7,12 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	$: isLogin = data.username;
-	$: id = Number(data.id);
-	$: my_reactions = data.my_reactions;
-	$: profile_photo = data.profile_photo === 'null' ? '' : data.profile_photo;
+	$: plainMyUser = data.plainMyUser;
+	$: isLogin = plainMyUser ? true : false;
+	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
+	$: profile_photo =
+		plainMyUser && plainMyUser.profile_photo !== 'null' ? plainMyUser.profile_photo : '';
+	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -30,20 +32,20 @@
 		{:else}
 			<LoginInHome />
 		{/if}
-		{#await data.streamed.posts}
+		{#await data.streamed?.posts}
 			{#each Array(2) as _}
-				<Post loading={true}/>
+				<Post loading={true} />
 			{/each}
 		{:then posts}
 			{#each posts as post}
 				<Post
-					user_photo_url={post.user.profile_photo}
-					user_name={post.user.username}
+					user_photo_url={post.user?.profile_photo}
+					user_name={post.user?.username}
 					user_url="/profile/{post.user.id}"
 					post_url="/post/{post.id}"
 					publication_date={post.publication_date}
-					post_content={post.content}
-					post_thumbnail_url={post.thumbnail}
+					post_content={post.content ? post.content : ''}
+					post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
 					like_on={handleLike(my_reactions, post.id)}
 					likes_count={post.reactions.length}
 					comments_count={post.num_comments}
@@ -51,7 +53,7 @@
 					vertical={false}
 					tags={post.tags.map((tag) => tag.content)}
 					post_by_tags_url="/home"
-					creator_id={post.user.id}
+					creator_id={post.user?.id}
 					myUser_id={id}
 					post_id={post.id}
 				/>
@@ -65,11 +67,11 @@
 			<h1 class="text-white font-bold text-lg">Welcome</h1>
 			<p class="text-white">This is your home page. Checkout the new updates.</p>
 		</div>
-    {#await data.streamed.top_tags}
-      <Tops loading={true} />
-    {:then tops}
-      <Tops {tops} />
-    {/await}
+		{#await data.streamed?.top_tags}
+			<Tops loading={true} />
+		{:then tops}
+			<Tops {tops} />
+		{/await}
 		<Footer />
 	</div>
 </div>
