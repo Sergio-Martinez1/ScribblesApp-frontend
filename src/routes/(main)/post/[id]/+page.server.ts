@@ -19,8 +19,10 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
     data.comments = comments_response.json()
   }
   return {
-    post: data.post,
-    comments: data.comments,
+    streamed: {
+      post: data.post,
+      comments: data.comments ? data.comments : [],
+    }
   }
 };
 
@@ -48,6 +50,8 @@ export const actions: Actions = {
       body: JSON.stringify(body)
     }
     const response = await fetch(url, options);
+    if (response.ok) return;
+    else if (response.status === 401) throw redirect(303, "/login");
   },
   deleteComment: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -67,6 +71,8 @@ export const actions: Actions = {
       }
     }
     const response = await fetch(url, options);
+    if (response.ok) return;
+    else if (response.status === 401) throw redirect(303, "/login");
   },
   deletePost: async ({ request, fetch, cookies, url }) => {
     const form = await request.formData();
@@ -86,8 +92,8 @@ export const actions: Actions = {
       }
     }
     const response = await fetch(posts_url, options);
-    if(response.ok && url){
+    if (response.ok && url) {
       throw redirect(303, "/home");
-    }
+    } else if (response.status === 401) throw redirect(303, "/login");
   }
 }
