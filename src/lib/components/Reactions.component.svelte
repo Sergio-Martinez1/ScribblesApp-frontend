@@ -7,6 +7,7 @@
 	import { clickOutside } from '$lib/utils/clickOutside';
 	import { applyAction, enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import { invalidateAll } from '$app/navigation';
 
 	export let like_on: boolean = false;
 	export let likes_count: number = 0;
@@ -31,6 +32,7 @@
 
   const notReload: SubmitFunction = () => {
     return async ({result}) => {
+      await invalidateAll();
       await applyAction(result);
     }
   }
