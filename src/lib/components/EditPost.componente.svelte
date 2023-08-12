@@ -14,8 +14,10 @@
 	export let innerText: string = '';
 	export let outputText: string = '';
 	export let imagePreview: string = '';
-  let old_image = imagePreview;
 	export let tags: string[] = [];
+	let old_text = innerText;
+	let old_image = imagePreview;
+	let old_tags = tags;
 	export let post_id: number;
 	let dialog_id: string = `edit-dialog-post-${post_id}`;
 
@@ -58,10 +60,13 @@
 		element.close();
 		uploadFile.value = '';
 
-		innerText = '';
-		showPlaceHolder = true;
+		innerText = old_text;
 		imagePreview = old_image;
-		tags = [];
+		tags = old_tags;
+		showPlaceHolder =
+			innerText.trim().length === 0 && (innerText.match(/\n|\s/g) || []).length === 1
+				? true
+				: false;
 	}
 
 	function isValidImageUrl(url: string) {
