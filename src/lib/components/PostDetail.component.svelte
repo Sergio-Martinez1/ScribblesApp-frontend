@@ -33,6 +33,7 @@
 	export let myUser_id: number = -1;
 	let edit_dialog_id: string = `edit-dialog-post-${post_id}`;
 	let delete_dialog_id: string = `delete-dialog-post-${post_id}`;
+  let dont_show_dialog_id: string = `not_show_dialog_${post_id}`;
 
 	function handleClose() {
 		let element = document.getElementById(delete_dialog_id) as HTMLDialogElement;
@@ -92,7 +93,7 @@
 			</div>
 			<!-- PostOptions -->
 			<div class="mr-7">
-				<PostOptions {myUser_id} {creator_id} {delete_dialog_id} {edit_dialog_id} />
+				<PostOptions {myUser_id} {creator_id} {delete_dialog_id} {edit_dialog_id} {dont_show_dialog_id} />
 			</div>
 		</div>
 		<div class="flex px-9 mt-3">
@@ -159,7 +160,7 @@
 				username={user_name}
 				{post_id}
 				innerText={post_content}
-				selectedImage={post_thumbnail_url}
+				imagePreview={post_thumbnail_url}
 				{tags}
 			/>
 		</dialog>
