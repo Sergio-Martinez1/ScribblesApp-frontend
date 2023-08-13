@@ -205,11 +205,13 @@ export const actions: Actions = {
     if (is_there_thumbnail) {
       thumbnail_url = await image_url_request(thumbnail);
     }
-    else if (old_image) thumbnail_url = old_image;
+    else if (old_image) {
+      thumbnail_url = old_image;
+    }
 
     const body = {
       ...(content ? { content } : {}),
-      ...(is_there_thumbnail ? { thumbnail: thumbnail_url } : {}),
+      ...(thumbnail_url ? { thumbnail: thumbnail_url } : {}),
       ...(tags ? { tags } : [])
     };
 
