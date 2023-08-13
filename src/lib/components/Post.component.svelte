@@ -14,7 +14,7 @@
 	export let post_url: string = '#';
 	export let publication_date: string = '0d';
 	export let post_content: string = '';
-	export let post_thumbnail_url: string = '#';
+	export let post_thumbnail_url: string = '';
 	export let post_id: number = 0;
 	export let loading: boolean = false;
 
@@ -32,7 +32,7 @@
 	export let myUser_id: number = -1;
 	let delete_dialog_id: string = `delete-dialog-post-${post_id}`;
 	let edit_dialog_id: string = `edit-dialog-post-${post_id}`;
-  let dont_show_dialog_id: string = `not_show_dialog_${post_id}`;
+	let dont_show_dialog_id: string = `not_show_dialog_${post_id}`;
 
 	function handleClose(id: string) {
 		let element = document.getElementById(id) as HTMLDialogElement;
@@ -40,7 +40,7 @@
 	}
 
 	function isValidImageUrl(url: string) {
-		return url.startsWith('http://') || url.startsWith('https://');
+		return url.startsWith('http://') || url.startsWith('https://') || url === '';
 	}
 </script>
 
@@ -87,18 +87,26 @@
 				/>
 			</div>
 			<div class="mr-7">
-				<PostOptions {myUser_id} {creator_id} {delete_dialog_id} {edit_dialog_id} {dont_show_dialog_id} />
+				<PostOptions
+					{myUser_id}
+					{creator_id}
+					{delete_dialog_id}
+					{edit_dialog_id}
+					{dont_show_dialog_id}
+				/>
 			</div>
 		</div>
 		<div class="flex px-5 py-2.5">
 			<a href={post_url} class="bg-purpleLight w-full rounded-2xl p-3.5 text-white cursor-pointer">
 				<p class="mb-2.5 whitespace-break-spaces">{post_content}</p>
 				{#if isValidImageUrl(post_thumbnail_url)}
-					<img
-						class="rounded-2xl overflow-hidden max-h-96 mx-auto"
-						src={post_thumbnail_url}
-						alt="Content"
-					/>
+					{#if post_thumbnail_url.length > 0}
+						<img
+							class="rounded-2xl overflow-hidden max-h-96 mx-auto"
+							src={post_thumbnail_url}
+							alt="Content"
+						/>
+					{/if}
 				{:else}
 					<div class="bg-purpleGray rounded-2xl p-6 w-fit mx-auto">
 						<div class="mx-auto w-fit mb-6">
@@ -156,10 +164,10 @@
 				{tags}
 			/>
 		</dialog>
-    <dialog
+		<dialog
 			class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 			id={dont_show_dialog_id}
-    >
+		>
 			<form method="POST" action="/home?/dontShowPost" use:enhance>
 				<input type="hidden" value={post_id} name="post_id" />
 				<p class="text-white font-bold mb-2 mx-auto w-fit text-lg">Wanna hide this post?</p>
@@ -188,6 +196,6 @@
 					</button>
 				</div>
 			</form>
-    </dialog>
+		</dialog>
 	{/if}
 </div>
