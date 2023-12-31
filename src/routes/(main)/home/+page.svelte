@@ -7,6 +7,7 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+  
 	$: plainMyUser = data.plainMyUser;
 	$: isLogin = plainMyUser ? true : false;
 	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
@@ -26,7 +27,7 @@
 </script>
 
 <div class="col-span-7">
-	<div class="flex flex-col gap-y-4 mt-8">
+	<div class="flex flex-col gap-y-4 mt-4 max-sm:mb-24 sm:mt-8">
 		{#if isLogin}
 			<PublicationBar user_url={'/profile'} user_photo_url={profile_photo} />
 		{:else}
@@ -61,8 +62,8 @@
 		{/await}
 	</div>
 </div>
-<div class="col-span-3">
-	<div class="flex flex-col gap-y-2 items-start mt-24 sticky top-6 max-h-screen overflow-y-auto">
+<div class="col-span-3 hidden md:inline-block">
+	<div class="flex flex-col gap-y-2 items-start mt-24 sticky top-6 max-h-screen">
 		<div class="bg-purpleGray rounded-2xl px-4 py-2.5 min-w-full">
 			<h1 class="text-white font-bold text-lg">Welcome</h1>
 			<p class="text-white">This is your home page. Checkout the new updates.</p>
