@@ -37,17 +37,17 @@
 		<UserDescription loading={true} />
 	</div>
 {:then user}
-	<div class="col-start-3 col-span-9 block mt-8">
+	<div class="sm:col-start-3 sm:col-span-9 block mt-8">
 		<CoverPhoto coverPhotoUrl={user.cover_photo} />
 	</div>
-	<div class="col-start-3 col-span-3">
-		<div class="relative h-full w-full">
-			<div class="absolute right-0 bottom-0">
+	<div class="sm:col-start-3 sm:col-span-3 max-sm:mb-3">
+		<div class="relative h-[80px] sm:h-full w-full">
+			<div class="absolute max-sm:left-[50%] max-sm:translate-x-[-50%] sm:right-0 bottom-0">
 				<ProfilePhoto profilePhoto={user.profile_photo} username={user.username} />
 			</div>
 		</div>
 	</div>
-	<div class="col-start-6 col-span-5">
+	<div class="sm:col-start-6 sm:col-span-5 max-sm:mb-6">
 		<UserDescription
 			content={user.description}
 			webSite={user.personal_url}
@@ -58,7 +58,7 @@
 	</div>
 {/await}
 
-<div class="col-start-4 col-span-7 block mb-6">
+<div class="sm:col-start-4 sm:col-span-7 block mb-24 sm:mb-6">
 	<div class="flex flex-col gap-y-8">
 		{#await data.streamed?.posts}
 			<Post loading={true} />
