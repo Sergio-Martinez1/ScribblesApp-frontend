@@ -22,7 +22,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
     return {
       plainMyUser: response.json()
     }
-  } else if (response.status === 401) {
+  } else {
     return {
       plainMyUser: null
     };
