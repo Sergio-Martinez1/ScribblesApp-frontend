@@ -5,7 +5,7 @@
   export let loading: boolean = false;
 </script>
 
-<div class="w-full h-[283px] relative">
+<div class="w-full aspect-[3/1] relative">
   {#if loading}
 		<div class="w-full h-full rounded-2xl bg-purpleLight animate-pulse" />
 	{:else if coverPhotoUrl}
