@@ -30,19 +30,23 @@
 		like_stroke = like_on ? '#2C41FF' : '#ffffff';
 	}
 
-  const notReload: SubmitFunction = () => {
-    return async ({result}) => {
-      await invalidateAll();
-      await applyAction(result);
-    }
-  }
+	const notReload: SubmitFunction = () => {
+		return async ({ result }) => {
+			await invalidateAll();
+			await applyAction(result);
+		};
+	};
 
 	function handleClickOutside(event: CustomEvent) {
 		tag_toogle = false;
 	}
 </script>
 
-<div class="bg-purpleLight flex rounded-2xl px-2 relative {vertical ? 'gap-2 py-1.5' : 'py-2'}">
+<div
+	class="bg-purpleLight flex rounded-2xl px-2 relative {vertical
+		? 'gap-2 py-1.5'
+		: 'py-2'} w-full sm:w-fit justify-self-end max-sm:justify-around"
+>
 	<form method="POST" action="/home?/toogle_reaction" use:enhance={notReload}>
 		<input type="hidden" value={post_id} name="post_id" />
 		<input type="hidden" value={like_on} name="state_on" />
@@ -94,7 +98,7 @@
 
 	<!-- TOGGLE TAG COMPONENT -->
 	{#if tag_toogle}
-		<div in:fly|local={{ y: 10 }} class="absolute top-9 right-2 z-10">
+		<div in:fly|local={{ y: 10 }} class="absolute max-sm:bottom-10 sm:top-9 right-2 z-10">
 			<Tags {tags} posts_url={post_by_tags_url} />
 		</div>
 	{/if}
