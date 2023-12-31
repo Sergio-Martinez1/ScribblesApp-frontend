@@ -28,7 +28,7 @@
 </script>
 
 {#if loading}
-	<div class="w-[454px] h-fit bg-purpleGray rounded-2xl p-3.5">
+	<div class="w-full h-fit bg-purpleGray rounded-2xl p-3.5">
 		<div class="animate-pulse flex space-x-4">
 			<div class="flex-1 space-y-6 py-1">
 				<div class="h-2 bg-purpleLight rounded" />
@@ -43,7 +43,7 @@
 		</div>
 	</div>
 {:else}
-	<div class="w-[454px] h-fit bg-purpleGray rounded-2xl p-3.5">
+	<div class="w-full h-fit bg-purpleGray rounded-2xl p-3.5">
 		{#if content}
 			<p class="text-white w-full max-h-[96px] mb-3 overflow-y-auto break-words">
 				{content}
