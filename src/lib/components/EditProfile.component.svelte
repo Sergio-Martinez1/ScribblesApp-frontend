@@ -12,7 +12,7 @@
 </script>
 
 <form
-	class="px-8 py-9 flex flex-col items-start gap-y-4"
+	class="flex flex-col items-start gap-y-4 w-full"
 	action="?/editProfile"
 	method="POST"
   enctype="multipart/form-data"
@@ -32,7 +32,7 @@
 	</label>
 	<label for="profile_photo" class="flex flex-col gap-y-2">
 		<h1 class="text-white font-bold">Profile Photo</h1>
-    <img src={profile_photo} alt="">
+    <img src={profile_photo} alt="" class="w-1/2 mx-auto my-3">
 		<input
 			type="file"
 			name="profile_photo"
@@ -42,12 +42,13 @@
       file:rounded-full file:border-0
       file:text-sm file:font-semibold
       file:bg-krispyPurple file:text-white
-      hover:file:bg-purpleLight"
+      hover:file:bg-purpleLight
+      w-full"
 		/>
 	</label>
 	<label for="cover_photo" class="flex flex-col gap-y-2">
 		<h1 class="text-white font-bold">Cover Photo</h1>
-    <img src={cover_photo} alt="">
+    <img src={cover_photo} alt="" class="w-1/2 mx-auto my-3">
 		<input
 			type="file"
 			name="cover_photo"
@@ -56,7 +57,8 @@
       file:rounded-full file:border-0
       file:text-sm file:font-semibold
       file:bg-krispyPurple file:text-white
-      hover:file:bg-purpleLight"
+      hover:file:bg-purpleLight
+      w-full"
 		/>
 	</label>
 	<label for="description">
