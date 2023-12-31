@@ -59,7 +59,9 @@
 			<div class="w-full h-32 bg-purpleLight rounded-2xl" />
 		</div>
 	{:else}
-		<div class="flex items-center justify-between px-2.5 pt-2.5">
+		<div
+			class="grid grid-cols-[58px_minmax(0,_1fr)_30px] sm:grid-cols-[58px_minmax(0,_1fr)_1fr_30px] px-2.5 pt-2.5 gap-x-3 items-center"
+		>
 			<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden">
 				{#if user_photo_url}
 					<img class="w-full h-full object-cover" src={user_photo_url} alt="User" />
@@ -67,13 +69,12 @@
 					<UserIcon />
 				{/if}
 			</a>
-			<div class="bg-purpleLight h-fit rounded-2xl ml-2.5">
-				<p class="px-3 py-1 text-white font-bold">
+			<div class="bg-purpleLight w-fit h-fit rounded-2xl">
+				<p class="px-3 py-1 text-white font-bold break-all">
 					{user_name} · {calculate_posted_time(publication_date)}
 				</p>
 			</div>
-			<div class="grow" />
-			<div class="mr-3">
+			<div class="max-sm:hidden">
 				<Reactions
 					{like_on}
 					{likes_count}
@@ -86,15 +87,13 @@
 					{post_id}
 				/>
 			</div>
-			<div class="mr-7">
-				<PostOptions
-					{myUser_id}
-					{creator_id}
-					{delete_dialog_id}
-					{edit_dialog_id}
-					{dont_show_dialog_id}
-				/>
-			</div>
+			<PostOptions
+				{myUser_id}
+				{creator_id}
+				{delete_dialog_id}
+				{edit_dialog_id}
+				{dont_show_dialog_id}
+			/>
 		</div>
 		<div class="flex px-5 py-2.5">
 			<a href={post_url} class="bg-purpleLight w-full rounded-2xl p-3.5 text-white cursor-pointer">
@@ -116,6 +115,19 @@
 					</div>
 				{/if}
 			</a>
+		</div>
+		<div class="w-full flex justify-center sm:hidden">
+			<Reactions
+				{like_on}
+				{likes_count}
+				{comments_count}
+				{tags_count}
+				{post_url}
+				{vertical}
+				{tags}
+				{post_by_tags_url}
+				{post_id}
+			/>
 		</div>
 
 		<dialog
