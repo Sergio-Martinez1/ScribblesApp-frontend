@@ -3,17 +3,22 @@
 	import NavBar from '$components/NavBar.component.svelte';
 
 	export let data: LayoutData;
-  $: myUser = data.plainMyUser;
+	$: myUser = data.plainMyUser;
 	$: isLogin = myUser ? true : false;
 </script>
 
-<div class="bg-purpleDark min-h-screen">
-	<div class="grid grid-cols-12 px-[40px] gap-[20px] max-w-7xl mx-auto">
-		<div class="col-span-2 mt-8 relative">
+<div class="bg-purpleDark min-h-screen relative">
+	<div
+		class="grid sm:grid-cols-9 md:grid-cols-12 px-[20px] md:px-[20px] lg:px-[40px] sm:gap-[20px] max-w-7xl mx-auto relative"
+	>
+		<div class="hidden sm:inline-block sm:col-span-2 sm:mt-8 sm:relative">
 			<div class="fixed w-[174px]">
 				<NavBar login={isLogin} />
 			</div>
 		</div>
 		<slot><!-- optional fallback --></slot>
 	</div>
+</div>
+<div class="bottom-0 fixed w-full sm:hidden">
+  <NavBar login={isLogin} />
 </div>
