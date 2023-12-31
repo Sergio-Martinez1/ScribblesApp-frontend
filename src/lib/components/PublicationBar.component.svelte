@@ -12,8 +12,8 @@
 
 	//STYLES
 	export let maxContent: number = 500;
-  export let user_url: string = '';
-  export let user_photo_url: string = '';
+	export let user_url: string = '';
+	export let user_photo_url: string = '';
 
 	//STATE
 	export let focus: boolean = false;
@@ -21,7 +21,7 @@
 	let tags_toggle: boolean = false;
 	let showPlaceHolder: boolean = true;
 	let validContent: boolean = false;
-  let selectedImage: string  = '';
+	let selectedImage: string = '';
 
 	//DOM
 	let uploadFile: HTMLInputElement;
@@ -53,23 +53,23 @@
 		innerText = '';
 		showPlaceHolder = true;
 		imagePreview = '';
-    selectedImage = "";
-    tags = [];
+		selectedImage = '';
+		tags = [];
 		tags_toggle = false;
 		focus = false;
-    uploadFile.value = "";
+		uploadFile.value = '';
 	}
-  
+
 	const submit: SubmitFunction = () => {
 		return async ({ result }) => {
 			if (result.type === 'success') {
 				await invalidateAll();
 				await applyAction(result);
-        handleClose();
+				handleClose();
 			} else if (result.type === 'redirect') {
-        await applyAction(result);
-        handleClose();
-      }
+				await applyAction(result);
+				handleClose();
+			}
 		};
 	};
 </script>
@@ -77,7 +77,7 @@
 <form
 	class="bg-purpleGray rounded-2xl p-2.5 h-fit relative"
 	method="POST"
-  enctype="multipart/form-data"
+	enctype="multipart/form-data"
 	action="/home?/createPost"
 	use:enhance={submit}
 >
@@ -133,7 +133,7 @@
 				<!-- IMAGE PREVIEW -->
 				<div class="relative w-fit mx-auto">
 					<button
-            type="button"
+						type="button"
 						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
 						on:click={() => {
 							imagePreview = '';
@@ -166,7 +166,7 @@
 				class="w-0 h-0 t absolute"
 				on:change={handleFileChange}
 				bind:this={uploadFile}
-        bind:value={selectedImage}
+				bind:value={selectedImage}
 			/>
 		</button>
 		<!-- TAG BUTTON -->
