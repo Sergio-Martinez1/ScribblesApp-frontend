@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
     const response = await fetch(home_url, options);
     if (response.ok) {
       posts_response = response;
-    } else if (response.status === 401) {
+    } else {
       posts_response = await fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`);
     }
   } else {
