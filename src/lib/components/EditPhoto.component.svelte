@@ -1,9 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import ArrowLeft from './Icon/ArrowLeft.svelte';
+	import Camera from '$lib/components/Icon/Camera.svelte';
+	import { applyAction, enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { invalidateAll } from '$app/navigation';
 
+	let uploadFile: HTMLInputElement;
 	//STATIC ELEMENT
-	export let widthA: number = 400;
-	export let heightA: number = 400;
+	export let widthA: number = 360;
+	export let heightA: number = 360;
 
 	//DINAMIC ELEMENT
 	export let widthB: number = 0;
@@ -23,13 +29,15 @@
 	let fWidthA: string = widthA.toString() + 'px';
 	let fHeightA: string = heightA.toString() + 'px';
 
-	let file: File;
 	let fileUrl = '';
 	let image: HTMLImageElement;
 	let croppedUrl: string;
-	let imageSized: HTMLImageElement;
+	let imageSized: HTMLImageElement | null;
 	let container: HTMLDivElement;
 	let containerCoords: DOMRect;
+	let file: File | undefined;
+	let fileCropped: File | undefined;
+	let submitButton: HTMLButtonElement;
 
 	onMount(() => {
 		document.addEventListener('mousemove', handleMouseMove);
@@ -69,10 +77,6 @@
 					if (y + heightB < coords.A.y + heightA) y = coords.A.y + heightA - heightB;
 				}
 			}
-			console.log(`Container: ${containerCoords.x}, ${containerCoords.y}
-StaticDiv: ${coords.A.x}, ${coords.A.y}
-CoordsB: ${coords.B.x}, ${coords.B.y}
-DinamicDiv: ${x}, ${y}`);
 			a++;
 		}
 		mouseOCoords = { x: event.clientX, y: event.clientY };
@@ -81,7 +85,6 @@ DinamicDiv: ${x}, ${y}`);
 	function handleWheel(event: WheelEvent) {
 		let coords = getCoords();
 
-		console.log(event.deltaY);
 		if (event.deltaY >= 0) {
 			//Size Check
 			widthB = widthB - 40;
@@ -107,7 +110,8 @@ DinamicDiv: ${x}, ${y}`);
 
 	function chargeFile(event: any) {
 		containerCoords = container.getBoundingClientRect();
-		file = event.target.files[0];
+		file = event.target.files?.[0];
+		if (!file) return;
 		fileUrl = URL.createObjectURL(file);
 		let reader = new FileReader();
 		reader.onload = function (event) {
@@ -135,6 +139,8 @@ DinamicDiv: ${x}, ${y}`);
 			};
 			if (typeof dataURL == 'string') {
 				image.src = dataURL;
+				let element = document.getElementById('edit_dialog_profile_photo') as HTMLDialogElement;
+				element.showModal();
 			}
 		};
 		reader.readAsDataURL(file);
@@ -143,13 +149,14 @@ DinamicDiv: ${x}, ${y}`);
 	function crop() {
 		let canvas = document.createElement('canvas');
 		let context = canvas.getContext('2d');
+		let divRed = document.querySelector('.divRed');
+
 		imageSized = document.querySelector('.imageSized');
+		if (!image || !imageSized || !file) return;
 		canvas.width = imageSized.width;
 		canvas.height = imageSized.height;
 
 		context?.drawImage(imageSized, 0, 0, imageSized.width, imageSized.height);
-
-		let divRed = document.querySelector('.divRed');
 
 		if (divRed) {
 			let coords = getCoords();
@@ -164,40 +171,121 @@ DinamicDiv: ${x}, ${y}`);
 				canvas2.width = croppedImage.width;
 				canvas2.height = croppedImage.height;
 				context2?.putImageData(croppedImage, 0, 0);
+				canvas2.toBlob((blob) => {
+					if (!blob) return;
+					fileCropped = new File([blob], 'hola', { type: 'image/png' });
+				}, 'image/png');
 				croppedUrl = canvas2.toDataURL();
 				canvas2.remove();
 			}
 		}
 		canvas.remove();
 	}
+
+	function handleClose() {
+		let element = document.getElementById('edit_dialog_profile_photo') as HTMLDialogElement;
+		element.close();
+	}
+
+	const submit: SubmitFunction = () => {
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				await invalidateAll();
+				await applyAction(result);
+				handleClose();
+			} else if (result.type === 'redirect') {
+				await applyAction(result);
+				handleClose();
+			}
+		};
+	};
 </script>
 
-<div bind:this={container} class="w-full h-full">
-	<div
-		class="bg-black w-full h-full overflow-hidden relative flex"
-		on:mousedown={() => {
-			grab = true;
-		}}
-		on:mouseup={() => {
-			grab = false;
-		}}
-		on:mouseleave={() => {
-			grab = false;
-		}}
-		on:wheel={handleWheel}
-	>
-		<div
-			class="divPurple self-center mx-auto z-30 shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
-			style="width: {fWidthA}; height: {fHeightA};"
-		/>
-		<input class="absolute left-[50%] z-50" type="file" on:change={chargeFile} />
-		<button on:click={crop} class="absolute left-[40%] z-50 bg-gray-50">Apply</button>
-		<a class="absolute left-[30%] z-50 bg-gray-50" href={croppedUrl}>FILELINK</a>
-		<div
-			class="divRed text-white z-20 pointer-events-none absolute"
-			style="transform: translate({x}px, {y}px); width: {widthB}px; height: {heightB}px;"
+<button
+	type="button"
+	class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full flex items-center justify-center p-2 absolute cursor-pointer"
+	on:click={() => {
+		uploadFile.click();
+	}}
+>
+	<div class="w-[24px] h-[24px]"><Camera /></div>
+	<!-- IMAGE INPUT -->
+	<input
+		tabindex="-1"
+		type="file"
+		name="thumbnail"
+		accept="image/*"
+		class="w-0 h-0 t absolute"
+		on:change={chargeFile}
+		bind:this={uploadFile}
+	/>
+</button>
+
+<dialog
+	id="edit_dialog_profile_photo"
+	class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] w-[600px] max-h-[600px] h-[90vh] py-3"
+>
+	{fileCropped}
+	<div class="grid grid-rows-[10%,1fr] h-full">
+		<form
+			method="POST"
+			enctype="multipart/form-data"
+			action="/profile?/editProfilePhoto"
+			use:enhance={submit}
 		>
-			<img class="imageSized w-full object-cover" src={image ? image.src : ''} alt="" />
+			<div class="grid grid-cols-[20%,1fr,20%] w-full h-fit mb-2 relative">
+				<button
+					on:click={handleClose}
+					class="col-span-1 w-fit hover:bg-purpleLight active:translate-y-[-1px] rounded-full p-1"
+					><ArrowLeft width={26} height={26} /></button
+				>
+				<p class="text-white font-bold text-xl col-span-1 w-fit justify-self-center">
+					Edit profile photo
+				</p>
+				<button
+					on:click={crop}
+					type="button"
+					class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-white px-2.5 py-1 col-span-1 w-fit justify-self-end"
+					>Apply</button
+				>
+				<button type="submit" tabindex="-1" bind:this={submitButton}>SUBMIT</button>
+				<input
+					type="hidden"
+					bind:value={fileCropped}
+					name="file_cropped"
+					on:change={() => {
+            console.log("TRUE")
+						submitButton.click();
+					}}
+				/>
+			</div>
+		</form>
+
+		<div bind:this={container} class="w-full h-full">
+			<div
+				class="bg-gray-800 w-full h-full overflow-hidden relative flex"
+				on:mousedown={() => {
+					grab = true;
+				}}
+				on:mouseup={() => {
+					grab = false;
+				}}
+				on:mouseleave={() => {
+					grab = false;
+				}}
+				on:wheel={handleWheel}
+			>
+				<div
+					class="divPurple self-center mx-auto z-30 shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] border-krispyPurple border-[5px]"
+					style="width: {fWidthA}; height: {fHeightA};"
+				/>
+				<div
+					class="divRed text-white z-20 pointer-events-none absolute"
+					style="transform: translate({x}px, {y}px); width: {widthB}px; height: {heightB}px;"
+				>
+					<img class="imageSized w-full object-cover" src={image ? image.src : ''} alt="" />
+				</div>
+			</div>
 		</div>
 	</div>
-</div>
+</dialog>
