@@ -36,7 +36,7 @@
 
 <div class="relative">
 	<div
-		class="w-[30px] cursor-pointer hover:bg-hoverPurple rounded-2xl"
+		class="w-[30px] cursor-pointer hover:bg-hoverPurple rounded-2xl h-fit"
 		on:click={() => {
 			options_toogle = !options_toogle;
 		}}
