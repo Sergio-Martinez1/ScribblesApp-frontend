@@ -88,7 +88,7 @@
 </script>
 
 <form
-	class="bg-purpleGray rounded-2xl h-fit relative max-h-[520px] p-4"
+	class="bg-purpleGray rounded-2xl h-fit relative p-4"
 	method="POST"
 	action="/home?/editPost"
 	use:enhance={submit}
