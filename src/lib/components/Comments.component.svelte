@@ -137,7 +137,7 @@
 							on:click={() => {
 								handleDialog(comment.id);
 							}}
-							class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full absolute right-2.5 top-2.5"
+							class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-bl-xl rounded-tr-xl absolute right-0 top-0 w-[27px] h-[27px] flex items-center justify-center"
 							><X width={20} height={20} /></button
 						>
 					{/if}
