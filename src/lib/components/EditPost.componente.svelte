@@ -67,6 +67,7 @@
 			innerText.trim().length === 0 && (innerText.match(/\n|\s/g) || []).length === 1
 				? true
 				: false;
+		document.body.style.overflow = 'auto';
 	}
 
 	function isValidImageUrl(url: string) {
