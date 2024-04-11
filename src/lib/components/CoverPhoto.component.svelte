@@ -1,12 +1,14 @@
 <script lang="ts">
-	import Image from '$lib/components/Icon/Image.svelte';
+	import EditPhoto from './EditPhoto.component.svelte';
+	import Camera from './Icon/Camera.svelte';
+
 	export let coverPhotoUrl: string = '';
 	export let editable: boolean = false;
-  export let loading: boolean = false;
+	export let loading: boolean = false;
 </script>
 
 <div class="w-full aspect-[3/1] relative">
-  {#if loading}
+	{#if loading}
 		<div class="w-full h-full rounded-2xl bg-purpleLight animate-pulse" />
 	{:else if coverPhotoUrl}
 		<img class="w-full h-full rounded-2xl object-cover" src={coverPhotoUrl} alt="User cover" />
@@ -14,11 +16,17 @@
 		<div class="w-full h-full rounded-2xl bg-purpleGray" />
 	{/if}
 	{#if editable}
-		<button
-			class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full flex items-center justify-center px-4 py-2 absolute bottom-5 right-5 gap-3"
-		>
-			<div class="w-[20px] h-[20px]"><Image stroke="#ffffff" /></div>
-			<p class="text-white font-bold">Edit cover photo</p></button
-		>
+		<div class="absolute max-md:top-3 md:bottom-5 right-3 md:right-5 w-fit h-fit">
+			<EditPhoto imagename={'cover_photo'} dialogId={'edit_cover_photo_dialog'} cover_mode={true}>
+				<div
+					class="flex rounded-full sm:rounded-xl p-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple"
+				>
+					<div class="w-[24px] h-[24px]">
+						<Camera />
+					</div>
+					<p class="text-white whitespace-nowrap hidden sm:inline-block ml-2">Edit cover photo</p>
+				</div>
+			</EditPhoto>
+		</div>
 	{/if}
 </div>
