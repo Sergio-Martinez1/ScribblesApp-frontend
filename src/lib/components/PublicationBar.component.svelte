@@ -75,7 +75,7 @@
 </script>
 
 <form
-	class="bg-purpleGray rounded-2xl p-2.5 h-fit relative"
+	class="bg-purpleGray rounded-2xl px-5 py-2.5 h-fit relative"
 	method="POST"
 	enctype="multipart/form-data"
 	action="/home?/createPost"
@@ -93,7 +93,7 @@
 			Create Post
 		</p>
 	{/if}
-	<div class="items-center grid grid-cols-[58px_minmax(0,_1fr)_50px_50px] h-fit">
+	<div class="items-center grid grid-cols-[58px_minmax(0,_1fr)_auto_auto] gap-x-2 h-fit">
 		<!-- USER ICON -->
 		<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden self-start">
 			{#if user_photo_url}
@@ -104,7 +104,7 @@
 		</a>
 		<!-- TEXTAREA -->
 		<div
-			class="h-fit mx-2.5 self-start mt-2 bg-purpleLight rounded-2xl px-3 py-2 relative border {focus_text
+			class="h-fit self-start mt-2 bg-purpleLight rounded-2xl px-3 py-2 relative border {focus_text
 				? 'border-krispyPurple'
 				: 'border-transparent'}"
 			tabindex="-1"
@@ -150,7 +150,7 @@
 		<!-- IMAGE BUTTON -->
 		<button
 			type="button"
-			class="mx-1 mt-2 cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent self-start relative"
+			class="mt-2 cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent self-start relative w-fit"
 			on:click={() => {
 				focus = true;
 				uploadFile.click();
@@ -177,7 +177,7 @@
 				focus = true;
 				tags_toggle = !tags_toggle;
 			}}
-			class="mr-3 mt-2 cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent self-start"
+			class="mt-2 w-fit cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent self-start justify-self-end"
 		>
 			<Hash />
 		</button>
