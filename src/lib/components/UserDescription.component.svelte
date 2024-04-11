@@ -43,7 +43,7 @@
 		</div>
 	</div>
 {:else}
-	<div class="w-full h-fit bg-purpleGray rounded-2xl p-3.5">
+	<div class="w-full min-h-[90px] h-fit bg-purpleGray rounded-2xl p-3.5 justify-center flex flex-col">
 		{#if content}
 			<p class="text-white w-full max-h-[96px] mb-3 overflow-y-auto break-words">
 				{content}
@@ -53,15 +53,18 @@
 			{#if webSite}
 				<div class="flex gap-1.5 items-center w-fit">
 					<div><Link width={14} height={14} /></div>
-					<a class="text-krispyPurple underline" href={webSite}>{webSite}</a>
+					<a
+						class="text-krispyPurple underline"
+						href={webSite.includes('https://') ? webSite : `https://${webSite}`}>{webSite}</a
+					>
 				</div>
 			{/if}
 			{#if birthDay}
 				<div class="flex gap-1.5 items-center w-fit">
 					<div><Gift width={16} height={16} /></div>
 					<p class="text-white">
-						Born {monthNames[Number(birthDay.split('-')[1]) - 1]}
-						{birthDay.split('-')[2]}, {birthDay.split('-')[0]}
+						Born {monthNames[Number(birthDay.substring(0, 10).split('-')[1]) - 1]}
+						{birthDay.substring(0, 10).split('-')[2]}, {birthDay.substring(0, 10).split('-')[0]}
 					</p>
 				</div>
 			{/if}
@@ -77,8 +80,10 @@
 				<div class="flex gap-1 items-center w-fit">
 					<div><Calendar width={15} height={15} /></div>
 					<p class="text-white">
-						Joined {monthNames[Number(userCreationDate.split('-')[1]) - 1]}
-						{userCreationDate.split('-')[2]}, {userCreationDate.split('-')[0]}
+						Joined {monthNames[Number(userCreationDate.substring(0, 10).split('-')[1]) - 1]}
+						{userCreationDate.substring(0, 10).split('-')[2]}, {userCreationDate
+							.substring(0, 10)
+							.split('-')[0]}
 					</p>
 				</div>
 			{/if}
