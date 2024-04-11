@@ -21,6 +21,7 @@
 		options_toogle = false;
 		let element = document.getElementById(edit_dialog_id) as HTMLDialogElement;
 		element.showModal();
+    document.body.style.overflow = 'hidden';
 	}
 	function handle_delete_dialog() {
 		options_toogle = false;
