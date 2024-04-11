@@ -14,3 +14,5 @@ export {default as Tag} from "./Tag.svelte";
 export {default as Trash} from "./Trash.svelte";
 export {default as User} from "./User.svelte";
 export {default as X} from "./X.svelte";
+export {default as Add} from "./Add.svelte";
+export {default as Plus} from "./Plus.svelte";
