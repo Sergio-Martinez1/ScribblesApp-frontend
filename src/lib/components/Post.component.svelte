@@ -60,7 +60,7 @@
 		</div>
 	{:else}
 		<div
-			class="grid grid-cols-[58px_minmax(0,_1fr)_30px] sm:grid-cols-[58px_minmax(0,_1fr)_1fr_30px] px-2.5 pt-2.5 gap-x-3 items-center"
+			class="grid grid-cols-[58px_minmax(0,_1fr)_30px] sm:grid-cols-[58px_minmax(0,_1fr)_1fr_30px] px-5 pt-2.5 gap-x-3 items-center"
 		>
 			<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden">
 				{#if user_photo_url}
@@ -74,7 +74,7 @@
 					{user_name} · {calculate_posted_time(publication_date)}
 				</p>
 			</div>
-			<div class="max-sm:hidden">
+			<div class="max-sm:hidden justify-self-end min-[950px]:mr-8">
 				<Reactions
 					{like_on}
 					{likes_count}
