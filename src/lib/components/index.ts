@@ -22,3 +22,6 @@ export {default as ChangeUsername} from "./ChangeUsername.component.svelte";
 export {default as Logout} from "./Logout.component.svelte";
 export {default as UploadPhoto} from "./UploadPhoto.component.svelte";
 export {default as TextAreaWithButtons} from "./TextAreaWithButtons.component.svelte";
+export {default as PersonalUrlInput} from "./PersonalUrlInput.component.svelte";
+export {default as LocationInput} from "./LocationInput.component.svelte";
+export {default as BirthdayInput} from "./BirthdayInput.component.svelte";
