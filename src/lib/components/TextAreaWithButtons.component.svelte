@@ -5,23 +5,29 @@
 	export let cancelAction: boolean = false;
 
 	let validContent: boolean = false;
-	let outputText: string = initialContent;
+	let content: string = initialContent;
+	let outputText: string = content;
 
-	$: charsCount = initialContent.trim().length;
-	$: validContent = charsCount <= maxContent ? true : false;
-  
+	$: charsCount = content.trim().length;
+	$: validContent = charsCount <= maxContent && initialContent != content ? true : false;
 </script>
 
 <div class="w-fit flex flex-col">
 	<textarea
 		class="bg-purpleLight outline-none focus:border focus:border-krispyPurple text-white px-2 py-1 w-60 mx-auto rounded-2xl resize-none"
-		name=""
-		id=""
+		name={input_name}
+		id={input_name}
 		cols="15"
-    bind:value={initialContent}
-		rows="4"></textarea
+		bind:value={content}
+		rows="4"
+	/>
+	<p
+		class="w-fit self-end text-sm mt-0.5 {charsCount > 150
+			? 'text-squeezeRed'
+			: 'text-white opacity-50'}"
 	>
-	<p class="w-fit self-end text-white opacity-50 text-sm mt-0.5">Chars left: {maxContent - charsCount}</p>
+		Chars left: {maxContent - charsCount}
+	</p>
 	<div class="flex justify-center gap-x-6">
 		<button
 			type="button"
