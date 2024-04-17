@@ -32,7 +32,6 @@
 
 	const notReload: SubmitFunction = () => {
 		return async ({ result }) => {
-			await invalidateAll();
 			await applyAction(result);
 		};
 	};
