@@ -3,16 +3,29 @@ import type { PageServerLoad } from './$types';
 import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ fetch, cookies }) => {
+export const load: PageServerLoad = ({ fetch, cookies }) => {
+  let posts_response = null;
+  let top_tags_response = null;
+  let fetchedPosts = { data: null, status: 500 };
+  let fetchedTags = { data: null, status: 500 };
+
   const base_api_url: string | undefined = env.API_URL;
-  if (!base_api_url) throw error(404, 'No api provided');
+  if (!base_api_url) console.error('Error: No se encontro la url de la api - [/routes/(main)/home/+layout.server.ts]');;
+
+  top_tags_response = fetch(`${base_api_url}/tags/top`)
+    .then(async (response) => {
+      fetchedTags.status = response.status;
+      if (response.ok) {
+        const data = await response.json();
+        fetchedTags.data = data;
+      }
+      return fetchedTags;
+    }).catch(() => {
+      console.error('Error: Error al intentar conectarse con la api en ruta de tags - [/routes/(main)/home/+page.server.ts]')
+    })
 
   const access_token = cookies.get('access_token');
-  let posts_response: Response | null = null;
-  const top_tags_response = await fetch(`${base_api_url}/tags/top`);
-
   if (access_token) {
-
     const home_url = `${base_api_url}/posts/home?offset=0&limit=20`;
     const options = {
       method: "GET",
@@ -22,23 +35,37 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
       }
     };
 
-    const response = await fetch(home_url, options);
-    if (response.ok) {
-      posts_response = response;
-    } else {
-      posts_response = await fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`);
-    }
+    posts_response = fetch(home_url, options)
+      .then(async (response) => {
+        fetchedPosts.status = response.status;
+        if (response.ok) {
+          const data = await response.json();
+          fetchedPosts.data = data;
+        }
+        return fetchedPosts;
+      }).catch(() => {
+        console.error('Error: Error al intentar conectarse con la api en ruta de posts - [/routes/(main)/home/+page.server.ts]')
+      })
   } else {
-    posts_response = await fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`);
+    posts_response = fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`)
+      .then(async (response) => {
+        fetchedPosts.status = response.status;
+        if (response.ok) {
+          const data = await response.json();
+          fetchedPosts.data = data;
+        }
+        return fetchedPosts;
+      }).catch(() => {
+        console.error('Error: Error al intentar conectarse con la api en ruta de posts - [/routes/(main)/home/+page.server.ts]')
+      });
   }
 
   return {
     streamed: {
-      posts: posts_response ? posts_response.json() : null,
-      top_tags: top_tags_response.ok ? top_tags_response.json() : null
+      posts: posts_response,
+      top_tags: top_tags_response
     }
   }
-
 };
 
 export const actions: Actions = {
@@ -70,9 +97,15 @@ export const actions: Actions = {
         body: JSON.stringify(body)
       };
 
-      const response = await fetch(url, options);
-      if (response.ok) return;
-      else if (response.status === 401) throw redirect(303, "/login");
+      try {
+        const response = await fetch(url, options);
+        if (response.ok) return;
+        else if (response.status === 401) throw redirect(303, "/login");
+        return fail(400, { badRequest: true });
+      } catch (error) {
+        console.error('Error: Error al intentar conectarse con la api - [/routes/(main)/home/+page.server.ts]')
+        return fail(500, { serverFail: true });
+      }
 
     } else if (state_on === 'false') {
       const url = `${base_api_url}/reactions/${post_id}`;
@@ -84,10 +117,16 @@ export const actions: Actions = {
         }
       };
 
-      const response = await fetch(url, options);
-      if (response.ok) return;
-      else if (response.status === 401) throw redirect(303, "/login");
-
+      try {
+        const response = await fetch(url, options);
+        if (response.ok) return;
+        else if (response.status === 401) throw redirect(303, "/login");
+        return fail(400, { badRequest: true });
+      } catch (error) {
+        console.error('Error: Error al intentar conectarse con la api - [/routes/(main)/home/+page.server.ts]')
+        return fail(500, { serverFail: true });
+      }
+      
     }
   },
   createPost: async ({ request, fetch, cookies }) => {
@@ -167,7 +206,6 @@ export const actions: Actions = {
     else if (response.status === 401) throw redirect(303, "/login");
   },
   editPost: async ({ request, fetch, cookies }) => {
-
     const form = await request.formData();
     const content = form.get('content');
     const thumbnail = form.get('thumbnail') as File;
