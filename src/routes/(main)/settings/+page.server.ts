@@ -31,62 +31,15 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 };
 
 export const actions: Actions = {
-  editProfile: async ({ request, fetch, cookies }) => {
+  editDescription: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
-    const email = form.get('email');
-    const profile_photo = form.get('profile_photo') as File;
-    const cover_photo = form.get('cover_photo') as File;
     const description = form.get('description');
-    const personal_url = form.get('personal_url');
-    const location = form.get('location');
-    const birthday = form.get('birthday');
-
-    if (!email) {
-      return fail(400, { emailMissing: true });
-    }
-
-    const is_there_profile_photo = profile_photo?.size > 0 ? true : false;
-    const is_there_cover_photo = cover_photo?.size > 0 ? true : false;
     const base_api_url: string = env.API_URL;
     const update_url = `${base_api_url}/users/update`;
-    const files_url = `${base_api_url}/files/`;
     const access_token = cookies.get('access_token');
 
-    let image_url_request = async (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      const options = {
-        method: 'POST',
-        headers: new Headers({
-          Authorization: `Bearer ${access_token}`
-        }),
-        body: formData
-      };
-      let response = await fetch(files_url, options);
-      if (response.ok) {
-        let img = await response.json();
-        return img.url;
-      } else {
-        return '';
-      }
-    };
-    let profile_photo_url: string = '';
-    let cover_photo_url: string = '';
-    if (is_there_profile_photo) {
-      profile_photo_url = await image_url_request(profile_photo);
-    }
-    if (is_there_cover_photo) {
-      cover_photo_url = await image_url_request(cover_photo);
-    }
-
     const body = {
-      ...(email ? { email } : {}),
-      ...(is_there_profile_photo ? { profile_photo: profile_photo_url } : {}),
-      ...(is_there_cover_photo ? { cover_photo: cover_photo_url } : {}),
-      ...(description ? { description } : {}),
-      ...(personal_url ? { personal_url } : {}),
-      ...(location ? { location } : {}),
-      ...(birthday ? { birthday } : {})
+      ...(description ? { description } : {description: null}),
     };
     const options = {
       method: 'PUT',
@@ -97,9 +50,70 @@ export const actions: Actions = {
       body: JSON.stringify(body)
     };
     const response = await fetch(update_url, options);
-    if (response.ok) {
-      throw redirect(303, '/settings');
-    }
+  },
+  editWebSite: async ({ request, fetch, cookies }) => {
+    const form = await request.formData();
+    const personal_url = form.get('personal_url');
+    const base_api_url: string = env.API_URL;
+    const update_url = `${base_api_url}/users/update`;
+    const access_token = cookies.get('access_token');
+
+    const body = {
+      ...(personal_url ? { personal_url } : {personal_url: null}),
+    };
+    console.log(body)
+    const options = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    };
+    const response = await fetch(update_url, options);
+  },
+  editLocation: async ({ request, fetch, cookies }) => {
+    const form = await request.formData();
+    const location = form.get('location');
+    const base_api_url: string = env.API_URL;
+    const update_url = `${base_api_url}/users/update`;
+    const access_token = cookies.get('access_token');
+
+    const body = {
+      ...(location ? { location } : {location: null}),
+    };
+    console.log(body)
+    const options = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    };
+    const response = await fetch(update_url, options);
+  },
+  editBirthday: async ({ request, fetch, cookies }) => {
+    const form = await request.formData();
+    const birthday = form.get('birthday');
+    console.log(birthday)
+    const base_api_url: string = env.API_URL;
+    const update_url = `${base_api_url}/users/update`;
+    const access_token = cookies.get('access_token');
+
+    const body = {
+      ...(birthday ? { birthday } : {birthday: null}),
+    };
+    console.log(body)
+    const options = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    };
+    const response = await fetch(update_url, options);
   },
   changeUsername: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
