@@ -1,109 +1,137 @@
 <script lang="ts">
 	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
+	import UploadPhoto from './UploadPhoto.component.svelte';
+	import TextAreaWithButtons from './TextAreaWithButtons.component.svelte';
+	import X from './Icon/X.svelte';
+	import User from './Icon/User.svelte';
+	import EditPhoto from './EditPhoto.component.svelte';
+	import PersonalUrlInput from './PersonalUrlInput.component.svelte';
+	import LocationInput from './LocationInput.component.svelte';
+	import BirthdayInput from './BirthdayInput.component.svelte';
+
 	export let form: ActionData;
-  export let email: string = "email";
-  export let profile_photo: string = "";
-  export let cover_photo: string = "";
-  export let description: string = "description";
-  export let personal_url: string = "https://personal_url.com";
-  export let location: string = "location";
-  export let birthday: string = "2023-05-28";
+	export let profile_photo: string = '';
+	export let cover_photo: string = '';
+	export let description: string = '';
+	export let personal_url: string = '';
+	export let location: string = 'location';
+	export let birthday: string = '2023-05-28';
+
+	let editable: boolean = false;
 </script>
 
-<form
-	class="flex flex-col items-start gap-y-4 w-full"
-	action="?/editProfile"
-	method="POST"
-  enctype="multipart/form-data"
-	use:enhance
->
+<section class="flex flex-col items-start gap-y-4 w-full p-6">
 	<h1 class="text-white text-4xl font-bold">Edit Profile</h1>
-	<label for="email">
-		<h1 class="text-white font-bold">Email</h1>
-		<input
-			type="text"
-			name="email"
-      value={email}
-			class="px-4 py-6 min-w-full bg-krispyPurple rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
-			placeholder="email"
-		/>
-		{#if form?.emailMissing}<p class="error text-white">Email can not be empty</p>{/if}
-	</label>
-	<label for="profile_photo" class="flex flex-col gap-y-2">
-		<h1 class="text-white font-bold">Profile Photo</h1>
-    <img src={profile_photo} alt="" class="w-1/2 mx-auto my-3">
-		<input
-			type="file"
-			name="profile_photo"
-      accept="image/*"
-			class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold
-              file:mr-4 file:py-2 file:px-4
-      file:rounded-full file:border-0
-      file:text-sm file:font-semibold
-      file:bg-krispyPurple file:text-white
-      hover:file:bg-purpleLight
-      w-full"
-		/>
-	</label>
-	<label for="cover_photo" class="flex flex-col gap-y-2">
-		<h1 class="text-white font-bold">Cover Photo</h1>
-    <img src={cover_photo} alt="" class="w-1/2 mx-auto my-3">
-		<input
-			type="file"
-			name="cover_photo"
-			class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold
-              file:mr-4 file:py-2 file:px-4
-      file:rounded-full file:border-0
-      file:text-sm file:font-semibold
-      file:bg-krispyPurple file:text-white
-      hover:file:bg-purpleLight
-      w-full"
-		/>
-	</label>
-	<label for="description">
-		<h1 class="text-white font-bold">Decription</h1>
-		<input
-			type="text"
-			name="description"
-      value={description}
-			class="px-4 py-6 min-w-full bg-krispyPurple rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
-			placeholder="description"
-		/>
-	</label>
-	<label for="url">
-		<h1 class="text-white font-bold">Personal URL</h1>
-		<input
-			type="text"
-			name="personal_url"
-      value={personal_url}
-			class="px-4 py-6 min-w-full bg-krispyPurple rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
-			placeholder="Personal URL"
-		/>
-	</label>
 
-	<label for="location">
-		<h1 class="text-white font-bold">Location</h1>
-		<input
-			type="text"
-			name="location"
-			value={location}
-			class="px-4 py-6 min-w-full bg-krispyPurple rounded-2xl h-9 text-white font-bold focus:outline-krispyPurple"
-			placeholder="Location"
-		/>
-	</label>
-	<label for="birthday">
-		<h1 class="text-white font-bold">Birthday</h1>
-		<input
-			type="date"
-			name="birthday"
-			placeholder="yyyy-mm-dd"
-			value={birthday}
-			min="1997-01-01"
-			max="2030-12-31"
-		/>
-	</label>
-	<button class="bg-krispyPurple text-white rounded-xl w-32 h-10" type="submit">
-		<span class="px-auto font-bold text-white">Save</span>
-	</button>
-</form>
+	<!-- Profile photo -->
+	<div class="flex flex-col gap-y-5 w-full">
+		<div class="flex items-center justify-between border-b-2 border-b-purpleLight">
+			<label for="profile_photo" class="text-white font-bold">Profile Photo</label>
+			<EditPhoto
+				imagename={'profile_photo'}
+				dialogId={'edit_profile_photo_in_settings_dialog'}
+				cover_mode={false}
+				input_name={'profile_photo'}
+			>
+				<p
+					class="text-krispyPurple font-bold underline hover:text-white active:text-krispyPurple text-lg"
+				>
+					Edit
+				</p>
+			</EditPhoto>
+		</div>
+		<div class="w-[100px] h-[100px] sm:w-[174px] sm:h-[174px] box-content rounded-full mx-auto">
+			{#if profile_photo}
+				<img class="w-full h-full object-cover rounded-full" src={profile_photo} alt="User face" />
+			{:else}
+				<User width={174} height={174} />
+			{/if}
+		</div>
+	</div>
+
+	<!-- Cover photo -->
+	<div class="flex flex-col gap-y-5 w-full">
+		<div class="flex items-center justify-between border-b-2 border-b-purpleLight">
+			<label for="cover_photo" class="text-white font-bold">Cover Photo</label>
+			<EditPhoto
+				imagename={'cover_photo'}
+				dialogId={'edit_cover_photo_in_settings_dialog'}
+				cover_mode={true}
+				input_name={'cover_photo'}
+			>
+				<p
+					class="text-krispyPurple font-bold underline hover:text-white active:text-krispyPurple text-lg"
+				>
+					Edit
+				</p>
+			</EditPhoto>
+		</div>
+		<div class="w-full">
+			<div class="w-10/12 aspect-[3/1] relative mx-auto">
+				{#if cover_photo}
+					<img class="w-full h-full rounded-2xl object-cover" src={cover_photo} alt="User cover" />
+				{:else}
+					<div class="w-full h-full rounded-2xl bg-purpleLight" />
+				{/if}
+			</div>
+		</div>
+	</div>
+
+	<!-- Description -->
+	<div class="flex flex-col gap-y-5 w-full">
+		<div class="flex items-center justify-between border-b-2 border-b-purpleLight">
+			<label for="description" class="text-white font-bold">Description</label>
+			<button
+				type="button"
+				on:click={() => {
+					editable = !editable;
+				}}
+				><p
+					class="text-krispyPurple font-bold underline hover:text-white active:text-krispyPurple text-lg"
+				>
+					Edit
+				</p></button
+			>
+		</div>
+		{#if editable == false}
+			{#if description}
+				<p class="text-white opacity-60 mx-auto w-90 flex justify-center">{description}</p>
+			{:else}
+				<p class="text-white opacity-60 mx-auto w-90 flex justify-center">No description</p>
+			{/if}
+		{:else}
+			<form method="post" action="/settings?/editDescription" use:enhance class="mx-auto">
+				<TextAreaWithButtons
+					initialContent={description ? description : ''}
+					input_name={'description'}
+					bind:cancelAction={editable}
+				/>
+			</form>
+		{/if}
+	</div>
+
+	<!-- Personal url -->
+	<div class="flex flex-col gap-y-5 w-full">
+		<div class="flex items-center justify-between border-b-2 border-b-purpleLight">
+			<label for="url" class="text-white font-bold">Personal Url</label>
+		</div>
+		<PersonalUrlInput {personal_url} />
+	</div>
+
+	<!-- Location -->
+	<div class="flex flex-col gap-y-5 w-full">
+		<div class="flex items-center justify-between border-b-2 border-b-purpleLight">
+			<label for="location" class="text-white font-bold">Location</label>
+		</div>
+		<LocationInput {location} />
+	</div>
+
+	<!-- Birthday -->
+	<div class="flex flex-col gap-y-5 w-full">
+		<div class="flex items-center justify-between border-b-2 border-b-purpleLight">
+			<label for="birthday" class="text-white font-bold">Birthday</label>
+		</div>
+		<BirthdayInput {birthday}/>
+	</div>
+</section>
