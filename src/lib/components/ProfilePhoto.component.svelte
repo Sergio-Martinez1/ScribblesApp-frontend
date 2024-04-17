@@ -26,9 +26,7 @@
 	>
 		<img class="w-full h-full object-cover rounded-full" src={profilePhoto} alt="User face" />
 		{#if editable}
-			<div
-				class="absolute bottom-0 sm:bottom-2 right-0 sm:right-8 w-fit h-fit"
-			>
+			<div class="absolute bottom-0 sm:bottom-2 right-0 sm:right-8 w-fit h-fit">
 				<EditPhoto imagename={'profile_photo'} dialogId={'edit_profile_photo_dialog'}>
 					<div
 						class="w-fit h-fit p-2 rounded-full bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple"
@@ -44,9 +42,15 @@
 	<div class="w-[174px] h-[174px] mb-2.5 relative bg-purpleDark box-content p-3 rounded-full">
 		<User width={174} height={174} />
 		{#if editable}
-			<div class="absolute bottom-14 right-16 w-fit h-fit">
-				<EditPhoto imagename={'profile_photo'} dialogId={'edit_profile_photo_dialog_1'} />
-			</div>
+		<div class="absolute bottom-0 sm:bottom-2 right-0 sm:right-8 w-fit h-fit">
+			<EditPhoto imagename={'profile_photo'} dialogId={'edit_profile_photo_dialog'}>
+				<div
+					class="w-fit h-fit p-2 rounded-full bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple"
+				>
+					<Camera />
+				</div>
+			</EditPhoto>
+		</div>
 		{/if}
 	</div>
 	<p class="text-white font-bold w-fit mx-auto text-xl">{username}</p>
