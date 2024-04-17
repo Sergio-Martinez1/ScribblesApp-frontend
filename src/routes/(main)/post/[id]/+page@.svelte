@@ -24,21 +24,25 @@
 </script>
 
 <div class="bg-purpleDark min-h-screen relative">
-	<div
-		class="grid sm:grid-cols-9 md:grid-cols-12 pr-[20px] md:pr-[20px] lg:pr-[40px] sm:gap-[20px] mx-auto relative"
+			<div
+		class="grid grid-cols-9 lg:grid-cols-12 lg:pr-[40px] lg:gap-[20px] mx-auto relative"
 	>
-		<div class="col-span-9 h-screen sticky top-0">
+		<div class="col-span-9 h-screen lg:sticky lg:top-0">
 			{#await data.streamed?.post}
 				<PostDetail loading={true} />
 			{:then post}
 				<PostDetail
 					post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
+					post_content={post.content}
+          post_creation_date={post.publication_date}
+					user_photo_url={post.user.profile_photo}
+          user_name={post.user.username}
 					post_id={post.id}
 				/>
 			{/await}
 		</div>
 
-		<div class="col-span-3 mt-8">
+		<div class="col-span-9 px-5 mt-4 lg:px-0 lg:col-span-3 lg:mt-8">
 			{#await data.streamed?.comments}
 				<Comments loading={true} />
 			{:then comments}
