@@ -66,7 +66,6 @@
 			infiniteScroll({ fetch: waitingLoadingPost, element: loadingPostsElement });
 		}
 	}
-	$: console.log(offset);
 </script>
 
 <div class="col-span-7">
