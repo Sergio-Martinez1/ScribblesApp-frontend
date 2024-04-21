@@ -23,7 +23,7 @@
 	}
 </script>
 
-<form method="post" action="/settings?/editBirthday" use:enhance class="flex">
+<form method="post" action="/settings?/editBirthday" use:enhance class="flex" id="birthdayForm">
 	{#if !is_there_initial_content && !editable}
 		<button
 			type="button"
@@ -68,12 +68,12 @@
 				Cancel
 			</button>
 			<button
+				form="birthdayForm"
 				type="submit"
 				disabled={!validContent}
 				class="text-white bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple w-fit rounded-full py-1.5 px-1.5 disabled:bg-lessPurple disabled:opacity-[0.5]"
 				>Save</button
 			>
-            {content}
 		{/if}
 	{/if}
 </form>
