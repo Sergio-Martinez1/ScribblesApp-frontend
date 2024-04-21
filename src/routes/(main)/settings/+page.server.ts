@@ -39,7 +39,7 @@ export const actions: Actions = {
     const access_token = cookies.get('access_token');
 
     const body = {
-      ...(description ? { description } : {description: null}),
+      ...(description ? { description } : {description: ''}),
     };
     const options = {
       method: 'PUT',
@@ -57,9 +57,10 @@ export const actions: Actions = {
     const base_api_url: string = env.API_URL;
     const update_url = `${base_api_url}/users/update`;
     const access_token = cookies.get('access_token');
+    console.log(personal_url)
 
     const body = {
-      ...(personal_url ? { personal_url } : {personal_url: null}),
+      ...(personal_url ? { personal_url } : {personal_url: ''}),
     };
     console.log(body)
     const options = {
@@ -80,7 +81,7 @@ export const actions: Actions = {
     const access_token = cookies.get('access_token');
 
     const body = {
-      ...(location ? { location } : {location: null}),
+      ...(location ? { location } : {location: ''}),
     };
     console.log(body)
     const options = {
@@ -102,7 +103,7 @@ export const actions: Actions = {
     const access_token = cookies.get('access_token');
 
     const body = {
-      ...(birthday ? { birthday } : {birthday: null}),
+      ...(birthday ? { birthday } : {birthday: ''}),
     };
     console.log(body)
     const options = {
