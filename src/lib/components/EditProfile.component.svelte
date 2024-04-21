@@ -1,16 +1,13 @@
 <script lang="ts">
-	import type { ActionData } from './$types';
+	import type { ActionData } from '../../routes/$types';
 	import { enhance } from '$app/forms';
-	import UploadPhoto from './UploadPhoto.component.svelte';
 	import TextAreaWithButtons from './TextAreaWithButtons.component.svelte';
-	import X from './Icon/X.svelte';
 	import User from './Icon/User.svelte';
 	import EditPhoto from './EditPhoto.component.svelte';
 	import PersonalUrlInput from './PersonalUrlInput.component.svelte';
 	import LocationInput from './LocationInput.component.svelte';
 	import BirthdayInput from './BirthdayInput.component.svelte';
 
-	export let form: ActionData;
 	export let profile_photo: string = '';
 	export let cover_photo: string = '';
 	export let description: string = '';
@@ -32,7 +29,6 @@
 				imagename={'profile_photo'}
 				dialogId={'edit_profile_photo_in_settings_dialog'}
 				cover_mode={false}
-				input_name={'profile_photo'}
 			>
 				<p
 					class="text-krispyPurple font-bold underline hover:text-white active:text-krispyPurple text-lg"
@@ -58,7 +54,6 @@
 				imagename={'cover_photo'}
 				dialogId={'edit_cover_photo_in_settings_dialog'}
 				cover_mode={true}
-				input_name={'cover_photo'}
 			>
 				<p
 					class="text-krispyPurple font-bold underline hover:text-white active:text-krispyPurple text-lg"
