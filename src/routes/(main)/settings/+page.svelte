@@ -167,7 +167,6 @@
 					>
 					{#if edit_profile_view}
 						<EditProfile
-							{form}
 							profile_photo={user.profile_photo}
 							cover_photo={user.cover_photo}
 							description={user.description}
@@ -203,8 +202,6 @@
 			<div class="bg-purpleGray rounded-2xl h-fit">
 				{#if edit_profile_view}
 					<EditProfile
-						{form}
-						email={user.email}
 						profile_photo={user.profile_photo}
 						cover_photo={user.cover_photo}
 						description={user.description}
@@ -236,12 +233,3 @@
 		</div>
 	{/if}
 {/await}
-
-<style lang="postcss">
-	input:checked {
-		background-color: #22c55e; /* bg-green-500 */
-	}
-	input:checked ~ span:last-child {
-		--tw-translate-x: 1.75rem; /* translate-x-7 */
-	}
-</style>
