@@ -8,10 +8,8 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
   if (!base_api_url) console.error('Error: No se encontro la url de la api - [/routes/+layout.server.ts]');
 
   const access_token = cookies.get('access_token');
-  if (!access_token) {
-    console.error('Error: El access_token ha expirado')
-    return { plainMyUser: null };
-  }
+  if (!access_token) console.error('Error: el usuario no ha iniciado sesion');
+
 
   const options = {
     method: "get",
