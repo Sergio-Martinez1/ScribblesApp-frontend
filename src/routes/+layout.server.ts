@@ -5,7 +5,7 @@ import { error } from '@sveltejs/kit';
 export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
 
   const base_api_url: string | undefined = env.API_URL;
-  if (!base_api_url) console.error('Error: No se encontro la url de la api - [/routes/+layout.server.ts]');
+  if (!base_api_url) console.error('Error: No se encontro la url de la api en el entorno - [/routes/+layout.server.ts]');
 
   const access_token = cookies.get('access_token');
   if (!access_token) console.error('Error: el usuario no ha iniciado sesion');
@@ -28,7 +28,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
       throw error(response.status, response.statusText);
     }
   } catch (error) {
-    console.error(`Error: en [/routes/+layout.server.ts].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`)
+    console.error(`Error: Error en [/routes/+layout.server.ts].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`)
   }
   return {
     plainMyUser: null
