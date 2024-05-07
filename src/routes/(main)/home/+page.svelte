@@ -7,7 +7,7 @@
 	import type { PageData } from './$types';
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import type { Post as TypePost } from '$lib/types';
-	import { onMount, tick } from 'svelte';
+	import { onDestroy, onMount, tick } from 'svelte';
 
 	export let data: PageData;
 	let scrollData: Array<TypePost> = [];
@@ -18,6 +18,7 @@
 		data: null,
 		status: 200
 	};
+  let observer: IntersectionObserver;
 
 	$: plainMyUser = data.plainMyUser;
 	$: isLogin = plainMyUser ? true : false;
@@ -28,7 +29,7 @@
 	$: url = `http://localhost:5173/api/posts?offset=${offset}&limit=${limit}`;
 
 	onMount(async () => {
-		let observer = new IntersectionObserver(async (entries) => {
+		observer = new IntersectionObserver(async (entries) => {
 			entries.forEach(async (entry) => {
 				if (entry.isIntersecting) {
 					infiniteScrollData = await fetchPosts(url);
@@ -44,6 +45,10 @@
 				observer?.observe(loadingPostsElement);
 			}
 		});
+	});
+
+	onDestroy(() => {
+		observer?.disconnect();
 	});
 
 	function handleLike(my_reactions: any[], post_id: number) {
