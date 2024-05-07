@@ -5,15 +5,19 @@
 	import { PublicationBar } from '$components';
 	import { LoginInHome } from '$components';
 	import type { PageData } from './$types';
-	import { infiniteScroll } from '$lib/utils/infiniteScroll';
+	import { fetchPosts } from '$lib/utils/infiniteScroll';
+	import type { Post as TypePost } from '$lib/types';
+	import { onMount, tick } from 'svelte';
 
 	export let data: PageData;
-	let scrollPosts: Array<any> = [];
-	let loadingPosts: boolean = false;
-	let loadingPostsElement: HTMLElement | null = null;
-	let loadingPostsStatus: number = 200;
+	let scrollData: Array<TypePost> = [];
+	let loadingPostsElement: HTMLElement | null;
 	let offset: number = 20;
 	let limit: number = 10;
+	let infiniteScrollData: { data: Array<TypePost> | null; status: number } = {
+		data: null,
+		status: 200
+	};
 
 	$: plainMyUser = data.plainMyUser;
 	$: isLogin = plainMyUser ? true : false;
@@ -21,6 +25,26 @@
 	$: profile_photo =
 		plainMyUser && plainMyUser.profile_photo !== 'null' ? plainMyUser.profile_photo : '';
 	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
+	$: url = `http://localhost:5173/api/posts?offset=${offset}&limit=${limit}`;
+
+	onMount(async () => {
+		let observer = new IntersectionObserver(async (entries) => {
+			entries.forEach(async (entry) => {
+				if (entry.isIntersecting) {
+					infiniteScrollData = await fetchPosts(url);
+					if (infiniteScrollData.data) {
+						scrollData = [...scrollData, ...infiniteScrollData.data];
+						offset += 10;
+					}
+				}
+			});
+		});
+		tick().then(() => {
+			if (loadingPostsElement) {
+				observer?.observe(loadingPostsElement);
+			}
+		});
+	});
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -31,41 +55,6 @@
 		}
 		return false;
 	}
-
-	const fetchPosts = async (offset: number, limit: number) => {
-		try {
-			loadingPosts = true;
-			const url = `http://localhost:5173/api/posts?offset=${offset}&limit=${limit}`;
-			const options = { method: 'GET' };
-			const response = await fetch(url, options);
-			if (response.ok) {
-				loadingPostsStatus = 200;
-				const posts = await response.json();
-				scrollPosts = [...scrollPosts, ...posts];
-				loadingPosts = false;
-				return offset + 10;
-			} else if (response.status == 404) {
-				loadingPostsStatus = 404;
-			} else {
-				loadingPostsStatus = response.status;
-			}
-		} catch (error) {
-			loadingPostsStatus = 500;
-		}
-		return offset;
-	};
-
-	const waitingLoadingPost = () => {
-		setTimeout(async () => {
-			offset = await fetchPosts(offset, limit);
-		}, 300);
-	};
-
-	$: {
-		if (loadingPostsElement) {
-			infiniteScroll({ fetch: waitingLoadingPost, element: loadingPostsElement });
-		}
-	}
 </script>
 
 <div class="col-span-7">
@@ -75,12 +64,13 @@
 		{:else}
 			<LoginInHome />
 		{/if}
+
 		{#await data.streamed.posts}
 			{#each Array(2) as _}
 				<Post loading={true} />
 			{/each}
 		{:then posts}
-			{#if posts?.status === 200}
+			{#if posts?.status === 200 && posts.data}
 				{#each posts.data as post}
 					<Post
 						user_photo_url={post.user?.profile_photo}
@@ -102,7 +92,7 @@
 						post_id={post.id}
 					/>
 				{/each}
-				{#each scrollPosts as post}
+				{#each scrollData as post}
 					<Post
 						user_photo_url={post.user?.profile_photo}
 						user_name={post.user?.username}
@@ -123,13 +113,17 @@
 						post_id={post.id}
 					/>
 				{/each}
-				{#if loadingPostsStatus == 200}
+				{#if infiniteScrollData.status == 200}
 					<div bind:this={loadingPostsElement}>
 						<Post loading={true} />
 					</div>
 					<Post loading={true} />
-				{:else if loadingPostsStatus == 404}
-					<div class="w-full bg-purpleLight text-white justify-center">NOT FOUND</div>
+				{:else if infiniteScrollData.status == 404}
+					<div
+						class="w-full bg-purpleGray text-white justify-center rounded-2xl flex items-center h-10"
+					>
+						No more posts to see...
+					</div>
 				{:else}
 					<div class="w-full bg-purpleLight text-white flex justify-center rounded-full">
 						PLEASE RELOAD
@@ -156,7 +150,7 @@
 		{#await data.streamed.top_tags}
 			<Tops loading={true} />
 		{:then tops}
-			{#if tops?.status === 200}
+			{#if tops?.status === 200 && tops.data}
 				<Tops tops={tops.data} />
 			{:else if tops?.status === 404}
 				<div class="bg-purpleGray rounded-2xl flex justify-center p-3 w-full">
