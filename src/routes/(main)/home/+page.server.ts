@@ -1,10 +1,15 @@
-import { type Actions, fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
 import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
+import { fileURLToPath } from 'url';
 import type { TopTag, Post } from '$lib/types';
+import { type Actions, fail, redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+
+const __filename = fileURLToPath(import.meta.url);
+const __route = __filename.slice(__filename.indexOf('src'));
 
 export const load: PageServerLoad = ({ fetch, cookies }) => {
+
 
   const base_api_url: string | undefined = env.API_URL;
   let fetchedPosts = { data: null, status: 500 };
@@ -13,7 +18,7 @@ export const load: PageServerLoad = ({ fetch, cookies }) => {
   let top_tags_response: Promise<{ data: Array<TopTag> | null, status: number }> = Promise.resolve(fetchedTags);
 
   if (!base_api_url) {
-    console.error(`Error: Error en [/routes/(main)/home/+layout.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+    console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
     return {
       streamed: {
         posts: posts_response,
@@ -31,7 +36,7 @@ export const load: PageServerLoad = ({ fetch, cookies }) => {
       }
       return fetchedTags;
     }).catch((error) => {
-      console.error(`Error: Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar obtener "Top tags"\n\t- ${error}`)
+      console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "Top tags"\n\t- ${error}`)
       return fetchedTags;
     })
 
@@ -46,7 +51,7 @@ export const load: PageServerLoad = ({ fetch, cookies }) => {
         }
         return fetchedPosts;
       }).catch((error) => {
-        console.error(`Error: Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
+        console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
         return fetchedPosts;
       });
     return {
@@ -81,12 +86,12 @@ export const load: PageServerLoad = ({ fetch, cookies }) => {
             fetchedPosts.data = data;
           }
         }).catch((error) => {
-          console.error(`Error: Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
+          console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
         })
       }
       return fetchedPosts;
     }).catch((error) => {
-      console.error(`Error: Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar obtener posts de home\n\t- ${error}`)
+      console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener posts de home\n\t- ${error}`)
       return fetchedPosts;
     })
 
@@ -113,7 +118,7 @@ export const actions: Actions = {
     if (!access_token) throw redirect(303, '/login');
     const base_api_url: string = env.API_URL;
     if (!base_api_url) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+layout.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+      console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
     }
     if (state_on === 'true') {
@@ -134,13 +139,14 @@ export const actions: Actions = {
       try {
         const response = await fetch(url, options);
         if (response.ok) return;
-        else if (response.status === 401) throw redirect(303, "/login");
-        return fail(500, { serverFail: true });
+        else if (response.status !== 401) {
+          return fail(response.status, { serverFail: true });
+        }
       } catch (error) {
-        console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar toogle_reaction\n\t- ${error}`)
+        console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar toogle_reaction\n\t- ${error}`)
         return fail(500, { serverFail: true });
       }
-
+      throw redirect(303, "/login");
     } else if (state_on === 'false') {
       const url = `${base_api_url}/reactions/${post_id}`;
       const options = {
@@ -154,13 +160,14 @@ export const actions: Actions = {
       try {
         const response = await fetch(url, options);
         if (response.ok) return;
-        else if (response.status === 401) throw redirect(303, "/login");
-        return fail(500, { serverFail: true });
+        else if (response.status !== 401) {
+          return fail(response.status, { serverFail: true });
+        }
       } catch (error) {
-        console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar toogle_reaction\n\t- ${error}`)
+        console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar toogle_reaction\n\t- ${error}`)
         return fail(500, { serverFail: true });
       }
-
+      throw redirect(303, "/login");
     }
   },
   createPost: async ({ request, fetch, cookies }) => {
@@ -177,7 +184,7 @@ export const actions: Actions = {
 
     if (!access_token) throw redirect(303, '/login');
     if (!base_api_url) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+layout.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+      console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
     }
 
@@ -199,7 +206,7 @@ export const actions: Actions = {
         }
         throw error(response.status, response.statusText);
       } catch (error) {
-        console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al obtener url de la imagen\n\t- ${error}`)
+        console.error(`Error(Action): Error en [${__route}].\n\t- Error al obtener url de la imagen\n\t- ${error}`)
         return ''
       }
     };
@@ -227,12 +234,14 @@ export const actions: Actions = {
     try {
       const response = await fetch(posts_url, options);
       if (response.ok) return;
-      else if (response.status === 401) throw redirect(303, "/login");
-      throw error(response.status, response.statusText);
+      else if (response.status !== 401) {
+        return fail(response.status, { serverFail: true });
+      }
     } catch (error) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar crear un post\n\t- ${error}`)
+      console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar crear un post\n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
+    throw redirect(303, "/login");
   },
   deletePost: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -242,7 +251,7 @@ export const actions: Actions = {
 
     if (!access_token) throw redirect(303, '/login');
     if (!base_api_url) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+layout.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+      console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
     }
     if (!post_id) return fail(400, { postIdMissing: true });
@@ -258,12 +267,14 @@ export const actions: Actions = {
     try {
       const response = await fetch(posts_url, options);
       if (response.ok) return;
-      else if (response.status === 401) throw redirect(303, "/login");
-      throw error(response.status, response.statusText);
+      else if (response.status !== 401) {
+        return fail(response.status, { serverFail: true });
+      }
     } catch (error) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar eliminar un post\n\t- ${error}`)
+      console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar eliminar un post\n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
+    throw redirect(303, "/login");
   },
   editPost: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -281,7 +292,7 @@ export const actions: Actions = {
 
     if (!access_token) throw redirect(303, '/login');
     if (!base_api_url) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+layout.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+      console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
     }
     if (!post_id) return fail(400, { postIdMissing: true });
@@ -301,11 +312,11 @@ export const actions: Actions = {
         if (response.ok) {
           let img = await response.json();
           return img.url;
-        } else if (response.status === 401) throw redirect(303, "/login");
+        }
         throw error(response.status, response.statusText);
       } catch (error) {
-        console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar obtener la url de la imagen\n\t- ${error}`)
-        return fail(500, { serverFail: true });
+        console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar obtener la url de la imagen\n\t- ${error}`)
+        return ''
       }
     };
 
@@ -335,12 +346,14 @@ export const actions: Actions = {
     try {
       const response = await fetch(post_url, options);
       if (response.ok) return;
-      else if (response.status === 401) throw redirect(303, "/login");
-      throw error(response.status, response.statusText);
+      else if (response.status !== 401) {
+        return fail(response.status, { serverFail: true });
+      }
     } catch (error) {
       console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar editar el post \n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
+    throw redirect(303, "/login");
   },
   dontShowPost: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -349,7 +362,7 @@ export const actions: Actions = {
     const access_token = cookies.get('access_token');
     if (!access_token) throw redirect(303, '/login');
     if (!base_api_url) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+layout.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+      console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
     }
     if (!post_id) return fail(400, { postIdMissing: true });
@@ -365,11 +378,13 @@ export const actions: Actions = {
     try {
       const response = await fetch(posts_url, options);
       if (response.ok) return;
-      else if (response.status === 401) throw redirect(303, "/login");
-      throw error(response.status, response.statusText);
+      else if (response.status !== 401) {
+        return fail(response.status, { serverFail: true });
+      }
     } catch (error) {
       console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar ocultar un post \n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
+    throw redirect(303, "/login");
   }
 };
