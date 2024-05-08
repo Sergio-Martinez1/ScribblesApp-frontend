@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { PageData, ActionData } from './$types';
   import {Logout} from "$components";
 </script>
 
