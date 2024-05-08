@@ -350,7 +350,7 @@ export const actions: Actions = {
         return fail(response.status, { serverFail: true });
       }
     } catch (error) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar editar el post \n\t- ${error}`)
+      console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar editar el post \n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
     throw redirect(303, "/login");
@@ -362,7 +362,7 @@ export const actions: Actions = {
     const access_token = cookies.get('access_token');
     if (!access_token) throw redirect(303, '/login');
     if (!base_api_url) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+      console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
     }
     if (!post_id) return fail(400, { postIdMissing: true });
@@ -382,7 +382,7 @@ export const actions: Actions = {
         return fail(response.status, { serverFail: true });
       }
     } catch (error) {
-      console.error(`Error(Action): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar ocultar un post \n\t- ${error}`)
+      console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar ocultar un post \n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
     throw redirect(303, "/login");
