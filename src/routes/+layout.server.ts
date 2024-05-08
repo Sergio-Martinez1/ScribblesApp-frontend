@@ -27,6 +27,10 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
       return {
         plainMyUser: await response.json()
       }
+    } else if (response.status == 401) {
+      return {
+        plainMyUser: null
+      }
     } else {
       throw error(response.status, response.statusText);
     }
