@@ -1,15 +1,17 @@
 import type { LayoutServerLoad } from './$types';
 import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
+import { fileURLToPath } from 'url';
 
 export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
 
+  const __filename = fileURLToPath(import.meta.url);
+  const __route = __filename.slice(__filename.indexOf('src'));
+
   const base_api_url: string | undefined = env.API_URL;
-  if (!base_api_url) console.error('Error: No se encontro la url de la api en el entorno - [/routes/+layout.server.ts]');
+  if (!base_api_url) console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno\n\t- ${error}`);
 
   const access_token = cookies.get('access_token');
-  if (!access_token) console.error('Error: el usuario no ha iniciado sesion');
-
 
   const options = {
     method: "get",
@@ -18,6 +20,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
       Authorization: `Bearer ${access_token}`
     }
   };
+
   try {
     const response = await fetch(`${base_api_url}/users/plainMyUser`, options);
     if (response.ok) {
@@ -28,8 +31,9 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
       throw error(response.status, response.statusText);
     }
   } catch (error) {
-    console.error(`Error: Error en [/routes/+layout.server.ts].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`)
+    console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`);
   }
+
   return {
     plainMyUser: null
   };
