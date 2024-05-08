@@ -22,7 +22,7 @@
 	onMount(() => {
 		edit_profile_view = window.innerWidth < 640 ? false : true;
 	});
-  
+
 	function windowChanged() {
 		if (screenWidth >= 639) {
 			if (open_view == false) {
@@ -80,7 +80,7 @@
 			password_view = false;
 			toggle_theme_view = false;
 			delete_account_view = false;
-      screenScroll = 0;
+			screenScroll = 0;
 		}}
 	>
 		<h1 class="text-white text-lg max-sm:flex max-sm:items-center max-sm:relative max-sm:h-[30px]">
@@ -101,7 +101,7 @@
 			password_view = true;
 			toggle_theme_view = false;
 			delete_account_view = false;
-      screenScroll = 0;
+			screenScroll = 0;
 		}}
 	>
 		<h1 class="text-white text-lg max-sm:flex max-sm:items-center max-sm:relative max-sm:h-[30px]">
@@ -122,7 +122,7 @@
 			password_view = false;
 			toggle_theme_view = true;
 			delete_account_view = false;
-      screenScroll = 0;
+			screenScroll = 0;
 		}}
 	>
 		<h1 class="text-white text-lg max-sm:flex max-sm:items-center max-sm:relative max-sm:h-[30px]">
@@ -141,7 +141,7 @@
 			password_view = false;
 			toggle_theme_view = false;
 			delete_account_view = true;
-      screenScroll = 0;
+			screenScroll = 0;
 		}}
 	>
 		<h1 class="text-white text-lg max-sm:flex max-sm:items-center max-sm:relative max-sm:h-[30px]">
@@ -150,32 +150,68 @@
 		</h1>
 	</button>
 </div>
-{#await data.streamed?.user}
+{#await data.streamed.myUser}
 	<div>Loading...</div>
 {:then user}
-	{#if screenWidth < 640}
-		{#if open_view}
-			<div
-				in:fly={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
-				out:fly|local={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
-				class="max-sm:absolute max-sm:w-full sm:inline-block sm:col-start-7 sm:col-span-6 px-5 py-4 min-h-screen max-sm:bg-purpleDark"
-			>
-				<div class="flex flex-col items-center gap-y-4 bg-purpleGray rounded-2xl h-fit mb-24 p-3">
-					<button
-						class="self-start active:bg-krispyPurple sm:hidden rounded-full"
-						on:click={hideView}><ArrowLeft width={40} height={40} /></button
-					>
+	{#if user?.status === 200 && user.data}
+		{#if screenWidth < 640}
+			{#if open_view}
+				<div
+					in:fly={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
+					out:fly|local={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
+					class="max-sm:absolute max-sm:w-full sm:inline-block sm:col-start-7 sm:col-span-6 px-5 py-4 min-h-screen max-sm:bg-purpleDark"
+				>
+					<div class="flex flex-col items-center gap-y-4 bg-purpleGray rounded-2xl h-fit mb-24 p-3">
+						<button
+							class="self-start active:bg-krispyPurple sm:hidden rounded-full"
+							on:click={hideView}><ArrowLeft width={40} height={40} /></button
+						>
+						{#if edit_profile_view}
+							<EditProfile
+								profile_photo={user.data.profile_photo}
+								cover_photo={user.data.cover_photo}
+								description={user.data.description}
+								personal_url={user.data.personal_url}
+								location={user.data.location}
+								birthday={user.data.birthday}
+							/>
+						{:else if username_view}
+							<ChangeUsername {form} username={user.data.username} />
+						{:else if password_view}
+							<ChangePassword {form} />
+						{:else if toggle_theme_view}
+							<label class="flex items-center relative w-max cursor-pointer select-none py-9">
+								<span class="text-2xl font-bold mr-3 text-white">Dark Theme</span>
+								<input
+									type="checkbox"
+									class="appearance-none transition-colors cursor-pointer w-14 h-7 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-blue-500 bg-red-500"
+								/>
+								<span class="absolute font-medium text-xs uppercase right-1 text-white"> OFF </span>
+								<span class="absolute font-medium text-xs uppercase right-8 text-white"> ON </span>
+								<span
+									class="w-7 h-7 right-7 absolute rounded-full transform transition-transform bg-gray-200"
+								/>
+							</label>
+						{:else if delete_account_view}
+							<DeleteAccount />
+						{/if}
+					</div>
+				</div>
+			{/if}
+		{:else}
+			<div class="inline-block col-start-7 col-span-6 min-h-screen pt-8 pb-16">
+				<div class="bg-purpleGray rounded-2xl h-fit">
 					{#if edit_profile_view}
 						<EditProfile
-							profile_photo={user.profile_photo}
-							cover_photo={user.cover_photo}
-							description={user.description}
-							personal_url={user.personal_url}
-							location={user.location}
-							birthday={user.birthday}
+							profile_photo={user.data.profile_photo}
+							cover_photo={user.data.cover_photo}
+							description={user.data.description}
+							personal_url={user.data.personal_url}
+							location={user.data.location}
+							birthday={user.data.birthday}
 						/>
 					{:else if username_view}
-						<ChangeUsername {form} username={user.username} />
+						<ChangeUsername {form} username={user.data.username} />
 					{:else if password_view}
 						<ChangePassword {form} />
 					{:else if toggle_theme_view}
@@ -197,39 +233,5 @@
 				</div>
 			</div>
 		{/if}
-	{:else}
-		<div class="inline-block col-start-7 col-span-6 min-h-screen pt-8 pb-16">
-			<div class="bg-purpleGray rounded-2xl h-fit">
-				{#if edit_profile_view}
-					<EditProfile
-						profile_photo={user.profile_photo}
-						cover_photo={user.cover_photo}
-						description={user.description}
-						personal_url={user.personal_url}
-						location={user.location}
-						birthday={user.birthday}
-					/>
-				{:else if username_view}
-					<ChangeUsername {form} username={user.username} />
-				{:else if password_view}
-					<ChangePassword {form} />
-				{:else if toggle_theme_view}
-					<label class="flex items-center relative w-max cursor-pointer select-none py-9">
-						<span class="text-2xl font-bold mr-3 text-white">Dark Theme</span>
-						<input
-							type="checkbox"
-							class="appearance-none transition-colors cursor-pointer w-14 h-7 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-blue-500 bg-red-500"
-						/>
-						<span class="absolute font-medium text-xs uppercase right-1 text-white"> OFF </span>
-						<span class="absolute font-medium text-xs uppercase right-8 text-white"> ON </span>
-						<span
-							class="w-7 h-7 right-7 absolute rounded-full transform transition-transform bg-gray-200"
-						/>
-					</label>
-				{:else if delete_account_view}
-					<DeleteAccount />
-				{/if}
-			</div>
-		</div>
 	{/if}
 {/await}
