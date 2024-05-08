@@ -18,7 +18,7 @@
 		data: null,
 		status: 200
 	};
-  let observer: IntersectionObserver;
+	let observer: IntersectionObserver;
 
 	$: plainMyUser = data.plainMyUser;
 	$: isLogin = plainMyUser ? true : false;
@@ -86,11 +86,11 @@
 						post_content={post.content ? post.content : ''}
 						post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
 						like_on={handleLike(my_reactions, post.id)}
-						likes_count={post.reactions.length}
-						comments_count={post.num_comments}
-						tags_count={post.tags.length}
+						likes_count={post.reactions ? post.reactions.length : 0}
+						comments_count={post.num_comments ? post.num_comments : 0}
+						tags_count={post.tags ? post.tags.length : 0}
 						vertical={false}
-						tags={post.tags.map((tag) => tag.content)}
+						tags={post.tags ? post.tags.map((tag) => tag.content) : []}
 						post_by_tags_url="/home"
 						creator_id={post.user?.id}
 						myUser_id={id}
@@ -107,11 +107,11 @@
 						post_content={post.content ? post.content : ''}
 						post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
 						like_on={handleLike(my_reactions, post.id)}
-						likes_count={post.reactions.length}
-						comments_count={post.num_comments}
-						tags_count={post.tags.length}
+						likes_count={post.reactions ? post.reactions.length : 0}
+						comments_count={post.num_comments ? post.num_comments : 0}
+						tags_count={post.tags ? post.tags.length : 0}
 						vertical={false}
-						tags={post.tags.map((tag) => tag.content)}
+						tags={post.tags ? post.tags.map((tag) => tag.content) : []}
 						post_by_tags_url="/home"
 						creator_id={post.user?.id}
 						myUser_id={id}
