@@ -8,7 +8,7 @@
 	import Image from './Icon/Image.svelte';
 
 	//POST
-	export let user_photo_url: string = '#';
+	export let user_photo_url: string | null = '';
 	export let user_name: string = '';
 	export let user_url: string = '#';
 	export let post_url: string = '#';

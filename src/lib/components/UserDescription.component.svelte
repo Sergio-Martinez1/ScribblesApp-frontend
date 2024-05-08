@@ -4,10 +4,10 @@
 	import Gift from '$lib/components/Icon/Gift.svelte';
 	import MapPin from '$lib/components/Icon/MapPin.svelte';
 
-	export let content: string = '';
-	export let webSite: string = '';
-	export let birthDay: string = '';
-	export let location: string = '';
+	export let content: string | null = '';
+	export let webSite: string | null = '';
+	export let birthDay: string | null = '';
+	export let location: string | null = '';
 	export let userCreationDate: string = '';
 	export let loading: boolean = false;
 

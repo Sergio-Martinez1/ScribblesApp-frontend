@@ -13,9 +13,9 @@
 	});
 
 	//POST
-	export let post_thumbnail_url: string = '#';
-	export let post_content: string = '';
-	export let user_photo_url: string = '';
+	export let post_thumbnail_url: string | null = '';
+	export let post_content: string | null = '';
+	export let user_photo_url: string | null = '';
 	export let user_name: string = '';
 	export let loading: boolean = false;
 	export let post_creation_date: string = '';
