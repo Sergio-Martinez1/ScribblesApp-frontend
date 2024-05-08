@@ -23,7 +23,7 @@
 
 	//STYLES
 	export let maxContent: number = 500;
-	export let user_photo_url: string = '';
+	export let user_photo_url: string | null = '';
 	export let username: string = '';
 	$: maxSize = imagePreview ? '' : '120px';
 

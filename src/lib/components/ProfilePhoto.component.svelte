@@ -4,7 +4,7 @@
 	import Camera from './Icon/Camera.svelte';
 
 	export let username: string = '';
-	export let profilePhoto: string = '';
+	export let profilePhoto: string | null = '';
 	export let editable: boolean = false;
 	export let loading: boolean = false;
 </script>

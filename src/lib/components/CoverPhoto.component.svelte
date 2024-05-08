@@ -2,7 +2,7 @@
 	import EditPhoto from './EditPhoto.component.svelte';
 	import Camera from './Icon/Camera.svelte';
 
-	export let coverPhotoUrl: string = '';
+	export let coverPhotoUrl: string | null = '';
 	export let editable: boolean = false;
 	export let loading: boolean = false;
 </script>

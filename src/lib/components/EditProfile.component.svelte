@@ -8,12 +8,12 @@
 	import LocationInput from './LocationInput.component.svelte';
 	import BirthdayInput from './BirthdayInput.component.svelte';
 
-	export let profile_photo: string = '';
-	export let cover_photo: string = '';
-	export let description: string = '';
-	export let personal_url: string = '';
-	export let location: string = 'location';
-	export let birthday: string = '2023-05-28';
+	export let profile_photo: string | null = '';
+	export let cover_photo: string | null = '';
+	export let description: string | null = '';
+	export let personal_url: string | null = '';
+	export let location: string | null = 'location';
+	export let birthday: string | null = '2023-05-28';
 
 	let editable: boolean = false;
 </script>
