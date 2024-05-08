@@ -1,7 +1,12 @@
-import type { PageServerLoad } from "./$types";
 import { env } from "$env/dynamic/private";
+import { fileURLToPath } from 'url';
 import type { TopTag, Post } from '$lib/types';
+import type { PageServerLoad } from "./$types";
 
+const __filename = fileURLToPath(import.meta.url);
+const __route = __filename.slice(__filename.indexOf('src'));
+
+//REVISAR PARA MOSTRAR POSTS PERSONALES Y PUBLICOS
 export const load: PageServerLoad = async ({ fetch, params }) => {
 
   const base_api_url: string | undefined = env.API_URL;
@@ -11,7 +16,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
   let top_tags_response: Promise<{ data: Array<TopTag> | null, status: number }> = Promise.resolve(fetchedTags);
 
   if (!base_api_url) {
-    console.error(`Error: Error en [/routes/(main)/home/[tag]/+page.server.ts].\n\t- No se encontro la url de la api en el entorno`);
+    console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
     return {
       streamed: {
         posts: posts_response,
@@ -29,7 +34,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
       }
       return fetchedPosts;
     }).catch((error) => {
-      console.error(`Error: Error en [/routes/(main)/home/[tag]/+page.server.ts].\n\t- Error al intentar obtener posts por tag\n\t- ${error}`)
+      console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener posts por tag\n\t- ${error}`)
       return fetchedTags;
     })
 
@@ -42,7 +47,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
       }
       return fetchedTags;
     }).catch((error) => {
-      console.error(`Error: Error en [/routes/(main)/home/[tag]/+page.server.ts].\n\t- Error al intentar obtener "Top tags"\n\t- ${error}`)
+      console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "Top tags"\n\t- ${error}`)
       return fetchedTags;
     });
 
