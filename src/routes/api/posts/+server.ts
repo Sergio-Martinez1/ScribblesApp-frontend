@@ -1,6 +1,10 @@
 import { env } from "$env/dynamic/private";
 import { error, type RequestHandler } from "@sveltejs/kit";
+import { fileURLToPath } from 'url';
 import type { Post } from '$lib/types';
+
+const __filename = fileURLToPath(import.meta.url);
+const __route = __filename.slice(__filename.indexOf('src'));
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
 
@@ -13,7 +17,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
   let fetchedPosts: { data: Array<Post> | null, status: number } = { data: null, status: 500 };
 
   if (!api_url) {
-    console.error(`Error: Error en [/routes/api/posts/+server.ts].\n\t- No se encontro la url de la api en el entorno`)
+    console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`)
     return new Response(JSON.stringify(fetchedPosts))
   }
 
@@ -33,7 +37,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
       }
       throw error(response.status, response.statusText);
     } catch (error) {
-      console.error(`Error(api): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
+      console.error(`Error(api): Error en [${__route}].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
       return new Response(JSON.stringify(fetchedPosts))
     }
   }
@@ -59,6 +63,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
         fetchedPosts.data = await public_posts_response.json();
         return new Response(JSON.stringify(fetchedPosts))
       }
+      throw error(public_posts_response.status, response.statusText);
     }
     throw error(response.status, response.statusText);
   } catch (error) {
