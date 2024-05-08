@@ -1,49 +1,78 @@
 import { env } from '$env/dynamic/private';
-import { error, redirect } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
+import { fileURLToPath } from 'url';
 import type { PageServerLoad } from './$types';
+import type { Post, MyUser } from '$lib/types';
+
+const __filename = fileURLToPath(import.meta.url);
+const __route = __filename.slice(__filename.indexOf('src'));
 
 export const load: PageServerLoad = async ({ fetch, cookies }) => {
 
   const base_api_url: string | undefined = env.API_URL;
+  let fetchedMyUser = { data: null, status: 500 };
+  let fetchedMyPosts = { data: null, status: 500 };
+  let myUser_response: Promise<{ data: MyUser | null, status: number }> = Promise.resolve(fetchedMyUser);
+  let myPosts_response: Promise<{ data: Array<Post> | null, status: number }> = Promise.resolve(fetchedMyPosts);
 
-  if (!base_api_url) throw error(404, 'No api provided');
+  if (!base_api_url) {
+    console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
+    return {
+      streamed: {
+        myUser: myUser_response,
+        myPosts: myPosts_response
+      }
+    }
+  }
 
   const access_token = cookies.get('access_token');
-  const data: { myUser: any; myPosts: any; } = { myUser: null, myPosts: null };
-
-  if (access_token) {
-    
-    const myUser_url = `${base_api_url}/users/myUser`;
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${access_token}`
-      }
-    };
-    
-    const myUser_response = await fetch(myUser_url, options);
-
-    if (myUser_response.ok) {
-
-      data.myUser = myUser_response.json();
-      const myPosts_url = `${base_api_url}/posts/myPosts`;
-      const myPosts_response = await fetch(myPosts_url, options);
-
-      if (myPosts_response.ok) {
-
-        data.myPosts = myPosts_response.json();
-      }
-
-      return {
-        streamed: {
-          myUser: data.myUser,
-          myPosts: data.myPosts
-        }
-      }
-    } else if (myUser_response.status === 401) throw redirect(303, "/login");
-    
-  } else {
+  if (!access_token) {
+    console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
     throw redirect(303, "/login");
   }
+
+  const myUser_url = `${base_api_url}/users/myUser`;
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${access_token}`
+    }
+  };
+
+  myUser_response = fetch(myUser_url, options)
+    .then(async (response) => {
+      fetchedMyUser.status = response.status;
+      if (response.ok) {
+        const data = await response.json();
+        fetchedMyUser.data = data;
+      }
+      return fetchedMyUser;
+    }).catch((error) => {
+      console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "myUser"\n\t- ${error}`)
+      return fetchedMyUser;
+    });
+
+  const myPosts_url = `${base_api_url}/posts/myPosts`;
+
+  myPosts_response = fetch(myPosts_url, options)
+    .then(async (response) => {
+      fetchedMyPosts.status = response.status;
+      if (response.ok) {
+        const data = await response.json();
+        fetchedMyPosts.data = data;
+      }
+      return fetchedMyPosts;
+    }).catch((error) => {
+      console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "myPosts"\n\t- ${error}`)
+      return fetchedMyPosts;
+    });
+
+  return {
+    streamed: {
+      myUser: myUser_response,
+      myPosts: myPosts_response
+    }
+  }
+
 };
