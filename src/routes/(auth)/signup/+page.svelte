@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PageData, ActionData } from './$types';
+  import type { ActionData } from './$types';
   import {Signup} from "$components";
   export let form: ActionData;
 </script>
