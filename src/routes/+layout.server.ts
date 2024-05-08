@@ -9,7 +9,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
   const __route = __filename.slice(__filename.indexOf('src'));
 
   const base_api_url: string | undefined = env.API_URL;
-  if (!base_api_url) console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno\n\t- ${error}`);
+  if (!base_api_url) console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
 
   const access_token = cookies.get('access_token');
 
