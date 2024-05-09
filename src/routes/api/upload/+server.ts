@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         status: profile_photo_url.status,
         body: 'Please login'
       });
-    } else {
+    } else if (profile_photo_url.status !== 201) {
       return json({
         status: profile_photo_url.status,
         body: 'Error processing request'
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         status: cover_photo_url.status,
         body: 'Please login'
       });
-    } else {
+    } else if (cover_photo_url.status !== 201) {
       return json({
         status: cover_photo_url.status,
         body: 'Error processing request'
