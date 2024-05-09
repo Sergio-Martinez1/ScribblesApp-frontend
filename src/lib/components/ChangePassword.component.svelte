@@ -18,6 +18,7 @@
 		placeholder="Current password"
 	/>
 	{#if form?.passwordMissing}<p class="error text-white">Password required</p>{/if}
+	{#if form?.incorrectPassword}<p class="error text-white">Incorrect password</p>{/if}
 	<input
 		type="password"
     name="new_password"
