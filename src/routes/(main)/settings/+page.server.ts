@@ -315,7 +315,7 @@ export const actions: Actions = {
     const newPassword = form.get('new_password');
     const confirm = form.get('confirm');
     const base_api_url: string = env.API_URL;
-    const url = `${base_api_url}/users/passsword`;
+    const url = `${base_api_url}/users/password`;
     const access_token = cookies.get('access_token');
 
     if (!base_api_url) return fail(500, { serverFail: true });
@@ -364,6 +364,8 @@ export const actions: Actions = {
       return;
     } else if (response.status === 401) {
       throw redirect(303, "/login")
+    } else if (response.status === 403) {
+      return fail(response.status, { incorrectPassword: true });
     } else {
       return fail(response.status, { serverFail: true });
     }
