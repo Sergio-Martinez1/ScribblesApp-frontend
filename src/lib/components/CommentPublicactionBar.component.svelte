@@ -1,0 +1,82 @@
+<script lang="ts">
+	import User from '$lib/components/Icon/User.svelte';
+	import TextAreaAutosize from '$lib/components/TextAreaAutosize.svelte';
+	import Send from '$lib/components/Icon/Send.svelte';
+	import { applyAction, enhance } from '$app/forms';
+	import { fly } from 'svelte/transition';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { invalidateAll } from '$app/navigation';
+
+	export let my_user_photo: string = '';
+	export let post_id: number = 0;
+	export let maxContent: number = 300;
+	export let loading: boolean = false;
+	let outputText: string = '';
+	let innerText: string = '';
+	let showPlaceHolder: boolean = true;
+	let focus: boolean = false;
+
+	$: validContent = outputText.trim() && outputText.length <= maxContent ? true : false;
+
+	const submit: SubmitFunction = () => {
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				await invalidateAll();
+				await applyAction(result);
+				innerText = '';
+				showPlaceHolder = true;
+			} else if (result.type === 'redirect') {
+				await applyAction(result);
+				innerText = '';
+				showPlaceHolder = true;
+			}
+		};
+	};
+</script>
+
+<section class="grid grid-cols-[50px_1fr] gap-x-[17px] items-center">
+	{#if loading}
+		<div class="w-[50px] h-[50px] col-start-1 animate-pulse">
+			<div class="w-full h-full object-cover rounded-full bg-lavandaLight dark:bg-purpleLight" />
+		</div>
+	{:else if my_user_photo}
+		<div class="w-[50px] h-[50px] col-start-1">
+			<img class="w-full h-full object-cover rounded-full" src={my_user_photo} alt="User face" />
+		</div>
+	{:else}
+		<div class="w-[50px] h-[50px] col-start-1">
+			<User width={50} height={50} />
+		</div>
+	{/if}
+	<form
+		class="bg-lavandaLight dark:bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2 {focus
+			? 'outline outline-krispyPurple '
+			: ''}"
+		method="POST"
+		action="/post/[id]?/createComment"
+		use:enhance={submit}
+	>
+		<div class="grow self-center">
+			<TextAreaAutosize
+				placeHolder="Write a comment..."
+				bind:outputText
+				bind:innerText
+				bind:showPlaceHolder
+				bind:focus
+			/>
+		</div>
+		<input type="hidden" value={outputText} name="content" />
+		<input type="hidden" value={post_id} name="post_id" />
+		<button
+			disabled={!validContent}
+			type="submit"
+			class="bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple rounded-xl pr-1.5 w-fit h-fit self-end disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
+			><Send /></button
+		>
+	</form>
+	{#if outputText.length > maxContent}
+		<div in:fly|local={{ y: 10 }} out:fly|local={{ y: 10 }} class="text-squeezeRed col-start-2">
+			Only up to {maxContent} chars
+		</div>
+	{/if}
+</section>
