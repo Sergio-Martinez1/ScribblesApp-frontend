@@ -109,8 +109,8 @@
 				</div>
 			</div>
 		{:else}
-			<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-				<p class="text-white">Please reload the page</p>
+			<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+				<p class="dark:text-white">Please reload the page</p>
 			</div>
 		{/if}
 	{/await}
@@ -172,22 +172,22 @@
 						<Post loading={true} />
 					{:else if infiniteScrollData.status == 404}
 						<div
-							class="w-full bg-purpleGray text-white justify-center rounded-2xl flex items-center h-10"
+							class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10"
 						>
 							No more posts to see...
 						</div>
 					{:else}
-						<div class="w-full bg-purpleLight text-white flex justify-center rounded-full">
+						<div class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full">
 							Please reload the page
 						</div>
 					{/if}
 				{:else if myPosts?.status === 404}
-					<div class="w-full rounded-2xl bg-purpleGray flex items-center justify-center h-20">
-						<p class="text-white opacity-60">This seems a little quiet...</p>
+					<div class="w-full rounded-2xl bg-lavandaGray dark:bg-purpleGray flex items-center justify-center h-20">
+						<p class="dark:text-white opacity-60">This seems a little quiet...</p>
 					</div>
 				{:else}
-					<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-						<p class="text-white">Please reload the page</p>
+					<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+						<p class="dark:text-white">Please reload the page</p>
 					</div>
 				{/if}
 			{/await}

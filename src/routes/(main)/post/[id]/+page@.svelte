@@ -1,10 +1,11 @@
 <script lang="ts">
 	import PostDetail from '$components/PostDetail.component.svelte';
 	import Comments from '$components/Comments.component.svelte';
+	import CommentPublicactionBar from '$components/CommentPublicactionBar.component.svelte';
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
-  
-  //FALTA IMPLEMENTAR LAS REACCIONES
+
+	//FALTA IMPLEMENTAR LAS REACCIONES
 
 	export let data: PageData;
 	$: plainMyUser = data.plainMyUser;
@@ -25,7 +26,7 @@
 	}
 </script>
 
-<div class="bg-purpleDark min-h-screen relative">
+<div class="bg-lavandaDark dark:bg-purpleGray min-h-screen relative">
 	<div class="grid grid-cols-9 lg:grid-cols-12 lg:pr-[40px] lg:gap-[20px] mx-auto relative">
 		<div class="col-span-9 h-screen lg:sticky lg:top-0">
 			{#await data.streamed?.post}
@@ -41,39 +42,45 @@
 						post_id={post.data.id}
 					/>
 				{:else if post?.status === 404}
-					<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-						<p class="text-white">Post Not found</p>
+					<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+						<p class="dark:text-white">Post Not found</p>
 					</div>
 				{:else}
-					<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-						<p class="text-white">Please reload the page</p>
+					<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+						<p class="dark:text-white">Please reload the page</p>
 					</div>
 				{/if}
 			{/await}
 		</div>
 
 		<div class="col-span-9 px-5 mt-4 lg:px-0 lg:col-span-3 lg:mt-8">
-			{#await data.streamed?.comments}
-				<Comments loading={true} />
-			{:then comments}
-				{#if comments?.status === 200 && comments.data}
-					<Comments
-            comments={comments.data}
-						{isLogin}
-						my_user_photo={profile_photo}
-						post_id={Number($page.params.id)}
-						my_user_id={id}
-					/>
-				{:else if comments?.status === 404}
-					<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-						<p class="text-white">Comments Not found</p>
-					</div>
-				{:else}
-					<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-						<p class="text-white">Please reload the page</p>
-					</div>
-				{/if}
-			{/await}
+			<p class="dark:text-white font-bold text-xl w-fit mx-auto mb-4">Comments</p>
+			<div class="mb-4">
+				<CommentPublicactionBar my_user_photo={profile_photo} post_id={Number($page.params.id)} />
+			</div>
+			<div class="mb-4">
+				{#await data.streamed?.comments}
+					<Comments loading={true} />
+				{:then comments}
+					{#if comments?.status === 200 && comments.data}
+						<Comments
+							comments={comments.data}
+							{isLogin}
+							my_user_photo={profile_photo}
+							post_id={Number($page.params.id)}
+							my_user_id={id}
+						/>
+					{:else if comments?.status === 404}
+						<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+							<p class="dark:text-white">No comments to see...</p>
+						</div>
+					{:else}
+						<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+							<p class="dark:text-white">Please reload the page</p>
+						</div>
+					{/if}
+				{/await}
+			</div>
 		</div>
 	</div>
 </div>

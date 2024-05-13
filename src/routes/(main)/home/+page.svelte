@@ -62,7 +62,7 @@
 	}
 </script>
 
-<div class="col-span-7">
+<main class="col-span-7">
 	<div class="flex flex-col gap-y-4 mt-4 max-sm:mb-24 sm:mt-8">
 		{#if isLogin}
 			<PublicationBar user_url={'/profile'} user_photo_url={profile_photo} />
@@ -125,32 +125,32 @@
 					<Post loading={true} />
 				{:else if infiniteScrollData.status == 404}
 					<div
-						class="w-full bg-purpleGray text-white justify-center rounded-2xl flex items-center h-10"
+						class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10"
 					>
 						No more posts to see...
 					</div>
 				{:else}
-					<div class="w-full bg-purpleLight text-white flex justify-center rounded-full">
+					<div class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full">
 						PLEASE RELOAD
 					</div>
 				{/if}
 			{:else if posts?.status === 404}
-				<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-					<p class="text-white">You arrived at the end</p>
+				<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+					<p class="dark:text-white">You arrived at the end</p>
 				</div>
 			{:else}
-				<div class="bg-purpleGray rounded-2xl flex justify-center p-3">
-					<p class="text-white">Please reload the page</p>
+				<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+					<p class="dark:text-white">Please reload the page</p>
 				</div>
 			{/if}
 		{/await}
 	</div>
-</div>
-<div class="col-span-3 hidden md:inline-block">
-	<div class="flex flex-col gap-y-2 items-start mt-24 sticky top-6 max-h-screen">
-		<div class="bg-purpleGray rounded-2xl px-4 py-2.5 min-w-full">
-			<h1 class="text-white font-bold text-lg">Welcome</h1>
-			<p class="text-white">This is your home page. Checkout the new updates.</p>
+</main>
+<aside class="col-span-3 hidden md:inline-block">
+	<section class="flex flex-col gap-y-2 items-start mt-24 sticky top-6 max-h-screen">
+		<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-4 py-2.5 min-w-full">
+			<h1 class="dark:text-white font-bold text-lg">Welcome</h1>
+			<p class="dark:text-white">This is your home page. Checkout the new updates.</p>
 		</div>
 		{#await data.streamed.top_tags}
 			<Tops loading={true} />
@@ -158,15 +158,15 @@
 			{#if tops?.status === 200 && tops.data}
 				<Tops tops={tops.data} />
 			{:else if tops?.status === 404}
-				<div class="bg-purpleGray rounded-2xl flex justify-center p-3 w-full">
-					<p class="text-white">No tendencies right now</p>
+				<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3 w-full">
+					<p class="dark:text-white">No tendencies right now</p>
 				</div>
 			{:else}
-				<div class="bg-purpleGray rounded-2xl flex justify-center p-3 w-full">
-					<p class="text-white">Please reload the page</p>
+				<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3 w-full">
+					<p class="dark:text-white">Please reload the page</p>
 				</div>
 			{/if}
 		{/await}
 		<Footer />
-	</div>
-</div>
+	</section>
+</aside>
