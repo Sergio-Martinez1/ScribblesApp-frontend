@@ -1,16 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { slide } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
 	import Plus from './Icon/Plus.svelte';
 	import Edit from './Icon/Edit.svelte';
 	import { tick } from 'svelte';
 
-	export let location: string = '';
+	export let location: string | null = '';
 
 	let is_there_initial_content: boolean = location ? true : false;
 	let editable: boolean = false;
-	let content: string = location;
+	let content: string | null = location;
 	let input: HTMLInputElement;
 	$: validContent = location != content ? true : false;
 
@@ -32,7 +30,7 @@
 	{#if !is_there_initial_content && !editable}
 		<button
 			type="button"
-			class="flex items-center text-white gap-x-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple'} w-fit rounded-full py-1.5 px-1.5 mr-2"
+			class="flex items-center dark:text-white gap-x-2 bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple'} w-fit rounded-full py-1.5 px-1.5 mr-2"
 			on:click={focusAndEnableInput}
 		>
 			<div class="flex gap-x-2 items-center mx-1.5">
@@ -46,7 +44,7 @@
 			type="text"
 			name="location"
 			bind:value={content}
-			class="bg-purpleLight rounded-2xl h-9 text-white mr-2 px-2 focus:outline-none focus:border-2 focus:border-krispyPurple disabled:opacity-50"
+			class="bg-lavandaLight dark:bg-purpleLight rounded-2xl h-9 dark:text-white mr-2 px-2 focus:outline-none focus:border-2 focus:border-krispyPurple disabled:opacity-50"
 			placeholder="New York, US"
 			disabled
 		/>
@@ -61,7 +59,7 @@
 		{:else}
 			<button
 				type="button"
-				class="flex items-center text-white gap-x-2 bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-fit rounded-full py-1.5 px-1.5 mr-2"
+				class="flex items-center dark:text-white gap-x-2 bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-fit rounded-full py-1.5 px-1.5 mr-2"
 				on:click={() => {
 					editable = false;
 					input.disabled = true;
@@ -72,7 +70,7 @@
 			<button
 				type="submit"
 				disabled={!validContent}
-				class="text-white bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple w-fit rounded-full py-1.5 px-1.5 disabled:bg-lessPurple disabled:opacity-[0.5]"
+				class="dark:text-white bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple w-fit rounded-full py-1.5 px-1.5 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
 				>Save</button
 			>
 		{/if}
