@@ -12,10 +12,8 @@ export const GET: RequestHandler = async ({ cookies, url, params }) => {
   const access_token = cookies.get('access_token');
   const offset = url.searchParams.get('offset') ?? '0';
   const limit = url.searchParams.get('limit') ?? '10';
-  const tag_posts_url = `${api_url}/posts/tags/${params.tag}?offset=${offset}&limit=${limit}`;
+  const tag_posts_url = `${api_url}/posts/user/${params.id}?offset=${offset}&limit=${limit}`;
   let fetchedPosts: { data: Array<Post> | null, status: number } = { data: null, status: 500 };
-
-  console.log(__dirname)
 
   if (!api_url) {
     console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`)
