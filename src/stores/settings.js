@@ -1,7 +1,8 @@
 import { writable } from "svelte/store";
 
 const settings = writable({
-  previousPage: ""
+  previousPage: "",
+  color_scheme: ""
 });
 
 export default settings;
