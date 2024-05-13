@@ -12,3 +12,7 @@
 
 @layer components {}
 @layer utilties {}
+
+body {
+  overflow-y: scroll;
+}
