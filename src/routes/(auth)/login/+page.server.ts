@@ -54,7 +54,7 @@ export const actions: Actions = {
       }
     } catch (error) {
       console.error(`Error: Error en [${__route}].\n\t- Error en el servidor al intentar iniciar sesion\n\t- ${error}`);
-      return fail(500, { serverFail: true });
+      return fail(500, { serverFail: true, username, password });
     }
 
     throw redirect(303, "/home");
