@@ -16,7 +16,7 @@
 </script>
 
 <nav
-	class="group bg-purpleGray p-3 sm:rounded-2xl w-full sm:w-[97px] lg:w-full transition-[width] overflow-hidden"
+	class="group bg-lavandaGray dark:bg-purpleGray p-3 sm:rounded-2xl w-full sm:w-[97px] lg:w-full transition-[width] overflow-hidden"
 >
 	<ul
 		class="grid grid-flow-col sm:grid-flow-row max-sm:items-center h-fit max-sm:w-full sm:gap-y-2"
@@ -24,7 +24,13 @@
 		<li>
 			<a class:active={$page.url.pathname === home_url} href={home_url} title="Home"
 				><div class="w-[{icon_size}px]">
-					<Logo fill="#36254B" width={icon_size} height={icon_size} />
+					<Logo
+						fill="#36254B"
+						width={icon_size}
+						height={icon_size}
+						tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+						tailwindStrokeClass={'stroke-black dark:stroke-white'}
+					/>
 				</div>
 				<span class="w-0">Home</span></a
 			>
@@ -33,7 +39,12 @@
 			<li>
 				<a class:active={$page.url.pathname === profile_url} href={profile_url} title="Profile"
 					><div class="w-[{icon_size}px]">
-						<User width={icon_size} height={icon_size} />
+						<User
+							width={icon_size}
+							height={icon_size}
+							tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+							tailwindStrokeClass={'stroke-black dark:stroke-white'}
+						/>
 					</div>
 					<span>Profile</span></a
 				>
@@ -41,7 +52,12 @@
 			<li>
 				<a class:active={$page.url.pathname === settings_url} href={settings_url} title="Settings"
 					><div class="w-[{icon_size}px]">
-						<Settings width={icon_size} height={icon_size} />
+						<Settings
+							width={icon_size}
+							height={icon_size}
+							tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+							tailwindStrokeClass={'stroke-black dark:stroke-white'}
+						/>
 					</div>
 					<span>Settings</span></a
 				>
@@ -49,7 +65,12 @@
 			<li>
 				<a class:active={$page.url.pathname === logout_url} href={logout_url}
 					><div class="w-[{icon_size}px]">
-						<LogOut width={icon_size} height={icon_size} />
+						<LogOut
+							width={icon_size}
+							height={icon_size}
+							tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+							tailwindStrokeClass={'stroke-black dark:stroke-white'}
+						/>
 					</div>
 					<span>Log Out</span></a
 				>
@@ -58,7 +79,12 @@
 			<li>
 				<a class:active={$page.url.pathname === login_url} href={login_url}
 					><div class="w-[{icon_size}px]">
-						<LogIn width={icon_size} height={icon_size} />
+						<LogIn
+							width={icon_size}
+							height={icon_size}
+							tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+							tailwindStrokeClass={'stroke-black dark:stroke-white'}
+						/>
 					</div>
 					<span>Log In</span></a
 				>
@@ -69,10 +95,10 @@
 
 <style lang="postcss">
 	nav ul a {
-		@apply flex flex-col min-[1134px]:flex-row items-center hover:bg-hoverPurple rounded-2xl p-1.5;
+		@apply flex flex-col min-[1134px]:flex-row items-center hover:bg-hoverLavanda dark:hover:bg-hoverPurple rounded-2xl p-1.5;
 	}
 	nav ul li a span {
-		@apply font-bold text-white h-fit whitespace-nowrap transition-opacity duration-300;
+		@apply font-bold dark:text-white h-fit whitespace-nowrap transition-opacity duration-300;
 		@apply hidden sm:inline-block opacity-0 lg:opacity-100 w-0 h-0 lg:w-fit lg:h-fit min-[1134px]:pl-3;
 	}
 	nav ul li a.active span {
@@ -80,5 +106,8 @@
 	}
 	nav ul li a.active :global(rect) {
 		fill: #931df0;
+	}
+	nav ul li a.active :global(path) {
+		stroke: white;
 	}
 </style>

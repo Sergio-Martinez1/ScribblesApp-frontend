@@ -25,7 +25,7 @@
 	}}
 >
 	<p
-		class="text-krispyPurple font-bold underline hover:text-white active:text-krispyPurple text-lg"
+		class="text-krispyPurple font-bold underline hover:text-black dark:hover:text-white active:text-krispyPurple text-lg"
 	>
 		Edit
 	</p>

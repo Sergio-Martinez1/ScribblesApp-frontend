@@ -37,7 +37,7 @@
 
 <div class="relative">
 	<div
-		class="w-[30px] cursor-pointer hover:bg-hoverPurple rounded-2xl h-fit"
+		class="w-[30px] cursor-pointer hover:bg-hoverLavanda dark:hover:bg-hoverPurple rounded-2xl h-fit"
 		on:click={() => {
 			options_toogle = !options_toogle;
 		}}
@@ -45,30 +45,30 @@
 		use:clickOutside={'.options-component'}
 		on:click_outside={handleClickOutside}
 	>
-		<Options />
+		<Options tailwindStrokeClass={"stroke-gray-500 dark:stroke-white"} />
 	</div>
 	{#if options_toogle}
 		<div in:fly|local={{ y: 10 }} class="absolute right-0 top-8 z-10">
 			<div
-				class="options-component bg-purpleGray p-5 w-48 rounded-2xl shadow-[0px_0px_10px_1px_black]"
+				class="options-component bg-lavandaGray dark:bg-purpleGray p-5 w-48 rounded-2xl shadow-[0px_0px_10px_1px_black]"
 			>
 				{#if myUser_id && myUser_id == creator_id}
 					<button
 						on:click={handle_edit_dialog}
-						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 mb-3.5 rounded-2xl w-full flex items-center justify-center gap-2"
+						class="bg-krispyPurple hover:bg-lessPurple text-white p-2.5 mb-3.5 rounded-2xl w-full flex items-center justify-center gap-2"
 					>
 						<Edit width={18} height={18} />Edit post
 					</button>
 					<button
 						on:click={handle_delete_dialog}
-						class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full flex items-center justify-center gap-2"
+						class="bg-squeezeRed hover:bg-red-400 text-white p-2.5 rounded-2xl w-full flex items-center justify-center gap-2"
 					>
 						<Trash width={18} height={18} />Delete post
 					</button>
 				{:else}
 					<button
             on:click={handle_dont_show_dialog}
-						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 rounded-2xl w-full flex items-center gap-2"
+						class="bg-krispyPurple hover:bg-lessPurple text-white p-2.5 rounded-2xl w-full flex items-center gap-2"
 						><Slash width={18} height={18} />Don't show this</button
 					>
 				{/if}

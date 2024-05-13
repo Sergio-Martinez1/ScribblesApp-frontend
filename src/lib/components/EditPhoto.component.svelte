@@ -245,24 +245,24 @@
 
 <dialog
 	id={dialogId}
-	class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] w-[600px] max-h-[600px] h-[90vh] py-3"
+	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] w-[600px] max-h-[600px] h-[90vh] py-3"
 >
 	<div id="edit_photo_form" class="grid grid-rows-[10%,90%] h-full">
 		<div class="grid grid-cols-[20%,1fr,20%] w-full h-fit mb-2 relative">
 			<button
 				type="button"
 				on:click={handleClose}
-				class="col-span-1 w-fit hover:bg-purpleLight active:translate-y-[-1px] rounded-full p-1"
-				><ArrowLeft width={26} height={26} /></button
+				class="col-span-1 w-fit hover:bg-lessLavanda dark:hover:bg-lessPurple active:translate-y-[-1px] rounded-full p-1"
+				><ArrowLeft width={26} height={26} tailwindStrokeClass={"stroke-black dark:stroke-white"} /></button
 			>
-			<p class="text-white font-bold text-xl col-span-1 w-fit justify-self-center">
+			<p class="dark:text-white font-bold text-xl col-span-1 w-fit justify-self-center">
 				Edit profile photo
 			</p>
 			{#if !croppedUrl}
 				<button
 					on:click={crop}
 					type="button"
-					class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-white px-2.5 py-1 col-span-1 w-fit justify-self-end"
+					class="bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-white px-2.5 py-1 col-span-1 w-fit justify-self-end"
 					>Apply</button
 				>
 			{/if}
@@ -271,7 +271,7 @@
 		<div bind:this={container} class="w-full h-full">
 			{#if croppedUrl}
 				<div class="w-full h-full">
-					<div class="w-full h-[85%] flex justify-center items-center bg-purpleLight">
+					<div class="w-full h-[85%] flex justify-center items-center bg-lavandaLight dark:bg-purpleLight">
 						{#if !cover_mode}
 							<div class="aspect-square rounded-full h-[60%] sm:h-[80%]">
 								<img
@@ -298,7 +298,7 @@
 						>
 						<button
 							on:click={submit}
-							class="bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-md text-white px-4 py-2 w-24"
+							class="bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-md text-white px-4 py-2 w-24"
 							>Confirm</button
 						>
 					</div>
@@ -326,7 +326,7 @@
 						/>
 						<div
 							bind:this={divRed}
-							class="divRed text-white z-20 pointer-events-none absolute"
+							class="divRed dark:text-white z-20 pointer-events-none absolute"
 							style="transform: translate({x}px, {y}px); width: {widthB}px; height: {heightB}px;"
 						>
 							<img
@@ -343,7 +343,7 @@
 						/>
 						<div
 							bind:this={divRed}
-							class="divRed text-white z-20 pointer-events-none absolute"
+							class="divRed dark:text-white z-20 pointer-events-none absolute"
 							style="transform: translate({x}px, {y}px); width: {widthB}px; height: {heightB}px;"
 						>
 							<img

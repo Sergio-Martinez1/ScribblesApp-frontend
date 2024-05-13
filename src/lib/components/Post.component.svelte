@@ -44,19 +44,19 @@
 	}
 </script>
 
-<div class="bg-purpleGray rounded-2xl">
+<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl">
 	{#if loading}
 		<div class="animate-pulse flex flex-col p-4">
 			<div class="flex gap-4 mb-3">
-				<div class="rounded-full bg-purpleLight h-[59px] w-[59px]" />
+				<div class="rounded-full bg-lavandaLight dark:bg-purpleLight h-[59px] w-[59px]" />
 				<div class="flex-1">
 					<div class="grid grid-cols-10 gap-4 h-[59px] items-center">
-						<div class="h-6 bg-purpleLight rounded-xl col-span-2" />
-						<div class="h-6 bg-purpleLight rounded-xl col-span-1" />
+						<div class="h-6 bg-lavandaLight dark:bg-purpleLight rounded-xl col-span-2" />
+						<div class="h-6 bg-lavandaLight dark:bg-purpleLight rounded-xl col-span-1" />
 					</div>
 				</div>
 			</div>
-			<div class="w-full h-32 bg-purpleLight rounded-2xl" />
+			<div class="w-full h-32 bg-lavandaLight dark:bg-purpleLight rounded-2xl" />
 		</div>
 	{:else}
 		<div
@@ -69,8 +69,8 @@
 					<UserIcon />
 				{/if}
 			</a>
-			<div class="bg-purpleLight w-fit h-fit rounded-2xl">
-				<p class="px-3 py-1 text-white font-bold break-all">
+			<div class="bg-lavandaLight dark:bg-purpleLight w-fit h-fit rounded-2xl">
+				<p class="px-3 py-1 dark:text-white font-bold break-all">
 					{user_name} · {calculate_posted_time(publication_date)}
 				</p>
 			</div>
@@ -96,7 +96,7 @@
 			/>
 		</div>
 		<div class="flex px-5 py-2.5">
-			<a href={post_url} class="bg-purpleLight w-full rounded-2xl p-3.5 text-white cursor-pointer">
+			<a href={post_url} class="bg-lavandaLight dark:bg-purpleLight w-full rounded-2xl p-3.5 dark:text-white cursor-pointer">
 				<p class="mb-2.5 whitespace-break-spaces">{post_content}</p>
 				{#if isValidImageUrl(post_thumbnail_url)}
 					{#if post_thumbnail_url.length > 0}
@@ -107,11 +107,11 @@
 						/>
 					{/if}
 				{:else}
-					<div class="bg-purpleGray rounded-2xl p-6 w-fit mx-auto">
+					<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl p-6 w-fit mx-auto">
 						<div class="mx-auto w-fit mb-6">
 							<Image width={60} height={60} />
 						</div>
-						<p class="font-bold text-white">Image can't be loaded.</p>
+						<p class="font-bold dark:text-white">Image can't be loaded.</p>
 					</div>
 				{/if}
 			</a>
@@ -131,13 +131,13 @@
 		</div>
 
 		<dialog
-			class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
+			class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 			id={delete_dialog_id}
 		>
 			<form method="POST" action="/home?/deletePost" use:enhance>
 				<input type="hidden" value={post_id} name="post_id" />
-				<p class="text-white font-bold mb-2 mx-auto w-fit text-lg">Delete post?</p>
-				<p class="text-white mb-3">This action will delete the post permanently.</p>
+				<p class="dark:text-white font-bold mb-2 mx-auto w-fit text-lg">Delete post?</p>
+				<p class="dark:text-white mb-3">This action will delete the post permanently.</p>
 				<div class="flex gap-3">
 					<button
 						on:click={() => {
@@ -146,7 +146,7 @@
 						type="button"
 						value="cancel"
 						formmethod="dialog"
-						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 rounded-2xl w-full"
+						class="bg-lavandaLight dark:bg-purpleLight hover:bg-hoverLavanda dark:hover:bg-hoverPurple dark:text-white p-2.5 rounded-2xl w-full"
 					>
 						Cancel
 					</button>
@@ -156,7 +156,7 @@
 						}}
 						type="submit"
 						value="default"
-						class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full"
+						class="bg-lavandaLight dark:bg-purpleLight hover:bg-squeezeRed dark:text-white p-2.5 rounded-2xl w-full"
 					>
 						Confirm
 					</button>
@@ -164,7 +164,7 @@
 			</form>
 		</dialog>
 		<dialog
-			class="bg-purpleGray rounded-2xl w-[500px] shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] p-0"
+			class="bg-lavandaGray dark:bg-purpleGray rounded-2xl w-[500px] shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] p-0"
 			id={edit_dialog_id}
 		>
 			<EditPost
@@ -177,13 +177,13 @@
 			/>
 		</dialog>
 		<dialog
-			class="bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
+			class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 			id={dont_show_dialog_id}
 		>
 			<form method="POST" action="/home?/dontShowPost" use:enhance>
 				<input type="hidden" value={post_id} name="post_id" />
-				<p class="text-white font-bold mb-2 mx-auto w-fit text-lg">Wanna hide this post?</p>
-				<p class="text-white mb-3">This action will hide this post from your home page.</p>
+				<p class="dark:text-white font-bold mb-2 mx-auto w-fit text-lg">Wanna hide this post?</p>
+				<p class="dark:text-white mb-3">This action will hide this post from your home page.</p>
 				<div class="flex gap-3">
 					<button
 						on:click={() => {
@@ -192,7 +192,7 @@
 						type="button"
 						value="cancel"
 						formmethod="dialog"
-						class="bg-purpleLight hover:bg-hoverPurple text-white p-2.5 rounded-2xl w-full"
+						class="bg-lavandaLight dark:bg-purpleLight hover:bg-hoverLavanda dark:hover:bg-hoverPurple dark:text-white p-2.5 rounded-2xl w-full"
 					>
 						Cancel
 					</button>
@@ -202,7 +202,7 @@
 						}}
 						type="submit"
 						value="default"
-						class="bg-purpleLight hover:bg-squeezeRed text-white p-2.5 rounded-2xl w-full"
+						class="bg-lavandaLight dark:bg-purpleLight hover:bg-squeezeRed dark:text-white p-2.5 rounded-2xl w-full"
 					>
 						Confirm
 					</button>

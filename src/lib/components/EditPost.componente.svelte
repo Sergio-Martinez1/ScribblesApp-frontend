@@ -89,7 +89,7 @@
 </script>
 
 <form
-	class="bg-purpleGray rounded-2xl h-fit relative p-4"
+	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl h-fit relative p-4"
 	method="POST"
 	action="/home?/editPost"
 	use:enhance={submit}
@@ -98,10 +98,10 @@
 	<button
 		type="button"
 		on:click={handleClose}
-		class="absolute top-0 right-0 rounded-tr-2xl rounded-bl-2xl bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 w-14 h-8 justify-center flex items-center"
+		class="absolute top-0 right-0 rounded-tr-2xl rounded-bl-2xl bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple p-1 w-14 h-8 justify-center flex items-center"
 		><X width={16} height={16} /></button
 	>
-	<p in:fly|local={{ y: -10 }} class="text-white font-bold text-lg mx-auto w-fit mb-2">Edit Post</p>
+	<p in:fly|local={{ y: -10 }} class="dark:text-white font-bold text-lg mx-auto w-fit mb-2">Edit Post</p>
 	<div class="items-center grid grid-rows-[40px_1fr_50px] gap-y-3 h-fit">
 		<!-- USER ICON -->
 		<div class="h-[40px] flex gap-x-3 items-center">
@@ -112,11 +112,11 @@
 					<User width={41} height={40} />
 				{/if}
 			</div>
-			<p class="text-white">{username}</p>
+			<p class="dark:text-white">{username}</p>
 		</div>
 		<!-- TEXTAREA -->
 		<div
-			class="h-fit self-start bg-purpleLight rounded-2xl px-3 py-2 relative border {focus_text
+			class="h-fit self-start bg-lavandaLight dark:bg-purpleLight rounded-2xl px-3 py-2 relative border {focus_text
 				? 'border-krispyPurple'
 				: 'border-transparent'} overflow-y-auto max-h-[280px]"
 			tabindex="-1"
@@ -147,7 +147,7 @@
 				<div class="relative w-fit mx-auto">
 					<button
 						type="button"
-						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
+						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
 						on:click={() => {
 							imagePreview = '';
 							maxSize = '120px';
@@ -160,19 +160,19 @@
 							class="rounded-2xl mb-2 mt-5 max-h-96"
 						/>
 					{:else}
-						<div class="bg-purpleGray rounded-2xl p-6 w-fit mx-auto">
+						<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl p-6 w-fit mx-auto">
 							<div class="mx-auto w-fit mb-6">
 								<Image width={60} height={60} />
 							</div>
-							<p class="font-bold text-white">Image can't be loaded.</p>
+							<p class="font-bold dark:text-white">Image can't be loaded.</p>
 						</div>
 					{/if}
 				</div>
 			{/if}
 		</div>
 		<!-- IMAGE BUTTON -->
-		<div class="h-[50px] flex items-center bg-purpleLight rounded-2xl px-3">
-			<p class="text-white mr-3">Add to your post:</p>
+		<div class="h-[50px] flex items-center bg-lavandaLight dark:bg-purpleLight rounded-2xl px-3">
+			<p class="dark:text-white mr-3">Add to your post:</p>
 			<button
 				type="button"
 				class="cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent relative"
@@ -220,7 +220,7 @@
 			type="submit"
 			disabled={!validContent}
 			in:fly|local={{ y: -10 }}
-			class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessPurple disabled:opacity-[0.5]"
+			class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple dark:text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
 			>Post</button
 		>
 	</div>

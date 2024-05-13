@@ -75,7 +75,7 @@
 </script>
 
 <form
-	class="bg-purpleGray rounded-2xl px-5 py-2.5 h-fit relative"
+	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-5 py-2.5 h-fit relative"
 	method="POST"
 	enctype="multipart/form-data"
 	action="/home?/createPost"
@@ -86,10 +86,10 @@
 		<button
 			type="button"
 			on:click={handleClose}
-			class="absolute top-0 right-0 rounded-tr-2xl rounded-bl-2xl bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 w-14 h-8 justify-center flex items-center"
+			class="absolute top-0 right-0 rounded-tr-2xl rounded-bl-2xl bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple p-1 w-14 h-8 justify-center flex items-center"
 			><X width={18} height={18} /></button
 		>
-		<p in:fly|local={{ y: -10 }} class="text-white font-bold text-lg mx-auto w-fit mb-2">
+		<p in:fly|local={{ y: -10 }} class="dark:text-white font-bold text-lg mx-auto w-fit mb-2">
 			Create Post
 		</p>
 	{/if}
@@ -104,7 +104,7 @@
 		</a>
 		<!-- TEXTAREA -->
 		<div
-			class="h-fit self-start mt-2 bg-purpleLight rounded-2xl px-3 py-2 relative border {focus_text
+			class="h-fit self-start mt-2 bg-lavandaLight dark:bg-purpleLight rounded-2xl px-3 py-2 relative border {focus_text
 				? 'border-krispyPurple'
 				: 'border-transparent'}"
 			tabindex="-1"
@@ -134,7 +134,7 @@
 				<div class="relative w-fit mx-auto">
 					<button
 						type="button"
-						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
+						class="absolute top-2 right-2 bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple p-1 rounded-full"
 						on:click={() => {
 							imagePreview = '';
 						}}><X width={16} height={16} /></button
@@ -150,7 +150,7 @@
 		<!-- IMAGE BUTTON -->
 		<button
 			type="button"
-			class="mt-2 cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent self-start relative w-fit"
+			class="mt-2 cursor-pointer p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent self-start relative w-fit"
 			on:click={() => {
 				focus = true;
 				uploadFile.click();
@@ -177,7 +177,7 @@
 				focus = true;
 				tags_toggle = !tags_toggle;
 			}}
-			class="mt-2 w-fit cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent self-start justify-self-end"
+			class="mt-2 w-fit cursor-pointer p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent self-start justify-self-end"
 		>
 			<Hash />
 		</button>
@@ -197,7 +197,7 @@
 				type="submit"
 				disabled={!validContent}
 				in:fly|local={{ y: -10 }}
-				class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessPurple disabled:opacity-[0.5]"
+				class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessPurple disabled:opacity-[0.5]"
 				>Post</button
 			>
 		{/if}

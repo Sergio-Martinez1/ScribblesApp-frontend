@@ -42,7 +42,7 @@
 </script>
 
 <div
-	class="bg-purpleLight flex rounded-2xl px-2 relative {vertical
+	class="bg-lavandaLight dark:bg-purpleLight flex rounded-2xl px-2 relative {vertical
 		? 'gap-2 py-1.5'
 		: 'py-2'} w-full sm:w-fit justify-self-end max-sm:justify-around"
 >
@@ -54,7 +54,11 @@
 			class="like cursor-pointer flex {vertical ? 'flex-col items-center' : ''}"
 		>
 			<div class="w-[20px]">
-				<Like fill={like_fill} stroke={like_stroke} />
+				<Like
+					fill={like_fill}
+					stroke={like_stroke}
+					tailwindStrokeClass={'stroke-gray-500 dark:stroke-white'}
+				/>
 			</div>
 			<!-- Likes Count -->
 			{#key likes_count}
@@ -67,7 +71,7 @@
 	<a href={post_url} class="message {vertical ? 'flex-col items-center' : ''}">
 		<!-- Comments Icons -->
 		<div class="w-[22px]">
-			<Message />
+			<Message tailwindStrokeClass={'stroke-gray-500 dark:stroke-white'} />
 		</div>
 		<!-- Comments count -->
 		{#key comments_count}
@@ -87,7 +91,7 @@
 	>
 		<!-- Tags icon -->
 		<div class="w-[22px]">
-			<Tag />
+			<Tag tailwindStrokeClass={'stroke-gray-500 dark:stroke-white'} />
 		</div>
 		<!-- Tags count -->
 		{#key tags_count}
@@ -110,7 +114,7 @@
 		@apply mx-1.5 flex;
 	}
 	p {
-		@apply text-white h-fit;
+		@apply text-gray-500 dark:text-white h-fit;
 	}
 	p.active {
 		@apply text-jacketBlue;
