@@ -1,17 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { slide } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
 	import Plus from './Icon/Plus.svelte';
 	import Edit from './Icon/Edit.svelte';
 	import { tick } from 'svelte';
 
-	export let birthday: string = '';
+	export let birthday: string | null = '';
 
 	let is_there_initial_content: boolean = birthday ? true : false;
 	let editable: boolean = false;
-	let content: string = birthday;
+	let content: string | null = birthday;
 	let input: HTMLInputElement;
+	let hoverOnEditButton: boolean = false;
 	$: validContent = birthday != content ? true : false;
 
 	function focusAndEnableInput() {
@@ -27,7 +26,7 @@
 	{#if !is_there_initial_content && !editable}
 		<button
 			type="button"
-			class="flex items-center text-white gap-x-2 bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple'} w-fit rounded-full py-1.5 px-1.5 mr-2"
+			class="flex items-center dark:text-white gap-x-2 bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple'} w-fit rounded-full py-1.5 px-1.5 mr-2"
 			on:click={focusAndEnableInput}
 		>
 			<div class="flex gap-x-2 items-center mx-1.5">
@@ -39,7 +38,7 @@
 		<input
 			bind:this={input}
 			bind:value={content}
-			class="bg-purpleLight rounded-2xl px-2 py-1 text-white outline-none focus:border-2 focus:border-krispyPurple box w-fit h-9 mr-2 disabled:opacity-50"
+			class="bg-lavandaLight dark:bg-purpleLight rounded-2xl px-2 py-1 dark:text-white outline-none focus:border-2 focus:border-krispyPurple box w-fit h-9 mr-2 disabled:opacity-50"
 			type="date"
 			id="birthday"
 			name="birthday"
@@ -50,11 +49,23 @@
 		/>
 		{#if !editable}
 			<button
+				on:mouseenter={() => {
+					hoverOnEditButton = true;
+				}}
+				on:mouseleave={() => {
+					hoverOnEditButton = false;
+				}}
 				on:click={() => {
 					editable = true;
 					input.disabled = false;
 					input.focus();
-				}}><Edit color={'#931DF0'} /></button
+					hoverOnEditButton = false;
+				}}
+				><Edit
+					tailwindStrokeClass={hoverOnEditButton
+						? 'stroke-black dark:stroke-white'
+						: 'stroke-krispyPurple'}
+				/></button
 			>
 		{:else}
 			<button
@@ -71,7 +82,7 @@
 				form="birthdayForm"
 				type="submit"
 				disabled={!validContent}
-				class="text-white bg-krispyPurple hover:bg-lessPurple active:bg-krispyPurple w-fit rounded-full py-1.5 px-1.5 disabled:bg-lessPurple disabled:opacity-[0.5]"
+				class="text-white bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple w-fit rounded-full py-1.5 px-1.5 disabled:bg-lessPurple disabled:opacity-[0.5]"
 				>Save</button
 			>
 		{/if}
