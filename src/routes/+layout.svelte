@@ -5,37 +5,50 @@
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
+	let errorOnUpdateColorScheme: boolean = false;
 
-	$: darkMode =
+	$: $settings.dark_mode =
 		data.plainMyUser && data.plainMyUser.dark_mode ? data.plainMyUser.dark_mode : 'disabled';
+	$: color_scheme =
+		data.plainMyUser && data.plainMyUser.color_scheme ? data.plainMyUser.color_scheme : '';
 	$: {
-		switch (darkMode) {
-			case 'enabled':
+		switch (color_scheme) {
+			case 'dark':
 				$settings.color_scheme = 'dark';
 				break;
-			case 'disabled':
+			case 'light':
 				$settings.color_scheme = '';
 				break;
 		}
 	}
 
-	let darkModeMediaQuery;
-	let listener;
+	let darkModeMediaQuery: MediaQueryList;
+	let listener: (event: MediaQueryListEvent) => any;
 
 	onMount(() => {
 		darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 		listener = () => updateDarkMode(darkModeMediaQuery);
-    updateDarkMode(darkModeMediaQuery);
+		updateDarkMode(darkModeMediaQuery);
 		darkModeMediaQuery.addEventListener('change', listener);
 	});
 
-	const updateDarkMode = (mediaQuery) => {
-		if (darkMode === 'automatic') {
+	const updateDarkMode = (mediaQuery: MediaQueryList) => {
+		if ($settings.dark_mode === 'automatic') {
+			let formData = new FormData();
+			formData.append('dark_mode', 'automatic');
 			if (mediaQuery.matches) {
 				$settings.color_scheme = 'dark';
+				formData.append('color_scheme', 'dark');
 			} else {
 				$settings.color_scheme = '';
+				formData.append('color_scheme', 'light');
 			}
+			fetch('http://localhost:5173/api/updateUser', {
+				method: 'put',
+				body: formData
+			}).catch((error)=>{
+				errorOnUpdateColorScheme = true;
+			});
 		}
 	};
 
