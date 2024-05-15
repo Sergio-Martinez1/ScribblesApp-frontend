@@ -33,7 +33,6 @@
 			focus_text = true;
 		}}
 		on:focusout={() => {
-			focus = false;
 			focus_text = false;
 		}}
 		contenteditable="true"
