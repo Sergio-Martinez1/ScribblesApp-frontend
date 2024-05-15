@@ -247,7 +247,7 @@
 					{:else if password_view}
 						<ChangePassword {form} />
 					{:else if dark_mode_view}
-						<DarkModeSelector />
+						<DarkModeSelector dark_mode={user.data.dark_mode} />
 					{:else if delete_account_view}
 						<DeleteAccount />
 					{/if}
