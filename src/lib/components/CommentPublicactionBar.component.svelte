@@ -15,6 +15,7 @@
 	let innerText: string = '';
 	let showPlaceHolder: boolean = true;
 	let focus: boolean = false;
+	let focus_text: boolean = false;
 
 	$: validContent = outputText.trim() && outputText.length <= maxContent ? true : false;
 
@@ -49,7 +50,7 @@
 		</div>
 	{/if}
 	<form
-		class="bg-lavandaLight dark:bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2 {focus
+		class="bg-lavandaLight dark:bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2 {focus_text
 			? 'outline outline-krispyPurple '
 			: ''}"
 		method="POST"
@@ -63,6 +64,7 @@
 				bind:innerText
 				bind:showPlaceHolder
 				bind:focus
+        bind:focus_text
 			/>
 		</div>
 		<input type="hidden" value={outputText} name="content" />
