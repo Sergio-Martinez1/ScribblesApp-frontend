@@ -11,7 +11,7 @@
 
 {#if loading}
 	<div
-		class="w-w-[120px] h-[120px] sm:w-[190px] sm:h-[190px] mb-2.5 relative bg-lavandaDark dark:bg-purpleGray box-content p-3 rounded-full"
+		class="w-w-[120px] h-[120px] sm:w-[190px] sm:h-[190px] mb-2.5 relative bg-lavandaGray dark:bg-purpleGray box-content p-3 rounded-full"
 	>
 		<div
 			class="animate-pulse duration-200 rounded-full bg-lavandaLight dark:bg-purpleLight w-[120px] h-[120px] sm:w-[190px] sm:h-[190px]"
