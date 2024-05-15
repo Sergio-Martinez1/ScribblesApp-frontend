@@ -9,7 +9,7 @@
 
 <div class="w-full aspect-[3/1] relative">
 	{#if loading}
-		<div class="w-full h-full rounded-2xl bg-lavandaLight dark:bg-purpleLight animate-pulse" />
+		<div class="w-full h-full rounded-2xl bg-lavandaGray dark:bg-purpleLight animate-pulse" />
 	{:else if coverPhotoUrl}
 		<img class="w-full h-full rounded-2xl object-cover" src={coverPhotoUrl} alt="User cover" />
 	{:else}
