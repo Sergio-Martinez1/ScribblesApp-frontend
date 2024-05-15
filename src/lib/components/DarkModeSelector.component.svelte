@@ -1,4 +1,23 @@
-<script>
+<script lang="ts">
+	import settings from '../../stores/settings';
+
+	export let dark_mode: string | null;
+
+	let errorOnUpdateColorScheme: boolean = false;
+
+	const updateColorScheme = (dark_mode: string, color_scheme: string) => {
+		let formData = new FormData();
+		formData.append('dark_mode', dark_mode);
+		formData.append('color_scheme', color_scheme);
+		$settings.dark_mode = dark_mode;
+		$settings.color_scheme = color_scheme;
+		fetch('http://localhost:5173/api/updateUser', {
+			method: 'put',
+			body: formData
+		}).catch((error) => {
+			errorOnUpdateColorScheme = true;
+		});
+	};
 </script>
 
 <section class="flex flex-col gap-y-4 dark:text-white">
@@ -13,8 +32,9 @@
 				id="disabled"
 				name="dark_mode"
 				type="radio"
+				checked = {dark_mode === 'disabled'}
 				on:input={() => {
-					document.querySelector('html')?.classList.remove('dark');
+					updateColorScheme('disabled', 'light');
 				}}
 			/>
 		</label>
@@ -24,14 +44,27 @@
 				id="enabled"
 				name="dark_mode"
 				type="radio"
+				checked = {dark_mode === 'enabled'}
 				on:input={() => {
-					document.querySelector('html')?.classList.add('dark');
+					updateColorScheme('enabled', 'dark');
 				}}
 			/>
 		</label>
 		<label for="automatic" class="flex justify-between">
 			Automatic
-			<input id="automatic" name="dark_mode" type="radio" />
+			<input
+				id="automatic"
+				name="dark_mode"
+				type="radio"
+				checked = {dark_mode === 'automatic'}
+				on:input={() => {
+					if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+						updateColorScheme('automatic', 'dark');
+					} else {
+						updateColorScheme('automatic', 'light');
+					}
+				}}
+			/>
 		</label>
 	</div>
 </section>
