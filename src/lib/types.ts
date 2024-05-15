@@ -39,7 +39,9 @@ export interface MyUser {
   personal_url: string | null,
   location: string | null,
   birthday: string | null,
-  prohibited_posts: Array<number> | null
+  prohibited_posts: Array<number> | null,
+  color_scheme: string | null,
+  dark_mode: string | null
 }
 export interface User {
   username: string,
