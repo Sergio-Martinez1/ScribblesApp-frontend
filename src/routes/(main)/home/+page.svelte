@@ -8,6 +8,7 @@
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import type { Post as TypePost } from '$lib/types';
 	import { onDestroy, onMount, tick } from 'svelte';
+	import { invalidate } from '$app/navigation';
 
 	export let data: PageData;
 	let scrollData: Array<TypePost> = [];
@@ -29,6 +30,8 @@
 	$: url = `http://localhost:5173/api/posts?offset=${offset}&limit=${limit}`;
 
 	onMount(async () => {
+		invalidate('plainUser');
+		invalidate('myReactions');
 		observer = new IntersectionObserver(async (entries) => {
 			entries.forEach(async (entry) => {
 				if (entry.isIntersecting) {

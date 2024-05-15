@@ -3,7 +3,9 @@ import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
 import { fileURLToPath } from 'url';
 
-export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
+export const load: LayoutServerLoad = async ({ cookies, fetch, depends }) => {
+
+  depends('plainUser');
 
   const __filename = fileURLToPath(import.meta.url);
   const __route = __filename.slice(__filename.indexOf('src'));
@@ -21,24 +23,20 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
     }
   };
 
-  try {
-    const response = await fetch(`${base_api_url}/users/plainMyUser`, options);
+  const response = await fetch(`${base_api_url}/users/plainMyUser`, options).then(async (response) => {
     if (response.ok) {
-      return {
-        plainMyUser: await response.json()
-      }
+      return await response.json();
     } else if (response.status == 401) {
-      return {
-        plainMyUser: null
-      }
+      return null;
     } else {
       throw error(response.status, response.statusText);
     }
-  } catch (error) {
+  }).catch((error) => {
     console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`);
   }
+  );
 
   return {
-    plainMyUser: null
+    plainMyUser: response
   };
 };

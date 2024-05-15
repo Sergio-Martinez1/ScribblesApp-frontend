@@ -3,7 +3,9 @@ import { env } from "$env/dynamic/private";
 import { error } from "@sveltejs/kit";
 import { fileURLToPath } from 'url';
 
-export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
+export const load: LayoutServerLoad = async ({ cookies, fetch, depends }) => {
+
+  depends('myReactions');
 
   const __filename = fileURLToPath(import.meta.url);
   const __route = __filename.slice(__filename.indexOf('src'));
