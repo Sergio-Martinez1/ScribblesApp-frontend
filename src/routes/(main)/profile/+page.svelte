@@ -108,8 +108,22 @@
 				</div>
 			</div>
 		{:else}
-			<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
-				<p class="dark:text-white">Please reload the page</p>
+			<div class="col-span-10 lg:col-span-9 mt-8">
+				<CoverPhoto loading={true} />
+			</div>
+			<div
+				class="flex flex-col col-span-10 lg:grid grid-cols-7 md:grid-cols-10 my-4 lg:h-[160px] overflow-visible"
+			>
+				<div class="md:col-span-4 lg:col-span-3 w-full h-[80px] sm:h-[160px] flex justify-center">
+					<div
+						class="w-full h-fit flex flex-col items-center justify-center self-end relative bottom-5 md:bottom-8"
+					>
+						<ProfilePhoto loading={true} />
+					</div>
+				</div>
+				<div class="md:col-span-6 flex items-center h-full">
+					<UserDescription loading={true} />
+				</div>
 			</div>
 		{/if}
 	{/await}
@@ -176,12 +190,16 @@
 							No more posts to see...
 						</div>
 					{:else}
-						<div class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full">
+						<div
+							class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full"
+						>
 							Please reload the page
 						</div>
 					{/if}
 				{:else if myPosts?.status === 404}
-					<div class="w-full rounded-2xl bg-lavandaGray dark:bg-purpleGray flex items-center justify-center h-20">
+					<div
+						class="w-full rounded-2xl bg-lavandaGray dark:bg-purpleGray flex items-center justify-center h-20"
+					>
 						<p class="dark:text-white opacity-60">This seems a little quiet...</p>
 					</div>
 				{:else}
