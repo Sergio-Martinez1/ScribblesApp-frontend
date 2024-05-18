@@ -31,7 +31,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch, depends }) => {
     const my_reactions_response = await fetch(url, options);
     if (my_reactions_response.ok) {
       return {
-        my_reactions: my_reactions_response.json()
+        my_reactions: await my_reactions_response.json()
       }
     } else if (my_reactions_response.status == 401) {
       return {
