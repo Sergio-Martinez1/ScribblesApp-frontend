@@ -8,7 +8,9 @@
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import type { Post as TypePost } from '$lib/types';
 	import { onDestroy, onMount, tick } from 'svelte';
-	import { invalidate } from '$app/navigation';
+	import { invalidate, onNavigate } from '$app/navigation';
+	import settings from '../../../stores/settings';
+	import type { Snapshot } from '../$types';
 
 	export let data: PageData;
 	let scrollData: Array<TypePost> = [];
@@ -48,11 +50,32 @@
 				observer?.observe(loadingPostsElement);
 			}
 		});
+
+		await tick();
+		scrollTo(0, $settings.scrollY);
+		data.streamed.posts.then(() => {
+			scrollTo(0, $settings.scrollY);
+		});
+		
 	});
 
 	onDestroy(() => {
+		console.log(scrollData)
 		observer?.disconnect();
 	});
+
+	onNavigate(() => {
+		$settings.scrollY = window.scrollY;
+	});
+
+	// export const snapshot: Snapshot = {
+	// 	capture: () => {
+	// 		console.log('CAPTURADO')
+	// 		scrollData},
+	// 	restore: (value) => {
+	// 		console.log('RESTAURADO');
+	// 		scrollData = value ?? []}
+	// };
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -133,7 +156,9 @@
 						No more posts to see...
 					</div>
 				{:else}
-					<div class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full">
+					<div
+						class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full"
+					>
 						PLEASE RELOAD
 					</div>
 				{/if}
