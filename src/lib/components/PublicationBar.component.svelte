@@ -89,7 +89,7 @@
 			class="absolute top-0 right-0 rounded-tr-2xl rounded-bl-2xl bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple p-1 w-14 h-8 justify-center flex items-center"
 			><X width={18} height={18} /></button
 		>
-		<p in:fly|local={{ y: -10 }} class="dark:text-white font-bold text-lg mx-auto w-fit mb-2">
+		<p in:fly={{ y: -10 }} class="dark:text-white font-bold text-lg mx-auto w-fit mb-2">
 			Create Post
 		</p>
 	{/if}
@@ -112,8 +112,8 @@
 			<div class="relative">
 				{#if outputText.length > maxContent}
 					<div
-						in:fly|local={{ y: 10 }}
-						out:fly|local={{ y: 10 }}
+						in:fly={{ y: 10 }}
+						out:fly={{ y: 10 }}
 						class="text-squeezeRed absolute right-[-110px] bottom-0 z-10 w-[80px]"
 					>
 						Only up to {maxContent} chars
@@ -187,7 +187,7 @@
 		<input type="hidden" name="tags" bind:value={tags} />
 		{#if tags_toggle}
 			<!-- TAG CREATION -->
-			<div in:fly|local={{ y: -10 }} class="ml-2.5 mr-9 my-2">
+			<div in:fly={{ y: -10 }} class="ml-2.5 mr-9 my-2">
 				<CreateTags bind:tags />
 			</div>
 		{/if}
@@ -196,7 +196,7 @@
 			<button
 				type="submit"
 				disabled={!validContent}
-				in:fly|local={{ y: -10 }}
+				in:fly={{ y: -10 }}
 				class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessPurple disabled:opacity-[0.5]"
 				>Post</button
 			>

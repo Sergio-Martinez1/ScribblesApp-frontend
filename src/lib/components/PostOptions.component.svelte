@@ -48,7 +48,7 @@
 		<Options tailwindStrokeClass={"stroke-gray-500 dark:stroke-white"} />
 	</div>
 	{#if options_toogle}
-		<div in:fly|local={{ y: 10 }} class="absolute right-0 top-8 z-10">
+		<div in:fly={{ y: 10 }} class="absolute right-0 top-8 z-10">
 			<div
 				class="options-component bg-lavandaGray dark:bg-purpleGray p-5 w-48 rounded-2xl shadow-[0px_0px_10px_1px_black]"
 			>

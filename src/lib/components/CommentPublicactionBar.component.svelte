@@ -77,7 +77,7 @@
 		>
 	</form>
 	{#if outputText.length > maxContent}
-		<div in:fly|local={{ y: 10 }} out:fly|local={{ y: 10 }} class="text-squeezeRed col-start-2">
+		<div in:fly={{ y: 10 }} out:fly={{ y: 10 }} class="text-squeezeRed col-start-2">
 			Only up to {maxContent} chars
 		</div>
 	{/if}

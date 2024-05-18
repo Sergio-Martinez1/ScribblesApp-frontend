@@ -44,8 +44,8 @@
 	{#each tags as tag}
 		<div
 			class="border border-krispyPurple rounded-2xl px-2 dark:text-white ml-2 mb-1 flex items-center gap-1.5 text-sm self-center"
-			in:fly|local={{ x: -5 }}
-			out:fly|local={{ x: -5, duration: 140 }}
+			in:fly={{ x: -5 }}
+			out:fly={{ x: -5, duration: 140 }}
 		>
 			{tag}
 			<button

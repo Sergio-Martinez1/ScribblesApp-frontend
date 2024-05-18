@@ -62,7 +62,7 @@
 			</div>
 			<!-- Likes Count -->
 			{#key likes_count}
-				<p in:fly|local={{ y: 10 }} class:active={like_on}>{likes_count}</p>
+				<p in:fly={{ y: 10 }} class:active={like_on}>{likes_count}</p>
 			{/key}
 		</button>
 	</form>
@@ -75,7 +75,7 @@
 		</div>
 		<!-- Comments count -->
 		{#key comments_count}
-			<p in:fly|local={{ y: 10 }}>{comments_count}</p>
+			<p in:fly={{ y: 10 }}>{comments_count}</p>
 		{/key}
 	</a>
 
@@ -95,13 +95,13 @@
 		</div>
 		<!-- Tags count -->
 		{#key tags_count}
-			<p in:fly|local={{ y: 10 }}>{tags_count}</p>
+			<p in:fly={{ y: 10 }}>{tags_count}</p>
 		{/key}
 	</div>
 
 	<!-- TOGGLE TAG COMPONENT -->
 	{#if tag_toogle}
-		<div in:fly|local={{ y: 10 }} class="absolute max-sm:bottom-10 sm:top-9 right-2 z-10">
+		<div in:fly={{ y: 10 }} class="absolute max-sm:bottom-10 sm:top-9 right-2 z-10">
 			<Tags {tags} posts_url={post_by_tags_url} />
 		</div>
 	{/if}

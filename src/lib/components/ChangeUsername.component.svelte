@@ -40,7 +40,7 @@
 					on:mouseleave={() => {
 						hoverOnEditButton = false;
 					}}
-					in:fade|local={{ duration: 200 }}
+					in:fade={{ duration: 200 }}
 					on:click={() => {
 						editable = true;
 						input.disabled = false;
@@ -57,8 +57,8 @@
 		</div>
 		{#if form?.usernameMissing}
 			<p
-				in:fly|local={{ y: 10 }}
-				out:fly|local={{ y: -10, duration: 150 }}
+				in:fly={{ y: 10 }}
+				out:fly={{ y: -10, duration: 150 }}
 				class="error text-squeezeRed"
 			>
 				Username can not be empty
@@ -66,8 +66,8 @@
 		{/if}
 		{#if form?.usernameExists}
 			<p
-				in:fly|local={{ y: 10 }}
-				out:fly|local={{ y: -10, duration: 150 }}
+				in:fly={{ y: 10 }}
+				out:fly={{ y: -10, duration: 150 }}
 				class="error text-squeezeRed"
 			>
 				Username already exits, choose another
@@ -75,8 +75,8 @@
 		{/if}
 		{#if editable}
 			<input
-				in:fly|local={{ y: -10, duration: 180 }}
-				out:fly|local={{ y: -10, duration: 150 }}
+				in:fly={{ y: -10, duration: 180 }}
+				out:fly={{ y: -10, duration: 150 }}
 				type="password"
 				name="password"
 				class="bg-lavandaLight dark:bg-purpleLight rounded-2xl h-9 dark:text-white mr-2 px-2 w-52"
@@ -84,8 +84,8 @@
 			/>
 			{#if form?.passwordMissing}
 				<p
-					in:fly|local={{ y: 10 }}
-					out:fly|local={{ y: -10, duration: 150 }}
+					in:fly={{ y: 10 }}
+					out:fly={{ y: -10, duration: 150 }}
 					class="error text-squeezeRed"
 				>
 					Password required
@@ -93,8 +93,8 @@
 			{/if}
 			{#if form?.wrongPassword}
 				<p
-					in:fly|local={{ y: 10 }}
-					out:fly|local={{ y: -10, duration: 150 }}
+					in:fly={{ y: 10 }}
+					out:fly={{ y: -10, duration: 150 }}
 					class="error text-squeezeRed"
 				>
 					Invalid password
@@ -102,8 +102,8 @@
 			{/if}
 			<div>
 				<button
-					in:fly|local={{ y: -10, duration: 500 }}
-					out:fly|local={{ y: -10, duration: 150 }}
+					in:fly={{ y: -10, duration: 500 }}
+					out:fly={{ y: -10, duration: 150 }}
 					type="button"
 					class="text-white bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-16 rounded-full py-1.5 px-1.5 mr-2"
 					on:click={async () => {
@@ -116,8 +116,8 @@
 					Cancel
 				</button>
 				<button
-					in:fly|local={{ y: -10, duration: 500 }}
-					out:fly|local={{ y: -10, duration: 150 }}
+					in:fly={{ y: -10, duration: 500 }}
+					out:fly={{ y: -10, duration: 150 }}
 					type="submit"
 					disabled={!validContent}
 					class="text-white bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple w-16 rounded-full py-1.5 px-1.5 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"

@@ -178,8 +178,8 @@
 		{#if screenWidth < 640}
 			{#if open_view}
 				<div
-					in:fly={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
-					out:fly|local={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
+					in:fly|global={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
+					out:fly={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
 					class="max-sm:absolute max-sm:w-full sm:inline-block sm:col-start-7 sm:col-span-6 px-5 py-4 min-h-screen max-sm:bg-lavandaDark dark:max-sm:bg-purpleGray"
 				>
 					<div

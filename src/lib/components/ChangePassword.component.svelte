@@ -25,10 +25,10 @@
 			placeholder="Current password"
 		/>
 		{#if form?.passwordMissing}
-			<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Password required</p>
+			<p in:fly={{ y: 10 }} class="error text-squeezeRed">Password required</p>
 		{/if}
 		{#if form?.incorrectPassword}
-			<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Incorrect password</p>
+			<p in:fly={{ y: 10 }} class="error text-squeezeRed">Incorrect password</p>
 		{/if}
 		<input
 			type="password"
@@ -37,7 +37,7 @@
 			placeholder="New password"
 		/>
 		{#if form?.newPasswordMissing}
-			<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">New password required</p>
+			<p in:fly={{ y: 10 }} class="error text-squeezeRed">New password required</p>
 		{/if}
 		<input
 			type="password"
@@ -46,10 +46,10 @@
 			placeholder="Confirm new password"
 		/>
 		{#if form?.confirmMissing}
-			<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Please confirm your new password</p>
+			<p in:fly={{ y: 10 }} class="error text-squeezeRed">Please confirm your new password</p>
 		{/if}
 		{#if form?.passwordConfirm}
-			<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Password doesn't match</p>
+			<p in:fly={{ y: 10 }} class="error text-squeezeRed">Password doesn't match</p>
 		{/if}
 
 		<button class="bg-krispyPurple dark:text-white rounded-xl w-32 h-10" type="submit">

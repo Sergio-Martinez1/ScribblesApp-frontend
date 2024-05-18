@@ -67,7 +67,7 @@
 	{:else}
 		<!-- COMMENTS -->
 		{#each comments as comment}
-			<div in:fly|local={{ y: 10 }} class="grid grid-cols-[50px_1fr] gap-x-[17px] mb-4 w-full">
+			<div in:fly={{ y: 10 }} class="grid grid-cols-[50px_1fr] gap-x-[17px] mb-4 w-full">
 				{#if comment.user.profile_photo}
 					<div class="w-[50px] h-[50px] col-start-1">
 						<img

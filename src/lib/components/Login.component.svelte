@@ -42,10 +42,10 @@
 				value={form?.username ?? ''}
 			/>
 			{#if form?.usernameMissing}
-				<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Username required</p>
+				<p in:fly={{ y: 10 }} class="error text-squeezeRed">Username required</p>
 			{/if}
 			{#if form?.usernameDontExists}
-				<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Username does not exists</p>
+				<p in:fly={{ y: 10 }} class="error text-squeezeRed">Username does not exists</p>
 			{/if}
 			<span class="text-krispyPurple font-bold">Password</span>
 			<input
@@ -54,10 +54,10 @@
 				name="password"
 			/>
 			{#if form?.passwordMissing}
-				<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Password Missing</p>
+				<p in:fly={{ y: 10 }} class="error text-squeezeRed">Password Missing</p>
 			{/if}
 			{#if form?.wrongPassword}
-				<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">Invalid Password</p>
+				<p in:fly={{ y: 10 }} class="error text-squeezeRed">Invalid Password</p>
 			{/if}
 		</div>
 		<button class="bg-krispyPurple text-black rounded-xl w-32 h-10" type="submit">
@@ -91,7 +91,7 @@
 			</span>
 		</button>
 		{#if form?.serverFail}
-			<p in:fly|local={{ y: 10 }} class="error text-squeezeRed">An unexpected error has ocurred</p>
+			<p in:fly={{ y: 10 }} class="error text-squeezeRed">An unexpected error has ocurred</p>
 		{/if}
 		<div class="flex flex-row gap-x-2 items-start">
 			<input type="checkbox" class="accent-krispyPurple rounded cursor-pointer w-6 h-6" checked />

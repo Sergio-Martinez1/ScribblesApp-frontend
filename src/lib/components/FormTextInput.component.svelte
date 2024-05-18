@@ -56,7 +56,7 @@
 				on:mouseleave={() => {
 					hoverOnEditButton = false;
 				}}
-				in:fade|local={{ delay: 150, duration: 80 }}
+				in:fade={{ delay: 150, duration: 80 }}
 				on:click={() => {
 					editable = true;
 					input.disabled = false;
@@ -66,8 +66,8 @@
 			>
 		{:else}
 			<button
-				in:fly={{ x: -10, duration: 180 }}
-				out:fly|local={{ x: -10, duration: 150 }}
+				in:fly|global={{ x: -10, duration: 180 }}
+				out:fly={{ x: -10, duration: 150 }}
 				type="button"
 				class="text-white bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-16 rounded-full py-1.5 px-1.5 mr-2"
 				on:click={() => {
@@ -79,8 +79,8 @@
 				Cancel
 			</button>
 			<button
-				in:fly={{ x: -10, duration: 180 }}
-				out:fly|local={{ x: -10, duration: 150 }}
+				in:fly|global={{ x: -10, duration: 180 }}
+				out:fly={{ x: -10, duration: 150 }}
 				type="submit"
 				disabled={!validContent}
 				class="text-white bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple w-16 rounded-full py-1.5 px-1.5 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
