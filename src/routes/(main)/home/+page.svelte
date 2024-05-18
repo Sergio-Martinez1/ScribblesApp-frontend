@@ -60,7 +60,6 @@
 	});
 
 	onDestroy(() => {
-		console.log(scrollData)
 		observer?.disconnect();
 	});
 

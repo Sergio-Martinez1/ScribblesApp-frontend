@@ -199,7 +199,6 @@
 		croppedUrl = '';
 		if (imageSized) imageSized.src = '';
 		document.removeEventListener('mousemove', handleMouseMove);
-		console.log(imageSized);
 	}
 
 	const submit = async () => {
