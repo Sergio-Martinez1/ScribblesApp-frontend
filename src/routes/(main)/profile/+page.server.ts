@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
   const access_token = cookies.get('access_token');
   if (!access_token) {
     console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 
   const verify_token_options = {
@@ -45,11 +45,11 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
     response = await fetch(`${base_api_url}/users/plainMyUser`, verify_token_options);
   } catch (error) {
     console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`);
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 
   if (!response.ok) {
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 
   const myUser_url = `${base_api_url}/users/myUser`;

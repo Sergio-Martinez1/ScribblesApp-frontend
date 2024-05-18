@@ -68,6 +68,6 @@ export const actions: Actions = {
       console.error(`Error: Error en [${__route}].\n\t- Error en el servidor al intentar registrar usuario\n\t- ${error}`);
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, '/login');
+    redirect(303, '/login');
   }
 };

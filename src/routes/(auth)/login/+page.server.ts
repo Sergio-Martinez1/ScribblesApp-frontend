@@ -50,13 +50,13 @@ export const actions: Actions = {
       } else if (response.status === 400) {
         return fail(400, { wrongPassword: true, username });
       } else {
-        throw error(response.status, response.statusText);
+        error(response.status, response.statusText);
       }
     } catch (error) {
       console.error(`Error: Error en [${__route}].\n\t- Error en el servidor al intentar iniciar sesion\n\t- ${error}`);
       return fail(500, { serverFail: true, username, password });
     }
 
-    throw redirect(303, "/home");
+    redirect(303, "/home");
   }
 };

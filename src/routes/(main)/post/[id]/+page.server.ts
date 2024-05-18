@@ -65,7 +65,7 @@ export const actions: Actions = {
     const base_api_url: string | undefined = env.API_URL;
     const access_token = cookies.get('access_token');
 
-    if (!access_token) throw redirect(303, "/login");
+    if (!access_token) redirect(303, "/login");
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
@@ -95,7 +95,7 @@ export const actions: Actions = {
       console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar createComment\n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   },
   deleteComment: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -103,7 +103,7 @@ export const actions: Actions = {
     const base_api_url: string | undefined = env.API_URL;
     const access_token = cookies.get('access_token');
 
-    if (!access_token) throw redirect(303, "/login");
+    if (!access_token) redirect(303, "/login");
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
@@ -126,7 +126,7 @@ export const actions: Actions = {
       console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar deleteComment\n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   },
   deletePost: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -134,7 +134,7 @@ export const actions: Actions = {
     const base_api_url: string | undefined = env.API_URL;
     const access_token = cookies.get('access_token');
 
-    if (!access_token) throw redirect(303, "/login");
+    if (!access_token) redirect(303, "/login");
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
@@ -151,12 +151,12 @@ export const actions: Actions = {
     }
     try {
       const response = await fetch(posts_url, options);
-      if (response.ok) throw redirect(303, "/home");
+      if (response.ok) redirect(303, "/home");
       else if (response.status !== 401) return fail(response.status, { serverFail: true });
     } catch (error) {
       console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar deletePost\n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 }

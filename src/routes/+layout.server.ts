@@ -29,7 +29,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch, depends }) => {
     } else if (response.status == 401) {
       return null;
     } else {
-      throw error(response.status, response.statusText);
+      error(response.status, response.statusText);
     }
   }).catch((error) => {
     console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`);

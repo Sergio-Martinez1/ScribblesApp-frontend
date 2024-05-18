@@ -3,5 +3,5 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async () => {
 
-  throw redirect(303, "/home");
+  redirect(303, "/home");
 };

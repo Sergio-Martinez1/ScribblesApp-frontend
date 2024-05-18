@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
         fetchedPosts.data = await response.json();
         return new Response(JSON.stringify(fetchedPosts))
       }
-      throw error(response.status, response.statusText);
+      error(response.status, response.statusText);
     } catch (error) {
       console.error(`Error(api): Error en [${__route}].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
       return new Response(JSON.stringify(fetchedPosts))
@@ -63,9 +63,9 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
         fetchedPosts.data = await public_posts_response.json();
         return new Response(JSON.stringify(fetchedPosts))
       }
-      throw error(public_posts_response.status, response.statusText);
+      error(public_posts_response.status, response.statusText);
     }
-    throw error(response.status, response.statusText);
+    error(response.status, response.statusText);
   } catch (error) {
     console.error(`Error(api): Error en [/routes/(main)/home/+page.server.ts].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
     return new Response(JSON.stringify(fetchedPosts))

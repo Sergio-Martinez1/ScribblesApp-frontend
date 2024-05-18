@@ -3,7 +3,7 @@
 	import { redirect } from '@sveltejs/kit';
 
 	let goBack = () => {
-		throw redirect(303, '/home');
+		redirect(303, '/home');
 	};
 </script>
 

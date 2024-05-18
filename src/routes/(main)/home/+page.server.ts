@@ -115,7 +115,7 @@ export const actions: Actions = {
       return fail(400, { stateMissing: true });
     }
     const access_token = cookies.get('access_token');
-    if (!access_token) throw redirect(303, '/login');
+    if (!access_token) redirect(303, '/login');
     const base_api_url: string = env.API_URL;
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
@@ -146,7 +146,7 @@ export const actions: Actions = {
         console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar toogle_reaction\n\t- ${error}`)
         return fail(500, { serverFail: true });
       }
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     } else if (state_on === 'false') {
       const url = `${base_api_url}/reactions/${post_id}`;
       const options = {
@@ -167,7 +167,7 @@ export const actions: Actions = {
         console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar toogle_reaction\n\t- ${error}`)
         return fail(500, { serverFail: true });
       }
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
   },
   createPost: async ({ request, fetch, cookies }) => {
@@ -182,7 +182,7 @@ export const actions: Actions = {
     const files_url = `${base_api_url}/files/`;
     const access_token = cookies.get('access_token');
 
-    if (!access_token) throw redirect(303, '/login');
+    if (!access_token) redirect(303, '/login');
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
@@ -204,7 +204,7 @@ export const actions: Actions = {
           let img = await response.json();
           return img.url;
         }
-        throw error(response.status, response.statusText);
+        error(response.status, response.statusText);
       } catch (error) {
         console.error(`Error(Action): Error en [${__route}].\n\t- Error al obtener url de la imagen\n\t- ${error}`)
         return ''
@@ -241,7 +241,7 @@ export const actions: Actions = {
       console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar crear un post\n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   },
   deletePost: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -249,7 +249,7 @@ export const actions: Actions = {
     const base_api_url: string | undefined = env.API_URL;
     const access_token = cookies.get('access_token');
 
-    if (!access_token) throw redirect(303, '/login');
+    if (!access_token) redirect(303, '/login');
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
@@ -274,7 +274,7 @@ export const actions: Actions = {
       console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar eliminar un post\n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   },
   editPost: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
@@ -290,7 +290,7 @@ export const actions: Actions = {
     const files_url = `${base_api_url}/files/`;
     const access_token = cookies.get('access_token');
 
-    if (!access_token) throw redirect(303, '/login');
+    if (!access_token) redirect(303, '/login');
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
@@ -313,7 +313,7 @@ export const actions: Actions = {
           let img = await response.json();
           return img.url;
         }
-        throw error(response.status, response.statusText);
+        error(response.status, response.statusText);
       } catch (error) {
         console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar obtener la url de la imagen\n\t- ${error}`)
         return ''
@@ -353,14 +353,14 @@ export const actions: Actions = {
       console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar editar el post \n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   },
   dontShowPost: async ({ request, fetch, cookies }) => {
     const form = await request.formData();
     const post_id = form.get('post_id');
     const base_api_url: string | undefined = env.API_URL;
     const access_token = cookies.get('access_token');
-    if (!access_token) throw redirect(303, '/login');
+    if (!access_token) redirect(303, '/login');
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
@@ -385,6 +385,6 @@ export const actions: Actions = {
       console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar ocultar un post \n\t- ${error}`)
       return fail(500, { serverFail: true });
     }
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 };

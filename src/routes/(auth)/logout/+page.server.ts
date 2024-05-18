@@ -7,6 +7,6 @@ export const actions: Actions = {
     cookies.delete('profile_photo', { path: '/' });
     cookies.delete('user_id', { path: '/' });
     cookies.delete('refresh_token', { path: '/' });
-    throw redirect(303, '/home');
+    redirect(303, '/home');
   }
 };

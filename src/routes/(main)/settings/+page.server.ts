@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
   const access_token = cookies.get('access_token');
   if (!access_token) {
     console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 
   const verify_token_options = {
@@ -42,11 +42,11 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
     response = await fetch(`${base_api_url}/users/plainMyUser`, verify_token_options);
   } catch (error) {
     console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "Mi usuario"\n\t- ${error}`);
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 
   if (!response.ok) {
-    throw redirect(303, "/login");
+    redirect(303, "/login");
   }
 
   const options = {
@@ -89,7 +89,7 @@ export const actions: Actions = {
     if (!base_api_url) return fail(500, { serverFail: true });
     if (!access_token) {
       console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
 
     const body = {
@@ -115,7 +115,7 @@ export const actions: Actions = {
     }
 
     if (response.ok) return;
-    else if (response.status === 401) throw redirect(303, "/login")
+    else if (response.status === 401) redirect(303, "/login");
     else return fail(response.status, { serverFail: true });
 
   },
@@ -129,7 +129,7 @@ export const actions: Actions = {
     if (!base_api_url) return fail(500, { serverFail: true });
     if (!access_token) {
       console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
 
     const body = {
@@ -155,7 +155,7 @@ export const actions: Actions = {
     }
 
     if (response.ok) return;
-    else if (response.status === 401) throw redirect(303, "/login")
+    else if (response.status === 401) redirect(303, "/login");
     else return fail(response.status, { serverFail: true });
 
   },
@@ -169,7 +169,7 @@ export const actions: Actions = {
     if (!base_api_url) return fail(500, { serverFail: true });
     if (!access_token) {
       console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
 
     const body = {
@@ -194,7 +194,7 @@ export const actions: Actions = {
     }
 
     if (response.ok) return;
-    else if (response.status === 401) throw redirect(303, "/login")
+    else if (response.status === 401) redirect(303, "/login");
     else return fail(response.status, { serverFail: true });
 
   },
@@ -208,7 +208,7 @@ export const actions: Actions = {
     if (!base_api_url) return fail(500, { serverFail: true });
     if (!access_token) {
       console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
 
     const body = {
@@ -233,7 +233,7 @@ export const actions: Actions = {
     }
 
     if (response.ok) return;
-    else if (response.status === 401) throw redirect(303, "/login");
+    else if (response.status === 401) redirect(303, "/login");
     else return fail(response.status, { serverFail: true });
   },
   changeUsername: async ({ request, fetch, cookies }) => {
@@ -256,7 +256,7 @@ export const actions: Actions = {
 
     if (!access_token) {
       console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
 
     const body = {
@@ -315,7 +315,7 @@ export const actions: Actions = {
         });
         return;
       } else if (signin_response.status == 401) {
-        throw redirect(303, "/login")
+        redirect(303, "/login");
       } else {
         return fail(response.status, { serverFail: true });
       }
@@ -343,7 +343,7 @@ export const actions: Actions = {
 
     if (!access_token) {
       console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
 
     if (!password) {
@@ -384,7 +384,7 @@ export const actions: Actions = {
     if (response.ok) {
       return;
     } else if (response.status === 401) {
-      throw redirect(303, "/login")
+      redirect(303, "/login");
     } else if (response.status === 403) {
       return fail(response.status, { incorrectPassword: true });
     } else {
@@ -400,7 +400,7 @@ export const actions: Actions = {
 
     if (!access_token) {
       console.error(`Error: Error en [${__route}].\n\t- El usuario no ha iniciado sesion`);
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     }
 
     const options = {
@@ -426,9 +426,9 @@ export const actions: Actions = {
       cookies.delete('profile_photo', { path: '/' });
       cookies.delete('user_id', { path: '/' });
       cookies.delete('refresh_token', { path: '/' });
-      throw redirect(303, '/home');
+      redirect(303, '/home');
     } else if (response.status == 401) {
-      throw redirect(303, "/login");
+      redirect(303, "/login");
     } else return fail(response.status, { serverFail: true });
 
   }

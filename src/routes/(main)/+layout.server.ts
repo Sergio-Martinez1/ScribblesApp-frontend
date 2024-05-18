@@ -38,7 +38,7 @@ export const load: LayoutServerLoad = async ({ cookies, fetch, depends }) => {
         my_reactions: null
       }
     } else {
-      throw error(my_reactions_response.status, my_reactions_response.statusText);
+      error(my_reactions_response.status, my_reactions_response.statusText);
     }
   } catch (error) {
     console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "My reactions"\n\t- ${error}`)
