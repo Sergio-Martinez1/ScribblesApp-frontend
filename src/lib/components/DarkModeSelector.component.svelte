@@ -1,5 +1,6 @@
 <script lang="ts">
 	import settings from '../../stores/settings';
+  import {env} from '$env/dynamic/public'
 
 	export let dark_mode: string | null;
 
@@ -11,7 +12,7 @@
 		formData.append('color_scheme', color_scheme);
 		$settings.dark_mode = dark_mode;
 		$settings.color_scheme = color_scheme;
-		fetch('http://localhost:5173/api/updateUser', {
+		fetch(`${env.PUBLIC_SERVER_API_URL}/api/updateUser`, {
 			method: 'put',
 			body: formData
 		}).catch((error) => {
@@ -24,7 +25,7 @@
 	<h1 class="text-4xl font-bold">Dark mode</h1>
 	<p>Adjust the aspect of Scribbles to decrease de brightness of the screen and rest the view.</p>
 	<div
-		class="w-[170px] md:w-[250px] flex flex-col gap-y-1 text-lg self-center border border-black rounded-2xl p-2"
+		class="w-[170px] md:w-[250px] flex flex-col gap-y-1 text-lg self-center border border-black dark:border-white rounded-2xl p-2"
 	>
 		<label for="disabled" class="flex justify-between">
 			Disabled
@@ -32,7 +33,7 @@
 				id="disabled"
 				name="dark_mode"
 				type="radio"
-				checked = {dark_mode === 'disabled'}
+				checked = {dark_mode === 'disabled' || dark_mode === null}
 				on:input={() => {
 					updateColorScheme('disabled', 'light');
 				}}
