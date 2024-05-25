@@ -3,9 +3,14 @@
 	import Reactions from '$lib/components/Reactions.component.svelte';
 	import PostOptions from '$lib/components/PostOptions.component.svelte';
 	import { calculate_posted_time } from '$lib/utils/calculate_posted_time';
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import EditPost from '$lib/components/EditPost.componente.svelte';
 	import Image from './Icon/Image.svelte';
+	import type { ActionResult } from '@sveltejs/kit';
+	import { createEventDispatcher } from 'svelte';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData;
 
 	//POST
 	export let user_photo_url: string | null = '';
@@ -33,6 +38,20 @@
 	let delete_dialog_id: string = `delete-dialog-post-${post_id}`;
 	let edit_dialog_id: string = `edit-dialog-post-${post_id}`;
 	let dont_show_dialog_id: string = `not_show_dialog_${post_id}`;
+	let isLoading = false;
+  const dispatch = createEventDispatcher();
+
+  function handleDeletePost(id: number){
+    dispatch('deletepost', {
+      id
+    })
+  }
+
+  function handleDontShowPost(id: number){
+    dispatch('dontshowpost', {
+      id
+    })
+  }
 
 	function handleClose(id: string) {
 		let element = document.getElementById(id) as HTMLDialogElement;
@@ -42,6 +61,28 @@
 	function isValidImageUrl(url: string) {
 		return url.startsWith('http://') || url.startsWith('https://') || url === '';
 	}
+
+	const submitDelete = () => {
+		isLoading = true;
+		return ({ result }: { result: ActionResult }) => {
+			if (result.type == 'success') {
+        handleDeletePost(post_id);
+			}
+			isLoading = false;
+			applyAction(result);
+		};
+	};
+
+	const submitDontShowPost = () => {
+		isLoading = true;
+		return ({ result }: { result: ActionResult }) => {
+			if (result.type == 'success') {
+        handleDontShowPost(post_id);
+			}
+			isLoading = false;
+			applyAction(result);
+		};
+	};
 </script>
 
 <div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl">
@@ -51,8 +92,7 @@
 				<div class="rounded-full bg-lavandaLight dark:bg-purpleLight h-[59px] w-[59px]" />
 				<div class="flex-1">
 					<div class="grid grid-cols-10 gap-4 h-[59px] items-center">
-						<div class="h-6 bg-lavandaLight dark:bg-purpleLight rounded-xl col-span-2" />
-						<div class="h-6 bg-lavandaLight dark:bg-purpleLight rounded-xl col-span-1" />
+						<div class="h-6 bg-lavandaLight dark:bg-purpleLight rounded-xl col-span-4" />
 					</div>
 				</div>
 			</div>
@@ -64,9 +104,12 @@
 		>
 			<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden">
 				{#if user_photo_url}
-					<img class="w-full h-full object-cover" src={user_photo_url} alt="User" />
+					<img class="w-full h-full object-cover bg-lavandaLight dark:bg-purpleLight" src={user_photo_url} alt="User" />
 				{:else}
-					<UserIcon />
+					<UserIcon
+						tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+						tailwindStrokeClass={'stroke-black dark:stroke-white'}
+					/>
 				{/if}
 			</a>
 			<div class="bg-lavandaLight dark:bg-purpleLight w-fit h-fit rounded-2xl">
@@ -96,7 +139,10 @@
 			/>
 		</div>
 		<div class="flex px-5 py-2.5">
-			<a href={post_url} class="bg-lavandaLight dark:bg-purpleLight w-full rounded-2xl p-3.5 dark:text-white cursor-pointer">
+			<a
+				href={post_url}
+				class="bg-lavandaLight dark:bg-purpleLight w-full rounded-2xl p-3.5 dark:text-white cursor-pointer"
+			>
 				<p class="mb-2.5 whitespace-break-spaces">{post_content}</p>
 				{#if isValidImageUrl(post_thumbnail_url)}
 					{#if post_thumbnail_url.length > 0}
@@ -134,7 +180,7 @@
 			class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 			id={delete_dialog_id}
 		>
-			<form method="POST" action="/home?/deletePost" use:enhance>
+			<form method="POST" action="/home?/deletePost" use:enhance={submitDelete} class="p-4 text-center">
 				<input type="hidden" value={post_id} name="post_id" />
 				<p class="dark:text-white font-bold mb-2 mx-auto w-fit text-lg">Delete post?</p>
 				<p class="dark:text-white mb-3">This action will delete the post permanently.</p>
@@ -168,6 +214,8 @@
 			id={edit_dialog_id}
 		>
 			<EditPost
+        on:updatepost
+        {form}
 				{user_photo_url}
 				username={user_name}
 				{post_id}
@@ -180,7 +228,7 @@
 			class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 			id={dont_show_dialog_id}
 		>
-			<form method="POST" action="/home?/dontShowPost" use:enhance>
+			<form method="POST" action="/home?/dontShowPost" use:enhance={submitDontShowPost} class="p-4">
 				<input type="hidden" value={post_id} name="post_id" />
 				<p class="dark:text-white font-bold mb-2 mx-auto w-fit text-lg">Wanna hide this post?</p>
 				<p class="dark:text-white mb-3">This action will hide this post from your home page.</p>
