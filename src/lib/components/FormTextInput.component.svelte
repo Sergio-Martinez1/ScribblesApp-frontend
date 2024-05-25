@@ -26,7 +26,7 @@
 	}
 </script>
 
-<form method="post" action={formActionUrl} use:enhance class="flex">
+<form method="post" action={formActionUrl} use:enhance class="min-[440px]:flex-row flex flex-wrap gap-y-4">
 	{#if !is_there_initial_content && !editable}
 		<button
 			type="button"
@@ -44,7 +44,7 @@
 			type="text"
 			name={inputName}
 			bind:value={content}
-			class="bg-lavandaLight dark:bg-purpleLight rounded-2xl h-9 dark:text-white mr-2 px-2 disabled:opacity-50"
+			class="bg-lavandaLight dark:bg-purpleLight rounded-2xl w-44 h-9 dark:text-white mr-2 px-2 disabled:opacity-50"
 			{placeholder}
 			disabled
 		/>
@@ -62,30 +62,35 @@
 					input.disabled = false;
 					input.focus();
 					hoverOnEditButton = false;
-				}}><Edit tailwindStrokeClass={hoverOnEditButton ? "stroke-black dark:stroke-white" : "stroke-krispyPurple"} /></button
+				}}
+				><Edit
+					tailwindStrokeClass={hoverOnEditButton
+						? 'stroke-black dark:stroke-white'
+						: 'stroke-krispyPurple'}
+				/></button
 			>
 		{:else}
-			<button
-				in:fly|global={{ x: -10, duration: 180 }}
-				out:fly={{ x: -10, duration: 150 }}
-				type="button"
-				class="text-white bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-16 rounded-full py-1.5 px-1.5 mr-2"
-				on:click={() => {
-					editable = false;
-					input.disabled = true;
-					content = data;
-				}}
-			>
-				Cancel
-			</button>
-			<button
-				in:fly|global={{ x: -10, duration: 180 }}
-				out:fly={{ x: -10, duration: 150 }}
-				type="submit"
-				disabled={!validContent}
-				class="text-white bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple w-16 rounded-full py-1.5 px-1.5 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
-				>Save</button
-			>
+			<div class="flex">
+				<button
+					in:fly|global={{ x: -10, duration: 180 }}
+					type="button"
+					class="text-white bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-16 rounded-full py-1.5 px-1.5 mr-2"
+					on:click={() => {
+						editable = false;
+						input.disabled = true;
+						content = data;
+					}}
+				>
+					Cancel
+				</button>
+				<button
+					in:fly|global={{ x: -10, duration: 180 }}
+					type="submit"
+					disabled={!validContent}
+					class="text-white bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple w-16 rounded-full py-1.5 px-1.5 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
+					>Save</button
+				>
+			</div>
 		{/if}
 	{/if}
 </form>
