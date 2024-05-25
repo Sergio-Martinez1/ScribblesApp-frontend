@@ -39,18 +39,25 @@
 	</div>
 	<p class="dark:text-white font-bold w-fit mx-auto text-xl">{username}</p>
 {:else}
-	<div class="w-[174px] h-[174px] mb-2.5 relative bg-lavandaDark dark:bg-purpleGray box-content p-3 rounded-full">
-		<User width={174} height={174} />
+	<div
+		class="w-[120px] h-[120px] sm:w-[190px] sm:h-[190px] mb-2.5 relative bg-lavandaDark dark:bg-purpleGray box-content p-3 rounded-full"
+	>
+		<User
+      tailwindWidthClass={'w-[120px] sm:w-[190px]'}
+      tailwindHeightClass={'h-[120px] sm:h-[190px]'}
+			tailwindFillClass={'fill-lavandaGray dark:fill-purpleLight'}
+			tailwindStrokeClass={'stroke-black dark:stroke-white'}
+		/>
 		{#if editable}
-		<div class="absolute bottom-0 sm:bottom-2 right-0 sm:right-8 w-fit h-fit">
-			<EditPhoto imagename={'profile_photo'} dialogId={'edit_profile_photo_dialog'}>
-				<div
-					class="w-fit h-fit p-2 rounded-full bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple"
-				>
-					<Camera />
-				</div>
-			</EditPhoto>
-		</div>
+			<div class="absolute bottom-0 sm:bottom-2 right-0 sm:right-8 w-fit h-fit">
+				<EditPhoto imagename={'profile_photo'} dialogId={'edit_profile_photo_dialog'}>
+					<div
+						class="w-fit h-fit p-2 rounded-full bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple"
+					>
+						<Camera />
+					</div>
+				</EditPhoto>
+			</div>
 		{/if}
 	</div>
 	<p class="dark:text-white font-bold w-fit mx-auto text-xl">{username}</p>
