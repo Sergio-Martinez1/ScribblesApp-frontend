@@ -8,7 +8,11 @@
 	import { fly } from 'svelte/transition';
 	import { applyAction, enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import { invalidateAll } from '$app/navigation';
+	import { createEventDispatcher } from 'svelte';
+	import type { Post } from '$lib/types';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData;
 
 	//STYLES
 	export let maxContent: number = 500;
@@ -22,6 +26,7 @@
 	let showPlaceHolder: boolean = true;
 	let validContent: boolean = false;
 	let selectedImage: string = '';
+	let screenWidth: number;
 
 	//DOM
 	let uploadFile: HTMLInputElement;
@@ -33,6 +38,8 @@
 	export let outputText: string = '';
 	export let imagePreview: string = '';
 	export let tags: string[] = [];
+
+	const dispatch = createEventDispatcher();
 
 	$: validContent =
 		(outputText.trim() || imagePreview) && outputText.length <= maxContent ? true : false;
@@ -60,11 +67,25 @@
 		uploadFile.value = '';
 	}
 
+	function handleAddPost(post: Post) {
+		dispatch('addpost', {
+			id: post.id,
+			content: post.content,
+			thumbnail: post.thumbnail,
+			publication_date: post.publication_date,
+			user_id: post.user_id,
+			user: post.user,
+      reactions: post.reactions,
+			tags: post.tags,
+			num_comments: post.num_comments
+		});
+	}
+
 	const submit: SubmitFunction = () => {
 		return async ({ result }) => {
 			if (result.type === 'success') {
-				await invalidateAll();
 				await applyAction(result);
+        handleAddPost(form.createdPost)
 				handleClose();
 			} else if (result.type === 'redirect') {
 				await applyAction(result);
@@ -73,6 +94,8 @@
 		};
 	};
 </script>
+
+<svelte:window bind:innerWidth={screenWidth} />
 
 <form
 	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-5 py-2.5 h-fit relative"
@@ -93,13 +116,23 @@
 			Create Post
 		</p>
 	{/if}
-	<div class="items-center grid grid-cols-[58px_minmax(0,_1fr)_auto_auto] gap-x-2 h-fit">
+	<div
+		class="items-center grid grid-cols-[58px_minmax(0,_1fr)_auto] sm:grid-cols-[58px_minmax(0,_1fr)_auto_auto] gap-x-2 h-fit"
+	>
 		<!-- USER ICON -->
-		<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden self-start">
+		<a
+			href={user_url}
+			class="w-[50px] h-[50px] sm:w-[59px] sm:h-[58px] rounded-full overflow-hidden self-start"
+		>
 			{#if user_photo_url}
 				<img class="w-full h-full object-cover" src={user_photo_url} alt="User" />
 			{:else}
-				<User />
+				<User
+					tailwindWidthClass={'w-[50px] sm:w-[59px]'}
+					tailwindHeightClass={'h-[50px] sm:h-[59px]'}
+					tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+					tailwindStrokeClass={'stroke-black dark:stroke-white'}
+				/>
 			{/if}
 		</a>
 		<!-- TEXTAREA -->
@@ -150,10 +183,11 @@
 		<!-- IMAGE BUTTON -->
 		<button
 			type="button"
-			class="mt-2 cursor-pointer p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent self-start relative w-fit"
+			class="mt-2 cursor-pointer p-2 sm:p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent self-start relative w-fit"
 			on:click={() => {
 				focus = true;
 				uploadFile.click();
+				if (screenWidth < 640) tags_toggle = true;
 			}}
 		>
 			<Image />
@@ -163,7 +197,7 @@
 				type="file"
 				name="thumbnail"
 				accept="image/*"
-				class="w-0 h-0 t absolute"
+				class="w-0 h-0 absolute overflow-hidden"
 				on:change={handleFileChange}
 				bind:this={uploadFile}
 				bind:value={selectedImage}
@@ -177,21 +211,21 @@
 				focus = true;
 				tags_toggle = !tags_toggle;
 			}}
-			class="mt-2 w-fit cursor-pointer p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent self-start justify-self-end"
+			class="hidden sm:inline-block mt-2 w-fit cursor-pointer p-2 sm:p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent self-start justify-self-end"
 		>
 			<Hash />
 		</button>
 	</div>
-	<div class="grid grid-cols-[1fr_112px] ml-[59px] mr-[39px]">
-		<!-- TAGS INPUT -->
-		<input type="hidden" name="tags" bind:value={tags} />
-		{#if tags_toggle}
-			<!-- TAG CREATION -->
-			<div in:fly={{ y: -10 }} class="ml-2.5 mr-9 my-2">
-				<CreateTags bind:tags />
-			</div>
-		{/if}
-		{#if focus}
+	{#if focus}
+		<div class="grid grid-cols-[1fr_112px] ml-[15px] sm:ml-[59px] sm:mr-[39px]">
+			<!-- TAGS INPUT -->
+			<input type="hidden" name="tags" bind:value={tags} />
+			{#if (screenWidth < 640 && focus) || tags_toggle}
+				<!-- TAG CREATION -->
+				<div in:fly={{ y: -10 }} class="ml-2.5 mr-9 my-2">
+					<CreateTags bind:tags />
+				</div>
+			{/if}
 			<!-- POST BUTTON -->
 			<button
 				type="submit"
@@ -200,6 +234,6 @@
 				class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessPurple disabled:opacity-[0.5]"
 				>Post</button
 			>
-		{/if}
-	</div>
+		</div>
+	{/if}
 </form>
