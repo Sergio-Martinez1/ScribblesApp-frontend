@@ -31,7 +31,7 @@
 		>
 			<div class="flex gap-x-2 items-center mx-1.5">
 				<Plus width={18} height={18} />
-				<p>Add Birthday</p>
+				<span class="text-white">Add Birthday</span>
 			</div>
 		</button>
 	{:else if is_there_initial_content || editable}
