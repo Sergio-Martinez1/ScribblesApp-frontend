@@ -19,7 +19,7 @@
 	$: validContent = username != content ? true : false;
 </script>
 
-<section class="flex flex-col gap-y-4 h-52">
+<section class="flex flex-col gap-y-4">
 	<h1 class="dark:text-white text-4xl font-bold">Change your username</h1>
 	<form method="post" action="/settings?/changeUsername" use:enhance class="flex flex-col gap-y-4 items-center">
 		<div class="flex items-center">
