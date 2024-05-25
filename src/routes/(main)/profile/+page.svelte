@@ -3,10 +3,11 @@
 	import { ProfilePhoto } from '$components';
 	import { UserDescription } from '$components';
 	import { Post } from '$components';
-	import { onDestroy, onMount, tick } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import type { PageData } from './$types';
 	import type { Post as TypePost } from '$lib/types';
+  import {env} from '$env/dynamic/public'
 
 	export let data: PageData;
 	let scrollData: Array<TypePost> = [];
@@ -22,7 +23,7 @@
 	$: plainMyUser = data.plainMyUser;
 	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
 	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
-	$: url = `http://localhost:5173/api/posts/myPosts?offset=${offset}&limit=${limit}`;
+	$: url = `${env.PUBLIC_SERVER_API_URL}/api/posts/myPosts?offset=${offset}&limit=${limit}`;
 
 	onMount(async () => {
 		observer = new IntersectionObserver(async (entries) => {
@@ -36,9 +37,11 @@
 				}
 			});
 		});
-		tick().then(() => {
-			if (loadingPostsElement) {
-				observer?.observe(loadingPostsElement);
+		await data.streamed.myPosts.then((response) => {
+			if (response.status == 200) {
+				if (loadingPostsElement) {
+					observer?.observe(loadingPostsElement);
+				}
 			}
 		});
 	});

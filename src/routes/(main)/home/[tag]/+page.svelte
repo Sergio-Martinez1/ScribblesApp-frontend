@@ -4,10 +4,14 @@
 	import { Footer } from '$components';
 	import { LoginInHome } from '$components';
 	import type { PageData } from './$types';
-	import { page } from '$app/stores';
 	import type { Post as TypePost } from '$lib/types';
+
+	import { page } from '$app/stores';
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import { onDestroy, onMount, tick } from 'svelte';
+  import {env} from '$env/dynamic/public'
+	import { invalidate } from '$app/navigation';
+	import settings from '../../../../stores/settings';
 
 	export let data: PageData;
 	let scrollData: Array<TypePost> = [];
@@ -24,7 +28,7 @@
 	$: isLogin = plainMyUser ? true : false;
 	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
 	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
-	$: url = `http://localhost:5173/api/posts/tags/${$page.params.tag}?offset=${offset}&limit=${limit}`;
+	$: url = `${env.PUBLIC_SERVER_API_URL}/api/posts/tags/${$page.params.tag}?offset=${offset}&limit=${limit}`;
 	$: {
 		if ($page.params.tag) {
 			scrollData = [];
@@ -42,6 +46,8 @@
 	}
 
 	onMount(async () => {
+		invalidate('plainUser');
+		invalidate('myReactions');
 		observer = new IntersectionObserver(async (entries) => {
 			entries.forEach(async (entry) => {
 				if (entry.isIntersecting) {
@@ -52,6 +58,14 @@
 					}
 				}
 			});
+		});
+		await data.streamed.posts.then((response) => {
+			if (response.status == 200) {
+				scrollTo(0, $settings.scrollY);
+				if (loadingPostsElement) {
+					observer?.observe(loadingPostsElement);
+				}
+			}
 		});
 	});
 
