@@ -12,7 +12,7 @@ export interface Post {
     id: number,
     username: string,
     profile_photo: string | null,
-  }
+  },
   reactions: Array<{ id: number, user_id: number, post_id: number }> | null,
   tags: Array<{ content: string, post_id: number }> | null,
   num_comments: number | null
