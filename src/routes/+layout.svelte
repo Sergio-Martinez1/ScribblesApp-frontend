@@ -2,6 +2,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import '../app.css';
 	import settings from '../stores/settings';
+	import { env } from '$env/dynamic/public';
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
@@ -43,10 +44,10 @@
 				$settings.color_scheme = '';
 				formData.append('color_scheme', 'light');
 			}
-			fetch('http://localhost:5173/api/updateUser', {
+			fetch(`${env.PUBLIC_SERVER_API_URL}/api/updateUser`, {
 				method: 'put',
 				body: formData
-			}).catch((error)=>{
+			}).catch(() => {
 				errorOnUpdateColorScheme = true;
 			});
 		}
