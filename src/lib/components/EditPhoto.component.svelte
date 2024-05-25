@@ -2,6 +2,7 @@
 	import ArrowLeft from './Icon/ArrowLeft.svelte';
 	import Camera from '$lib/components/Icon/Camera.svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { env } from '$env/dynamic/public';
 
 	export let imagename: string = '';
 	export let dialogId: string = '';
@@ -205,7 +206,7 @@
 		let formData = new FormData();
 		formData.append(`${imagename}`, fileCropped);
 
-		fetch('http://localhost:5173/api/upload', {
+		fetch(`${env.PUBLIC_SERVER_API_URL}/api/upload`, {
 			method: 'post',
 			body: formData
 		})
@@ -229,14 +230,13 @@
 >
 	<slot />
 
-
 	<!-- IMAGE INPUT -->
 	<input
 		tabindex="-1"
 		type="file"
 		name="thumbnail"
 		accept="image/*"
-		class="w-0 h-0 t absolute"
+		class="w-0 h-0 absolute overflow-hidden"
 		on:change={chargeFile}
 		bind:this={uploadFile}
 	/>
@@ -252,7 +252,11 @@
 				type="button"
 				on:click={handleClose}
 				class="col-span-1 w-fit hover:bg-lessLavanda dark:hover:bg-lessPurple active:translate-y-[-1px] rounded-full p-1"
-				><ArrowLeft width={26} height={26} tailwindStrokeClass={"stroke-black dark:stroke-white"} /></button
+				><ArrowLeft
+					width={26}
+					height={26}
+					tailwindStrokeClass={'stroke-black dark:stroke-white'}
+				/></button
 			>
 			<p class="dark:text-white font-bold text-xl col-span-1 w-fit justify-self-center">
 				Edit profile photo
@@ -270,7 +274,9 @@
 		<div bind:this={container} class="w-full h-full">
 			{#if croppedUrl}
 				<div class="w-full h-full">
-					<div class="w-full h-[85%] flex justify-center items-center bg-lavandaLight dark:bg-purpleLight">
+					<div
+						class="w-full h-[85%] flex justify-center items-center bg-lavandaLight dark:bg-purpleLight"
+					>
 						{#if !cover_mode}
 							<div class="aspect-square rounded-full h-[60%] sm:h-[80%]">
 								<img
