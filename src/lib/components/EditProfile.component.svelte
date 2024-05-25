@@ -21,7 +21,9 @@
 
 	<!-- Profile photo -->
 	<div class="flex flex-col gap-y-5 w-full">
-		<div class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight">
+		<div
+			class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight"
+		>
 			<label for="profile_photo" class="dark:text-white font-bold">Profile Photo</label>
 			<EditPhoto
 				imagename={'profile_photo'}
@@ -39,14 +41,21 @@
 			{#if profile_photo}
 				<img class="w-full h-full object-cover rounded-full" src={profile_photo} alt="User face" />
 			{:else}
-				<User width={174} height={174} />
+				<User
+					tailwindWidthClass={'w-[100px] sm:w-[174px]'}
+					tailwindHeightClass={'h-[100px] sm:h-[174px]'}
+					tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+					tailwindStrokeClass={'stroke-black dark:stroke-white'}
+				/>
 			{/if}
 		</div>
 	</div>
 
 	<!-- Cover photo -->
 	<div class="flex flex-col gap-y-5 w-full">
-		<div class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight">
+		<div
+			class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight"
+		>
 			<label for="cover_photo" class="dark:text-white font-bold">Cover Photo</label>
 			<EditPhoto
 				imagename={'cover_photo'}
@@ -73,7 +82,9 @@
 
 	<!-- Description -->
 	<div class="flex flex-col gap-y-5 w-full">
-		<div class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight">
+		<div
+			class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight"
+		>
 			<label for="description" class="dark:text-white font-bold">Description</label>
 			<button
 				type="button"
@@ -106,7 +117,9 @@
 
 	<!-- Personal url -->
 	<div class="flex flex-col gap-y-5 w-full">
-		<div class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight">
+		<div
+			class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight"
+		>
 			<label for="url" class="dark:text-white font-bold">Personal Url</label>
 		</div>
 		<FormTextInput
@@ -115,13 +128,15 @@
 			placeholder={'https://example.com'}
 			formActionUrl={'/settings?/editWebSite'}
 		>
-			Add Url
+			<span class="text-white">Add Url</span>
 		</FormTextInput>
 	</div>
 
 	<!-- Location -->
 	<div class="flex flex-col gap-y-5 w-full">
-		<div class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight">
+		<div
+			class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight"
+		>
 			<label for="location" class="dark:text-white font-bold">Location</label>
 		</div>
 		<FormTextInput
@@ -130,13 +145,15 @@
 			placeholder={'New York, US'}
 			formActionUrl={'/settings?/editLocation'}
 		>
-			Add Location
+			<span class="text-white">Add Location</span>
 		</FormTextInput>
 	</div>
 
 	<!-- Birthday -->
 	<div class="flex flex-col gap-y-5 w-full">
-		<div class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight">
+		<div
+			class="flex items-center justify-between border-b-2 border-b-lavandaLight dark:boder-b-purpleLight"
+		>
 			<label for="birthday" class="dark:text-white font-bold">Birthday</label>
 		</div>
 		<BirthdayInput {birthday} />
