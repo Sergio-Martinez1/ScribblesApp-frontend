@@ -81,7 +81,7 @@
 						<User width={50} height={50} />
 					</div>
 				{/if}
-				<div class="bg-lavandaLight dark:bg-purpleLight rounded-2xl p-3 col-start-2 relative">
+				<div class="bg-lavandaGray dark:bg-purpleLight rounded-2xl p-3 col-start-2 relative">
 					{#if comment.user.id === my_user_id}
 						<button
 							on:click={() => {
@@ -103,7 +103,7 @@
 				class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 				id="delete-dialog-comment-{comment.id}"
 			>
-				<form method="POST" action="/post/[id]?/deleteComment" use:enhance>
+				<form method="POST" action="/post/[id]?/deleteComment" use:enhance class="p-4 text-center">
 					<p class="dark:text-white font-bold mb-2 mx-auto w-fit text-lg">Delete comment?</p>
 					<p class="dark:text-white mb-3">This action will delete the comment permanently.</p>
 					<div class="flex gap-3">
