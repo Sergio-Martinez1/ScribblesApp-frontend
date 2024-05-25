@@ -42,7 +42,7 @@
 </script>
 
 <div
-	class="bg-lavandaLight dark:bg-purpleLight flex rounded-2xl px-2 relative {vertical
+	class="sm:bg-lavandaLight dark:bg-purpleLight flex rounded-b-2xl sm:rounded-2xl dark:rounded-2xl px-2 relative {vertical
 		? 'gap-2 py-1.5'
 		: 'py-2'} w-full sm:w-fit justify-self-end max-sm:justify-around"
 >
