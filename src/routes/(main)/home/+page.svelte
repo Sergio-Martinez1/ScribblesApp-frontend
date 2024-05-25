@@ -4,23 +4,23 @@
 	import { Footer } from '$components';
 	import { PublicationBar } from '$components';
 	import { LoginInHome } from '$components';
-	import type { PageData } from './$types';
-	import { fetchPosts } from '$lib/utils/infiniteScroll';
-	import type { Post as TypePost } from '$lib/types';
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { invalidate, onNavigate } from '$app/navigation';
+	import { env } from '$env/dynamic/public';
 	import settings from '../../../stores/settings';
-	import type { Snapshot } from '../$types';
+	import session from '../../../stores/session';
+	import type { ActionData, PageData } from './$types';
+	import type { Post as TypePost } from '$lib/types';
 
+  //DATA FROM API AND FORM ACTIONS
 	export let data: PageData;
-	let scrollData: Array<TypePost> = [];
+	export let form: ActionData;
+
+	//Posts logic
+	let posts: Array<TypePost> = [];
+	let isLoading: boolean = true;
+	let error: number = 0;
 	let loadingPostsElement: HTMLElement | null;
-	let offset: number = 20;
-	let limit: number = 10;
-	let infiniteScrollData: { data: Array<TypePost> | null; status: number } = {
-		data: null,
-		status: 200
-	};
 	let observer: IntersectionObserver;
 
 	$: plainMyUser = data.plainMyUser;
@@ -29,52 +29,30 @@
 	$: profile_photo =
 		plainMyUser && plainMyUser.profile_photo !== 'null' ? plainMyUser.profile_photo : '';
 	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
-	$: url = `http://localhost:5173/api/posts?offset=${offset}&limit=${limit}`;
+	$: url = `${env.PUBLIC_SERVER_API_URL}/api/posts?offset=${$session.home.offset}&limit=${$session.home.limit}`;
 
-	onMount(async () => {
-		invalidate('plainUser');
-		invalidate('myReactions');
-		observer = new IntersectionObserver(async (entries) => {
-			entries.forEach(async (entry) => {
-				if (entry.isIntersecting) {
-					infiniteScrollData = await fetchPosts(url);
-					if (infiniteScrollData.data) {
-						scrollData = [...scrollData, ...infiniteScrollData.data];
-						offset += 10;
-					}
+	async function loadPosts() {
+		isLoading = true;
+		await fetch(url)
+			.then((response) => response.json())
+			.then((data) => {
+				if (data.status == 200) {
+					$session.home.posts = [...$session.home.posts, ...data.data];
+					$session.home.offset += 5;
+					posts = [...posts, ...data.data];
+				} else if (data.status == 404) {
+					error = 404;
+					isLoading = false;
+				} else if (data.status == 500) {
+					error = 500;
+					isLoading = false;
 				}
+			})
+			.catch(() => {
+				error = 500;
+				isLoading = false;
 			});
-		});
-		tick().then(() => {
-			if (loadingPostsElement) {
-				observer?.observe(loadingPostsElement);
-			}
-		});
-
-		await tick();
-		scrollTo(0, $settings.scrollY);
-		data.streamed.posts.then(() => {
-			scrollTo(0, $settings.scrollY);
-		});
-		
-	});
-
-	onDestroy(() => {
-		observer?.disconnect();
-	});
-
-	onNavigate(() => {
-		$settings.scrollY = window.scrollY;
-	});
-
-	// export const snapshot: Snapshot = {
-	// 	capture: () => {
-	// 		console.log('CAPTURADO')
-	// 		scrollData},
-	// 	restore: (value) => {
-	// 		console.log('RESTAURADO');
-	// 		scrollData = value ?? []}
-	// };
+	}
 
 	function handleLike(my_reactions: any[], post_id: number) {
 		if (my_reactions) {
@@ -85,94 +63,144 @@
 		}
 		return false;
 	}
+
+	function handleAddPost(event: CustomEvent) {
+		posts = [event.detail, ...posts];
+		$session.home.posts = posts;
+	}
+
+	function handleRemovePost(event: CustomEvent) {
+		posts = posts.filter((post: TypePost) => post.id !== event.detail.id);
+		$session.home.posts = $session.home.posts.filter(
+			(post: TypePost) => post.id !== event.detail.id
+		);
+	}
+
+	function handleUpdatePost(event: CustomEvent) {
+		posts = posts.map((post: TypePost) => {
+			if (post.id === event.detail.id) {
+				return event.detail;
+			}
+			return post;
+		});
+	}
+
+	function handleDontShowPost(event: CustomEvent) {
+		posts = posts.filter((post: TypePost) => post.id !== event.detail.id);
+		$session.home.posts = $session.home.posts.filter(
+			(post: TypePost) => post.id !== event.detail.id
+		);
+	}
+
+	onMount(async () => {
+		invalidate('plainUser');
+		invalidate('myReactions');
+
+		if ($session.home.posts.length === 0) {
+			await loadPosts();
+		} else {
+			posts = $session.home.posts;
+		}
+
+		observer = new IntersectionObserver(async (entries) => {
+			entries.forEach(async (entry) => {
+				if (entry.isIntersecting) {
+					loadPosts();
+				}
+			});
+		});
+
+		tick().then(() => {
+			scrollTo(0, $settings.scrollY);
+			if (loadingPostsElement) {
+				observer?.observe(loadingPostsElement);
+			}
+		});
+	});
+
+	onDestroy(() => {
+		observer?.disconnect();
+	});
+
+	onNavigate(() => {
+		if ($session.home.posts.length >= 40) {
+			$session.home.posts = [];
+			$session.home.scrollY = 0;
+			$session.home.limit = 5;
+			$session.home.offset = 0;
+			isLoading = true;
+			posts = [];
+		} else {
+			$settings.scrollY = window.scrollY;
+		}
+	});
 </script>
 
 <main class="col-span-7">
-	<div class="flex flex-col gap-y-4 mt-4 max-sm:mb-24 sm:mt-8">
+	<div class="flex flex-col gap-y-4 mt-4 mb-24 sm:my-8">
+		<!-- PUBLICATION BAR -->
 		{#if isLogin}
-			<PublicationBar user_url={'/profile'} user_photo_url={profile_photo} />
+			<PublicationBar
+				{form}
+				user_url={'/profile'}
+				user_photo_url={profile_photo}
+				on:addpost={handleAddPost}
+			/>
 		{:else}
 			<LoginInHome />
 		{/if}
+		<!-- POSTS -->
 
-		{#await data.streamed.posts}
-			{#each Array(2) as _}
-				<Post loading={true} />
+		{#if posts.length !== 0}
+			<!-- IF SUCCES LOAD POSTS FROM API -->
+			{#each posts as post}
+				<div class="post-element">
+					<Post
+						{form}
+						on:updatepost={handleUpdatePost}
+						on:deletepost={handleRemovePost}
+						on:dontshowpost={handleDontShowPost}
+						user_photo_url={post.user?.profile_photo}
+						user_name={post.user?.username}
+						user_url="/profile/{post.user.id}"
+						post_url="/post/{post.id}"
+						publication_date={post.publication_date}
+						post_content={post.content ? post.content : ''}
+						post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
+						like_on={handleLike(my_reactions, post.id)}
+						likes_count={post.reactions ? post.reactions.length : 0}
+						comments_count={post.num_comments ? post.num_comments : 0}
+						tags_count={post.tags ? post.tags.length : 0}
+						vertical={false}
+						tags={post.tags ? post.tags.map((tag) => tag.content) : []}
+						post_by_tags_url="/home"
+						creator_id={post.user?.id}
+						myUser_id={id}
+						post_id={post.id}
+					/>
+				</div>
 			{/each}
-		{:then posts}
-			{#if posts?.status === 200 && posts.data}
-				{#each posts.data as post}
-					<Post
-						user_photo_url={post.user?.profile_photo}
-						user_name={post.user?.username}
-						user_url="/profile/{post.user.id}"
-						post_url="/post/{post.id}"
-						publication_date={post.publication_date}
-						post_content={post.content ? post.content : ''}
-						post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
-						like_on={handleLike(my_reactions, post.id)}
-						likes_count={post.reactions ? post.reactions.length : 0}
-						comments_count={post.num_comments ? post.num_comments : 0}
-						tags_count={post.tags ? post.tags.length : 0}
-						vertical={false}
-						tags={post.tags ? post.tags.map((tag) => tag.content) : []}
-						post_by_tags_url="/home"
-						creator_id={post.user?.id}
-						myUser_id={id}
-						post_id={post.id}
-					/>
-				{/each}
-				{#each scrollData as post}
-					<Post
-						user_photo_url={post.user?.profile_photo}
-						user_name={post.user?.username}
-						user_url="/profile/{post.user.id}"
-						post_url="/post/{post.id}"
-						publication_date={post.publication_date}
-						post_content={post.content ? post.content : ''}
-						post_thumbnail_url={post.thumbnail ? post.thumbnail : ''}
-						like_on={handleLike(my_reactions, post.id)}
-						likes_count={post.reactions ? post.reactions.length : 0}
-						comments_count={post.num_comments ? post.num_comments : 0}
-						tags_count={post.tags ? post.tags.length : 0}
-						vertical={false}
-						tags={post.tags ? post.tags.map((tag) => tag.content) : []}
-						post_by_tags_url="/home"
-						creator_id={post.user?.id}
-						myUser_id={id}
-						post_id={post.id}
-					/>
-				{/each}
-				{#if infiniteScrollData.status == 200}
-					<div bind:this={loadingPostsElement}>
-						<Post loading={true} />
-					</div>
-					<Post loading={true} />
-				{:else if infiniteScrollData.status == 404}
-					<div
-						class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10"
-					>
-						No more posts to see...
-					</div>
-				{:else}
-					<div
-						class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full"
-					>
-						PLEASE RELOAD
-					</div>
-				{/if}
-			{:else if posts?.status === 404}
-				<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
-					<p class="dark:text-white">You arrived at the end</p>
-				</div>
-			{:else}
-				<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
-					<p class="dark:text-white">Please reload the page</p>
-				</div>
-			{/if}
-		{/await}
+		{/if}
+
+		{#if isLoading}
+			<!-- IF NOT SESSION, AWAIT -->
+			<div bind:this={loadingPostsElement}>
+				<Post loading={true} {form} />
+			</div>
+		{:else if error == 404}
+			<!-- IF ERROR -->
+			<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+				<p class="dark:text-white">No more posts to see...</p>
+			</div>
+		{:else if error == 500}
+			<!-- IF ERROR -->
+			<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
+				<p class="dark:text-white">Please reload the page</p>
+			</div>
+		{/if}
 	</div>
 </main>
+
 <aside class="col-span-3 hidden md:inline-block">
 	<section class="flex flex-col gap-y-2 items-start mt-24 sticky top-6 max-h-screen">
 		<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-4 py-2.5 min-w-full">
