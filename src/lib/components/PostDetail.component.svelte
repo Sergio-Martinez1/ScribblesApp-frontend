@@ -71,7 +71,7 @@
 			{/if}
 			<a href="/home" class="rounded-full ml-5"><Logo width={52} height={52} /></a>
 		</div>
-		<div class="flex h-screen relative">
+		<div class="flex h-screen relative bg-lavandaDark dark:bg-purpleDark">
 			<div class="w-full h-full dark:text-white flex items-center">
 				{#if isValidImageUrl(post_thumbnail_url)}
 					<div class="w-full bg-black h-screen flex items-center">
@@ -94,7 +94,12 @@
 					</div>
 				{:else}
 					<div class="mr-4 z-10">
-						<User width={64} height={64} />
+						<User
+							width={64}
+							height={64}
+							tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+							tailwindStrokeClass={'stroke-black dark:stroke-white'}
+						/>
 					</div>
 				{/if}
 				<div class="z-10 dark:text-white">
