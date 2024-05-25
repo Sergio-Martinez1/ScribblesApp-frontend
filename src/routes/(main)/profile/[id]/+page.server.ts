@@ -17,8 +17,8 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
     console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
     return {
       streamed: {
-        myUser: user_response,
-        myPosts: user_posts_response
+        user: user_response,
+        posts: user_posts_response
       }
     }
   }
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
         fetchedUser.data = data;
       }
       return fetchedUser;
-    }).catch((error)=>{
+    }).catch((error) => {
       console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "user"\n\t- ${error}`)
       return fetchedUser;
     });
@@ -43,7 +43,7 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
         fetchedUserPosts.data = data;
       }
       return fetchedUserPosts;
-    }).catch((error)=>{
+    }).catch((error) => {
       console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener "user_posts"\n\t- ${error}`)
       return fetchedUserPosts;
     });
