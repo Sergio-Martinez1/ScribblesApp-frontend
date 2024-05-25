@@ -1,27 +1,24 @@
 import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
 import { fileURLToPath } from 'url';
-import type { TopTag, Post } from '$lib/types';
+import type { TopTag } from '$lib/types';
 import { type Actions, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __route = __filename.slice(__filename.indexOf('src'));
 
-export const load: PageServerLoad = ({ fetch, cookies }) => {
+export const load: PageServerLoad = ({ fetch }) => {
 
 
   const base_api_url: string | undefined = env.API_URL;
-  let fetchedPosts = { data: null, status: 500 };
   let fetchedTags = { data: null, status: 500 };
-  let posts_response: Promise<{ data: Array<Post> | null, status: number }> = Promise.resolve(fetchedPosts);
   let top_tags_response: Promise<{ data: Array<TopTag> | null, status: number }> = Promise.resolve(fetchedTags);
 
   if (!base_api_url) {
     console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
     return {
       streamed: {
-        posts: posts_response,
         top_tags: top_tags_response
       }
     }
@@ -40,64 +37,8 @@ export const load: PageServerLoad = ({ fetch, cookies }) => {
       return fetchedTags;
     })
 
-  const access_token = cookies.get('access_token');
-  if (!access_token) {
-    posts_response = fetch(`${base_api_url}/posts/pagination?offset=0&limit=20`)
-      .then(async (response) => {
-        fetchedPosts.status = response.status;
-        if (response.ok) {
-          const data = await response.json();
-          fetchedPosts.data = data;
-        }
-        return fetchedPosts;
-      }).catch((error) => {
-        console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
-        return fetchedPosts;
-      });
-    return {
-      streamed: {
-        posts: posts_response,
-        top_tags: top_tags_response
-      }
-    }
-  }
-
-  const home_url = `${base_api_url}/posts/home?offset=0&limit=20`;
-  const posts_url = `${base_api_url}/posts/pagination?limit=20&offset=0`;
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${access_token}`
-    }
-  };
-
-  posts_response = fetch(home_url, options)
-    .then(async (response) => {
-      fetchedPosts.status = response.status;
-      if (response.ok) {
-        const data = await response.json();
-        fetchedPosts.data = data;
-      } else if (response.status == 401) {
-        await fetch(posts_url).then(async (response) => {
-          fetchedPosts.status = response.status;
-          if (response.ok) {
-            const data = await response.json();
-            fetchedPosts.data = data;
-          }
-        }).catch((error) => {
-          console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener posts publicos\n\t- ${error}`)
-        })
-      }
-      return fetchedPosts;
-    }).catch((error) => {
-      console.error(`Error: Error en [${__route}].\n\t- Error al intentar obtener posts de home\n\t- ${error}`)
-      return fetchedPosts;
-    })
-
   return {
     streamed: {
-      posts: posts_response,
       top_tags: top_tags_response
     }
   }
@@ -233,7 +174,9 @@ export const actions: Actions = {
     };
     try {
       const response = await fetch(posts_url, options);
-      if (response.ok) return;
+      if (response.ok) {
+        return { createdPost: await response.json() };
+      }
       else if (response.status !== 401) {
         return fail(response.status, { serverFail: true });
       }
@@ -345,7 +288,9 @@ export const actions: Actions = {
     };
     try {
       const response = await fetch(post_url, options);
-      if (response.ok) return;
+      if (response.ok) {
+        return {updatedPost: await response.json()};
+      }
       else if (response.status !== 401) {
         return fail(response.status, { serverFail: true });
       }
