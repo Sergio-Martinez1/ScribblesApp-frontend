@@ -6,9 +6,10 @@
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import type { Post as TypePost } from '$lib/types';
-
 	import type { PageData } from './$types';
 	import { page } from '$app/stores';
+  import {env} from '$env/dynamic/public'
+
 	export let data: PageData;
 	let scrollData: Array<TypePost> = [];
 	let loadingPostsElement: HTMLElement | null;
@@ -19,7 +20,7 @@
 		status: 200
 	};
 	let observer: IntersectionObserver;
-	$: url = `http://localhost:5173/api/posts/user/${$page.params.id}?offset=${offset}&limit=${limit}`;
+	$: url = `${env.PUBLIC_SERVER_API_URL}/api/posts/user/${$page.params.id}?offset=${offset}&limit=${limit}`;
 
 	$: plainMyUser = data.plainMyUser;
 	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
@@ -37,9 +38,11 @@
 				}
 			});
 		});
-		tick().then(() => {
-			if (loadingPostsElement) {
-				observer?.observe(loadingPostsElement);
+		await data.streamed.posts.then((response) => {
+			if (response.status == 200) {
+				if (loadingPostsElement) {
+					observer?.observe(loadingPostsElement);
+				}
 			}
 		});
 	});
