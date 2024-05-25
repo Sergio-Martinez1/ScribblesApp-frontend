@@ -8,7 +8,11 @@
 	import { fly } from 'svelte/transition';
 	import { applyAction, enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import { invalidateAll } from '$app/navigation';
+	import { createEventDispatcher } from 'svelte';
+	import type { Post } from '$lib/types';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData;
 
 	//RAW TEXT
 	export let innerText: string = '';
@@ -37,6 +41,8 @@
 
 	//DOM
 	let uploadFile: HTMLInputElement;
+
+  const dispatch = createEventDispatcher();
 
 	$: validContent =
 		(outputText.trim() || imagePreview) && outputText.length <= maxContent ? true : false;
@@ -74,15 +80,29 @@
 		return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:image');
 	}
 
+	function handleUpdatePost(post: Post) {
+		dispatch('updatepost', {
+			id: post.id,
+			content: post.content,
+			thumbnail: post.thumbnail,
+			publication_date: post.publication_date,
+			user_id: post.user_id,
+			user: post.user,
+      reactions: post.reactions,
+			tags: post.tags,
+			num_comments: post.num_comments
+		});
+	}
+
 	const submit: SubmitFunction = () => {
 		return async ({ result }) => {
 			if (result.type === 'success') {
-				handleClose();
-				await invalidateAll();
 				await applyAction(result);
+        handleUpdatePost(form.updatedPost);
+				handleClose();
 			} else if (result.type === 'redirect') {
-				handleClose();
 				await applyAction(result);
+				handleClose();
 			}
 		};
 	};
@@ -90,6 +110,7 @@
 
 <form
 	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl h-fit relative p-4"
+	enctype="multipart/form-data"
 	method="POST"
 	action="/home?/editPost"
 	use:enhance={submit}
@@ -109,7 +130,12 @@
 				{#if user_photo_url}
 					<img class="w-full h-full object-cover" src={user_photo_url} alt="User" />
 				{:else}
-					<User width={41} height={40} />
+					<User
+						width={41}
+						height={40}
+						tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
+						tailwindStrokeClass={'stroke-black dark:stroke-white'}
+					/>
 				{/if}
 			</div>
 			<p class="dark:text-white">{username}</p>
@@ -175,7 +201,7 @@
 			<p class="dark:text-white mr-3">Add to your post:</p>
 			<button
 				type="button"
-				class="cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent relative"
+				class="cursor-pointer p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent relative"
 				on:click={() => {
 					uploadFile.click();
 				}}
@@ -200,7 +226,7 @@
 				on:click={() => {
 					tags_toggle = !tags_toggle;
 				}}
-				class="cursor-pointer p-2.5 rounded-3xl hover:bg-hoverPurple active:bg-transparent"
+				class="cursor-pointer p-2.5 rounded-3xl hover:bg-hoverLavanda dark:hover:bg-hoverPurple active:bg-transparent"
 			>
 				<Hash />
 			</button>
@@ -220,7 +246,7 @@
 			type="submit"
 			disabled={!validContent}
 			in:fly={{ y: -10 }}
-			class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple dark:text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
+			class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
 			>Post</button
 		>
 	</div>
