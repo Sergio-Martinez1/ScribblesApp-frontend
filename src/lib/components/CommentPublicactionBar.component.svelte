@@ -46,11 +46,16 @@
 		</div>
 	{:else}
 		<div class="w-[50px] h-[50px] col-start-1">
-			<User width={50} height={50} />
+			<User
+				width={50}
+				height={50}
+				tailwindFillClass={'fill-lavandaGray dark:fill-purpleLight'}
+				tailwindStrokeClass={'stroke-black dark:stroke-white'}
+			/>
 		</div>
 	{/if}
 	<form
-		class="bg-lavandaLight dark:bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2 {focus_text
+		class="bg-lavandaGray dark:bg-purpleLight rounded-2xl p-3 w-full flex gap-x-1.5 col-start-2 {focus_text
 			? 'outline outline-krispyPurple '
 			: ''}"
 		method="POST"
@@ -64,7 +69,7 @@
 				bind:innerText
 				bind:showPlaceHolder
 				bind:focus
-        bind:focus_text
+				bind:focus_text
 			/>
 		</div>
 		<input type="hidden" value={outputText} name="content" />
