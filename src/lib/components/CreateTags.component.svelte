@@ -35,7 +35,7 @@
 </script>
 
 <div
-  id="tags-container"
+	id="tags-container"
 	class="flex bg-lavandaLight dark:bg-purpleLight rounded-2xl flex-wrap pt-1 pr-2 border {focus_text
 		? 'border-krispyPurple'
 		: 'border-transparent'} overflow-y-auto"
@@ -49,13 +49,13 @@
 		>
 			{tag}
 			<button
-        type="button"
+				type="button"
 				class="cursor-pointer hover:bg-lessLavanda dark:hover:bg-lessPurple rounded-full"
 				on:click={() => {
 					tags = tags.filter((element) => element !== tag);
 				}}
 			>
-				<X width={17} height={17} />
+				<X width={17} height={17} tailwindStrokeClass={'stroke-black dark:stroke-white'} />
 			</button>
 		</div>
 	{/each}
