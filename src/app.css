@@ -11,8 +11,14 @@
 }
 
 @layer components {}
+
 @layer utilties {}
 
 body {
   overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+input:focus {
+  @apply outline outline-krispyPurple;
 }
