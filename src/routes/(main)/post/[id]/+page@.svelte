@@ -155,7 +155,7 @@
 					? ''
 					: 'my-2 md:m-2'}"
 			>
-				<div class="md:h-full">
+				<div class="{post_thumbnail ? '' : 'hidden'} md:h-full">
 					<PostDetailThumbnail post_thumbnail_url={post_thumbnail} />
 				</div>
 				<section class="md:{post_thumbnail ? 'hidden' : ''} overflow-y-auto md:rounded-2xl">
