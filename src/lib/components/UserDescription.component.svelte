@@ -44,7 +44,7 @@
 	</div>
 {:else}
 	<div
-		class="w-full min-h-[90px] h-fit bg-lavandaGray dark:bg-purpleGray rounded-2xl p-3.5 justify-center flex flex-col"
+		class="w-full min-h-[90px] h-fit bg-lavandaGray dark:bg-purpleGray rounded-2xl p-3.5 justify-center flex flex-col shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 	>
 		{#if content}
 			<p class="dark:text-white w-full max-h-[96px] mb-3 overflow-y-auto break-words">

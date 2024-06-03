@@ -7,7 +7,7 @@
 	export let loading: boolean = false;
 </script>
 
-<div class="w-full aspect-[3/1] relative">
+<div class="w-full aspect-[3/1] relative shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)] rounded-2xl">
 	{#if loading}
 		<div class="w-full h-full rounded-2xl bg-lavandaGray dark:bg-purpleLight animate-pulse" />
 	{:else if coverPhotoUrl}

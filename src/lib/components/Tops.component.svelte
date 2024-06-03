@@ -5,7 +5,7 @@
 </script>
 
 <div
-	class="px-4 py-2.5 flex flex-col items-start gap-y-2 bg-lavandaGray dark:bg-purpleGray rounded-2xl m-auto max-h-fit min-w-full"
+	class="px-4 py-2.5 flex flex-col items-start gap-y-2 bg-lavandaGray dark:bg-purpleGray rounded-2xl m-auto max-h-fit min-w-full shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 >
 	{#if loading}
 		<div class="animate-pulse bg-lavandaLight dark:bg-purpleLight rounded-2xl w-32 h-6" />

@@ -15,7 +15,7 @@
 </script>
 
 <nav
-	class="group bg-lavandaGray dark:bg-purpleGray p-3 sm:rounded-2xl w-full sm:w-[97px] lg:w-full transition-[width] overflow-hidden"
+	class="group bg-lavandaGray dark:bg-purpleGray p-3 sm:rounded-2xl w-full sm:w-[97px] lg:w-full transition-[width] overflow-hidden shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 >
 	<ul
 		class="grid grid-flow-col sm:grid-flow-row max-sm:items-center h-fit max-sm:w-full sm:gap-y-2"

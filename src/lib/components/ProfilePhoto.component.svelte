@@ -24,7 +24,11 @@
 	<div
 		class="w-[120px] h-[120px] sm:w-[190px] sm:h-[190px] mb-2.5 relative bg-lavandaDark dark:bg-purpleGray box-content p-1.5 sm:p-3 rounded-full"
 	>
-		<img class="w-full h-full object-cover rounded-full" src={profilePhoto} alt="User face" />
+		<img
+			class="w-full h-full object-cover rounded-full shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
+			src={profilePhoto}
+			alt="User face"
+		/>
 		{#if editable}
 			<div class="absolute bottom-0 sm:bottom-2 right-0 sm:right-8 w-fit h-fit">
 				<EditPhoto imagename={'profile_photo'} dialogId={'edit_profile_photo_dialog'}>
@@ -42,12 +46,14 @@
 	<div
 		class="w-[120px] h-[120px] sm:w-[190px] sm:h-[190px] mb-2.5 relative bg-lavandaDark dark:bg-purpleGray box-content p-3 rounded-full"
 	>
-		<User
-      tailwindWidthClass={'w-[120px] sm:w-[190px]'}
-      tailwindHeightClass={'h-[120px] sm:h-[190px]'}
-			tailwindFillClass={'fill-lavandaGray dark:fill-purpleLight'}
-			tailwindStrokeClass={'stroke-black dark:stroke-white'}
-		/>
+		<div class="shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]">
+			<User
+				tailwindWidthClass={'w-[120px] sm:w-[190px]'}
+				tailwindHeightClass={'h-[120px] sm:h-[190px]'}
+				tailwindFillClass={'fill-lavandaGray dark:fill-purpleLight'}
+				tailwindStrokeClass={'stroke-black dark:stroke-white'}
+			/>
+		</div>
 		{#if editable}
 			<div class="absolute bottom-0 sm:bottom-2 right-0 sm:right-8 w-fit h-fit">
 				<EditPhoto imagename={'profile_photo'} dialogId={'edit_profile_photo_dialog'}>
