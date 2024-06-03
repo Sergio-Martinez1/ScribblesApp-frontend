@@ -24,7 +24,7 @@
 
 	$: plainMyUser = data.plainMyUser;
 	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
-	$: my_reactions = data.my_reactions;
+	$: my_reactions = data.myReactions;
 
 	onMount(async () => {
 		observer = new IntersectionObserver(async (entries) => {
@@ -62,7 +62,7 @@
 	}
 </script>
 
-<div class="col-span-7 md:col-span-10 md:grid sm:col-start-3 md:gapx-[20px] md:grid-cols-10">
+<div class="col-span-7 md:col-span-10 md:grid sm:col-start-3 md:gapx-[20px] md:grid-cols-10 h-fit">
 	{#await data.streamed?.user}
 		<div class="col-span-10 lg:col-span-9 mt-8">
 			<CoverPhoto loading={true} />
@@ -83,11 +83,11 @@
 		</div>
 	{:then user}
 		{#if user?.status === 200 && user.data}
-			<div class="col-span-10 lg:col-span-9 mt-8">
-				<CoverPhoto coverPhotoUrl={user.data?.cover_photo} editable={true} />
+			<div class="col-span-10 lg:col-span-9 mt-8 h-fit">
+				<CoverPhoto coverPhotoUrl={user.data?.cover_photo}/>
 			</div>
 			<div
-				class="flex flex-col col-span-10 lg:grid grid-cols-7 md:grid-cols-10 my-4 lg:h-[160px] overflow-visible"
+				class="flex flex-col col-span-10 lg:grid grid-cols-7 md:grid-cols-10 my-4 lg:max-h-[190px] overflow-visible"
 			>
 				<div class="md:col-span-4 lg:col-span-3 w-full h-[80px] sm:h-[160px] flex justify-center">
 					<div
@@ -96,7 +96,6 @@
 						<ProfilePhoto
 							profilePhoto={user.data.profile_photo}
 							username={user.data.username}
-							editable={true}
 						/>
 					</div>
 				</div>
@@ -112,8 +111,22 @@
 				</div>
 			</div>
 		{:else}
-			<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl flex justify-center p-3">
-				<p class="dark:text-white">Please reload the page</p>
+			<div class="col-span-10 lg:col-span-9 mt-8">
+				<CoverPhoto loading={true} />
+			</div>
+			<div
+				class="flex flex-col col-span-10 lg:grid grid-cols-7 md:grid-cols-10 my-4 lg:h-[160px] overflow-visible"
+			>
+				<div class="md:col-span-4 lg:col-span-3 w-full h-[80px] sm:h-[160px] flex justify-center">
+					<div
+						class="w-full h-fit flex flex-col items-center justify-center self-end relative bottom-5 md:bottom-8"
+					>
+						<ProfilePhoto loading={true} />
+					</div>
+				</div>
+				<div class="md:col-span-6 flex items-center h-full">
+					<UserDescription loading={true} />
+				</div>
 			</div>
 		{/if}
 	{/await}
