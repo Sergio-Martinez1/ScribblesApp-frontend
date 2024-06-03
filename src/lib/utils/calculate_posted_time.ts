@@ -1,11 +1,12 @@
 
-export function calculate_posted_time(publication_date: string) {
+export function calculate_posted_time(publication_date: string | null) {
   if (publication_date) {
     let publication_date_parse = Date.parse(publication_date)
     let time_now = Date.now()
     let diference = time_now - publication_date_parse
 
     diference = Math.floor(diference / 1000);
+    if(diference < 0) diference = 0;
     let output = `${diference} s`
 
     if (diference > 60) {
