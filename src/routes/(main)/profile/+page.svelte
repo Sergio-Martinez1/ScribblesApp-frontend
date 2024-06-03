@@ -5,11 +5,13 @@
 	import { Post } from '$components';
 	import { onDestroy, onMount } from 'svelte';
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
-	import type { PageData } from './$types';
 	import type { Post as TypePost } from '$lib/types';
   import {env} from '$env/dynamic/public'
+	import type { ActionData, PageData } from './$types';
+	import { invalidateAll } from '$app/navigation';
 
 	export let data: PageData;
+	export let form: ActionData;
 	let scrollData: Array<TypePost> = [];
 	let loadingPostsElement: HTMLElement | null;
 	let offset: number = 20;
@@ -22,7 +24,7 @@
 
 	$: plainMyUser = data.plainMyUser;
 	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
-	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
+	$: my_reactions = data.myReactions;
 	$: url = `${env.PUBLIC_SERVER_API_URL}/api/posts/myPosts?offset=${offset}&limit=${limit}`;
 
 	onMount(async () => {
@@ -59,9 +61,12 @@
 		}
 		return false;
 	}
+  function handleEvents() {
+    invalidateAll()
+  }
 </script>
 
-<div class="col-span-7 md:col-span-10 md:grid sm:col-start-3 md:gapx-[20px] md:grid-cols-10">
+<div class="col-span-7 md:col-span-10 md:grid sm:col-start-3 md:gapx-[20px] md:grid-cols-10 h-fit">
 	{#await data.streamed?.myUser}
 		<div class="col-span-10 lg:col-span-9 mt-8">
 			<CoverPhoto loading={true} />
@@ -82,13 +87,13 @@
 		</div>
 	{:then user}
 		{#if user?.status === 200 && user.data}
-			<div class="col-span-10 lg:col-span-9 mt-8">
+			<div class="col-span-10 lg:col-span-9 mt-8 h-fit">
 				<CoverPhoto coverPhotoUrl={user.data?.cover_photo} editable={true} />
 			</div>
 			<div
-				class="flex flex-col col-span-10 lg:grid grid-cols-7 md:grid-cols-10 my-4 lg:h-[160px] overflow-visible"
+				class="flex flex-col col-span-10 lg:grid grid-cols-7 md:grid-cols-10 my-4 lg:max-h-[190px] overflow-visible"
 			>
-				<div class="md:col-span-4 lg:col-span-3 w-full h-[80px] sm:h-[160px] flex justify-center">
+				<div class="md:col-span-4 lg:col-span-3 w-full h-[80px] sm:h-[120px] flex justify-center">
 					<div
 						class="w-full h-fit flex flex-col items-center justify-center self-end relative bottom-5 md:bottom-8"
 					>
@@ -136,7 +141,7 @@
 	>
 		<div class="flex flex-col gap-y-8">
 			{#await data.streamed?.myPosts}
-				<Post loading={true} />
+				<Post loading={true} {form} />
 			{:then myPosts}
 				{#if myPosts?.status === 200 && myPosts.data}
 					{#each myPosts.data as post}
@@ -158,6 +163,10 @@
 							creator_id={post.user.id}
 							myUser_id={id}
 							post_id={post.id}
+              on:deletepost={handleEvents}
+              on:updatepost={handleEvents}
+              on:dontshowpost={handleEvents}
+              {form}
 						/>
 					{/each}
 					{#each scrollData as post}
@@ -179,29 +188,33 @@
 							creator_id={post.user?.id}
 							myUser_id={id}
 							post_id={post.id}
+              on:deletepost={handleEvents}
+              on:updatepost={handleEvents}
+              on:dontshowpost={handleEvents}
+              {form}
 						/>
 					{/each}
 					{#if infiniteScrollData.status == 200}
 						<div bind:this={loadingPostsElement}>
-							<Post loading={true} />
+							<Post loading={true} {form}/>
 						</div>
-						<Post loading={true} />
+						<Post loading={true} {form}/>
 					{:else if infiniteScrollData.status == 404}
 						<div
-							class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10"
+							class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10 shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 						>
 							No more posts to see...
 						</div>
 					{:else}
 						<div
-							class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full"
+							class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 						>
 							Please reload the page
 						</div>
 					{/if}
 				{:else if myPosts?.status === 404}
 					<div
-						class="w-full rounded-2xl bg-lavandaGray dark:bg-purpleGray flex items-center justify-center h-20"
+						class="w-full rounded-2xl bg-lavandaGray dark:bg-purpleGray flex items-center justify-center h-20 shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 					>
 						<p class="dark:text-white opacity-60">This seems a little quiet...</p>
 					</div>
