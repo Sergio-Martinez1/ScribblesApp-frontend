@@ -62,6 +62,8 @@ export const actions: Actions = {
           } else {
             return fail(400, { emailExists: true, username });
           }
+        } else {
+          return fail(500, { serverFail: true });
         }
       }
     } catch (error) {
