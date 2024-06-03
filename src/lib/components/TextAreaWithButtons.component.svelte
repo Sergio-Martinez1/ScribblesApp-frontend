@@ -1,4 +1,6 @@
 <script lang="ts">
+	import ButtonSmall from "./ButtonSmall.component.svelte";
+
 	export let initialContent: string = '';
 	export let input_name: string = 'text';
 	export let maxContent: number = 150;
@@ -7,6 +9,9 @@
 	let validContent: boolean = false;
 	let content: string = initialContent;
 	let outputText: string = content;
+	let editDescriptionSubmitButton: any;
+	export let error: boolean = false;
+	export let isLoading: boolean = false;
 
 	$: charsCount = content.trim().length;
 	$: validContent = charsCount <= maxContent && initialContent != content ? true : false;
@@ -34,14 +39,17 @@
 			class="bg-squeezeRed active:bg-squeezeRed hover:bg-red-400 text-white w-20 h-8 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
 			on:click={() => {
 				cancelAction = !cancelAction;
+				editDescriptionSubmitButton.resetButtonState();
 			}}>Cancel</button
 		>
-		<button
-			type="submit"
-			disabled={!validContent}
-			class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple text-white w-20 h-8 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
-			>Save</button
-		>
+		<div class="my-2 self-center justify-self-center">
+			<ButtonSmall
+				disabled={!validContent || isLoading}
+				{isLoading}
+				bind:error
+				bind:this={editDescriptionSubmitButton}
+			/>
+		</div>
 	</div>
 	<input type="hidden" name={input_name} value={outputText} />
 </div>

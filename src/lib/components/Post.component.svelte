@@ -6,9 +6,10 @@
 	import { applyAction, enhance } from '$app/forms';
 	import EditPost from '$lib/components/EditPost.componente.svelte';
 	import Image from './Icon/Image.svelte';
-	import type { ActionResult } from '@sveltejs/kit';
 	import { createEventDispatcher } from 'svelte';
 	import type { ActionData } from './$types';
+	import Button from './Button.component.svelte';
+	import type { SubmitFunction } from '@sveltejs/kit';
 
 	export let form: ActionData;
 
@@ -38,54 +39,73 @@
 	let delete_dialog_id: string = `delete-dialog-post-${post_id}`;
 	let edit_dialog_id: string = `edit-dialog-post-${post_id}`;
 	let dont_show_dialog_id: string = `not_show_dialog_${post_id}`;
-	let isLoading = false;
-  const dispatch = createEventDispatcher();
+	let isLoading: boolean = false;
+	let error: boolean = false;
+  let dontShowPostSubmitButton: any;
+  let deletePostSubmitButton: any;
+	const dispatch = createEventDispatcher();
 
-  function handleDeletePost(id: number){
-    dispatch('deletepost', {
-      id
-    })
-  }
+	function handleDeletePost(id: number) {
+		dispatch('deletepost', {
+			id
+		});
+	}
 
-  function handleDontShowPost(id: number){
-    dispatch('dontshowpost', {
-      id
-    })
-  }
+	function handleDontShowPost(id: number) {
+		dispatch('dontshowpost', {
+			id
+		});
+	}
 
 	function handleClose(id: string) {
 		let element = document.getElementById(id) as HTMLDialogElement;
 		element.close();
+    dontShowPostSubmitButton.resetButtonState();
+    deletePostSubmitButton.resetButtonState();
 	}
 
 	function isValidImageUrl(url: string) {
 		return url.startsWith('http://') || url.startsWith('https://') || url === '';
 	}
 
-	const submitDelete = () => {
+	const submitDelete: SubmitFunction = () => {
 		isLoading = true;
-		return ({ result }: { result: ActionResult }) => {
-			if (result.type == 'success') {
-        handleDeletePost(post_id);
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				handleDeletePost(post_id);
+				handleClose(delete_dialog_id);
+				await applyAction(result);
+			} else if (result.type === 'redirect') {
+				await applyAction(result);
+			} else {
+				await applyAction(result);
+				isLoading = false;
+				error = true;
 			}
 			isLoading = false;
-			applyAction(result);
 		};
 	};
 
-	const submitDontShowPost = () => {
+	const submitDontShowPost: SubmitFunction = () => {
 		isLoading = true;
-		return ({ result }: { result: ActionResult }) => {
-			if (result.type == 'success') {
-        handleDontShowPost(post_id);
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				handleDontShowPost(post_id);
+				handleClose(dont_show_dialog_id);
+				await applyAction(result);
+			} else if (result.type === 'redirect') {
+				await applyAction(result);
+			} else {
+				await applyAction(result);
+				isLoading = false;
+				error = true;
 			}
 			isLoading = false;
-			applyAction(result);
 		};
 	};
 </script>
 
-<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl">
+<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]">
 	{#if loading}
 		<div class="animate-pulse flex flex-col p-4">
 			<div class="flex gap-4 mb-3">
@@ -102,9 +122,13 @@
 		<div
 			class="grid grid-cols-[58px_minmax(0,_1fr)_30px] sm:grid-cols-[58px_minmax(0,_1fr)_1fr_30px] px-5 pt-2.5 gap-x-3 items-center"
 		>
-			<a href={user_url} class="w-[59px] h-[58px] rounded-full overflow-hidden">
+			<a href={user_url} class="w-[59px] h-[59px] rounded-full overflow-hidden">
 				{#if user_photo_url}
-					<img class="w-full h-full object-cover bg-lavandaLight dark:bg-purpleLight" src={user_photo_url} alt="User" />
+					<img
+						class="w-[59px] h-[59px] object-cover bg-lavandaLight dark:bg-purpleLight"
+						src={user_photo_url}
+						alt="User"
+					/>
 				{:else}
 					<UserIcon
 						tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
@@ -119,6 +143,7 @@
 			</div>
 			<div class="max-sm:hidden justify-self-end min-[950px]:mr-8">
 				<Reactions
+          {form}
 					{like_on}
 					{likes_count}
 					{comments_count}
@@ -128,6 +153,7 @@
 					{tags}
 					{post_by_tags_url}
 					{post_id}
+          my_user_id={myUser_id}
 				/>
 			</div>
 			<PostOptions
@@ -164,6 +190,7 @@
 		</div>
 		<div class="w-full flex justify-center sm:hidden">
 			<Reactions
+        {form}
 				{like_on}
 				{likes_count}
 				{comments_count}
@@ -173,6 +200,7 @@
 				{tags}
 				{post_by_tags_url}
 				{post_id}
+        my_user_id={myUser_id}
 			/>
 		</div>
 
@@ -180,11 +208,16 @@
 			class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)]"
 			id={delete_dialog_id}
 		>
-			<form method="POST" action="/home?/deletePost" use:enhance={submitDelete} class="p-4 text-center">
+			<form
+				method="POST"
+				action="/home?/deletePost"
+				use:enhance={submitDelete}
+				class="p-4 text-center overflow-hidden"
+			>
 				<input type="hidden" value={post_id} name="post_id" />
 				<p class="dark:text-white font-bold mb-2 mx-auto w-fit text-lg">Delete post?</p>
 				<p class="dark:text-white mb-3">This action will delete the post permanently.</p>
-				<div class="flex gap-3">
+				<div class="flex items-center justify-center gap-3">
 					<button
 						on:click={() => {
 							handleClose(delete_dialog_id);
@@ -192,20 +225,14 @@
 						type="button"
 						value="cancel"
 						formmethod="dialog"
-						class="bg-lavandaLight dark:bg-purpleLight hover:bg-hoverLavanda dark:hover:bg-hoverPurple dark:text-white p-2.5 rounded-2xl w-full"
+						class="bg-squeezeRed hover:grayscale-[15%] text-white p-2.5 rounded-2xl w-28 h-10 flex items-center justify-center"
 					>
 						Cancel
 					</button>
-					<button
-						on:click={() => {
-							handleClose(delete_dialog_id);
-						}}
-						type="submit"
-						value="default"
-						class="bg-lavandaLight dark:bg-purpleLight hover:bg-squeezeRed dark:text-white p-2.5 rounded-2xl w-full"
-					>
-						Confirm
-					</button>
+
+					<div class="my-2 self-center justify-self-center">
+						<Button disabled={isLoading} {isLoading} bind:error text={'Confirm'} bind:this={deletePostSubmitButton} />
+					</div>
 				</div>
 			</form>
 		</dialog>
@@ -214,8 +241,8 @@
 			id={edit_dialog_id}
 		>
 			<EditPost
-        on:updatepost
-        {form}
+				on:updatepost
+				{form}
 				{user_photo_url}
 				username={user_name}
 				{post_id}
@@ -232,7 +259,7 @@
 				<input type="hidden" value={post_id} name="post_id" />
 				<p class="dark:text-white font-bold mb-2 mx-auto w-fit text-lg">Wanna hide this post?</p>
 				<p class="dark:text-white mb-3">This action will hide this post from your home page.</p>
-				<div class="flex gap-3">
+				<div class="flex items-center justify-center gap-3">
 					<button
 						on:click={() => {
 							handleClose(dont_show_dialog_id);
@@ -240,20 +267,15 @@
 						type="button"
 						value="cancel"
 						formmethod="dialog"
-						class="bg-lavandaLight dark:bg-purpleLight hover:bg-hoverLavanda dark:hover:bg-hoverPurple dark:text-white p-2.5 rounded-2xl w-full"
+						class="bg-squeezeRed hover:grayscale-[15%] text-white p-2.5 rounded-2xl w-28 h-10 flex items-center justify-center"
 					>
 						Cancel
 					</button>
-					<button
-						on:click={() => {
-							handleClose(dont_show_dialog_id);
-						}}
-						type="submit"
-						value="default"
-						class="bg-lavandaLight dark:bg-purpleLight hover:bg-squeezeRed dark:text-white p-2.5 rounded-2xl w-full"
-					>
-						Confirm
-					</button>
+
+					<div class="my-2 self-center justify-self-center">
+						<Button disabled={isLoading} {isLoading} bind:error text={'Confirm'} bind:this={dontShowPostSubmitButton}
+						 />
+					</div>
 				</div>
 			</form>
 		</dialog>

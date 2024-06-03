@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import TextAreaWithButtons from './TextAreaWithButtons.component.svelte';
 	import User from './Icon/User.svelte';
 	import EditPhoto from './EditPhoto.component.svelte';
 	import BirthdayInput from './BirthdayInput.component.svelte';
 	import FormTextInput from './FormTextInput.component.svelte';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { invalidateAll } from '$app/navigation';
 
 	export let profile_photo: string | null = '';
 	export let cover_photo: string | null = '';
@@ -12,8 +14,27 @@
 	export let personal_url: string | null = '';
 	export let location: string | null = '';
 	export let birthday: string | null = '';
+	let isLoading: boolean = false;
+	let error: boolean = false;
 
 	let editable: boolean = false;
+
+	const submitDescription: SubmitFunction = () => {
+		isLoading = true;
+		return async ({ result }) => {
+			if (result.type === 'success') {
+        invalidateAll();
+				await applyAction(result);
+			} else if (result.type === 'redirect') {
+				await applyAction(result);
+			} else {
+				await applyAction(result);
+				isLoading = false;
+				error = true;
+			}
+			isLoading = false;
+		};
+	};
 </script>
 
 <section class="flex flex-col items-start gap-y-4 w-full">
@@ -105,11 +126,18 @@
 				<p class="dark:text-white opacity-60 mx-auto w-90 flex justify-center">No description</p>
 			{/if}
 		{:else}
-			<form method="post" action="/settings?/editDescription" use:enhance class="mx-auto">
+			<form
+				method="post"
+				action="/settings?/editDescription"
+				use:enhance={submitDescription}
+				class="mx-auto"
+			>
 				<TextAreaWithButtons
 					initialContent={description ? description : ''}
 					input_name={'description'}
 					bind:cancelAction={editable}
+          {isLoading}
+          bind:error={error}
 				/>
 			</form>
 		{/if}

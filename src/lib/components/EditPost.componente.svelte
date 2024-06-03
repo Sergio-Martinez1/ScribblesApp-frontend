@@ -11,6 +11,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { Post } from '$lib/types';
 	import type { ActionData } from './$types';
+	import Button from './Button.component.svelte';
 
 	export let form: ActionData;
 
@@ -23,7 +24,7 @@
 	let old_image = imagePreview;
 	let old_tags = tags;
 	export let post_id: number;
-	let dialog_id: string = `edit-dialog-post-${post_id}`;
+	export let dialog_id: string = `edit-dialog-post-${post_id}`;
 
 	//STYLES
 	export let maxContent: number = 500;
@@ -35,14 +36,16 @@
 	let focus_text: boolean = false;
 	let tags_toggle: boolean = tags ? true : false;
 	let validContent: boolean = false;
-
+	let isLoading: boolean = false;
+	let error: boolean = false;
 	let showPlaceHolder: boolean =
 		innerText.trim().length === 0 && (innerText.match(/\n|\s/g) || []).length === 1 ? true : false;
 
 	//DOM
 	let uploadFile: HTMLInputElement;
+  let editPostSubmitButton: any;
 
-  const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
 	$: validContent =
 		(outputText.trim() || imagePreview) && outputText.length <= maxContent ? true : false;
@@ -64,6 +67,7 @@
 		tags_toggle = false;
 		let element = document.getElementById(dialog_id) as HTMLDialogElement;
 		element.close();
+    editPostSubmitButton.resetButtonState();
 		uploadFile.value = '';
 
 		innerText = old_text;
@@ -88,22 +92,28 @@
 			publication_date: post.publication_date,
 			user_id: post.user_id,
 			user: post.user,
-      reactions: post.reactions,
+			reactions: post.reactions,
 			tags: post.tags,
 			num_comments: post.num_comments
 		});
 	}
 
 	const submit: SubmitFunction = () => {
+		isLoading = true;
 		return async ({ result }) => {
 			if (result.type === 'success') {
 				await applyAction(result);
-        handleUpdatePost(form.updatedPost);
+				handleUpdatePost(form.updatedPost);
 				handleClose();
 			} else if (result.type === 'redirect') {
 				await applyAction(result);
 				handleClose();
+			} else {
+				await applyAction(result);
+				isLoading = false;
+				error = true;
 			}
+			isLoading = false;
 		};
 	};
 </script>
@@ -242,12 +252,8 @@
 			</div>
 		{/if}
 		<!-- POST BUTTON -->
-		<button
-			type="submit"
-			disabled={!validContent}
-			in:fly={{ y: -10 }}
-			class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
-			>Post</button
-		>
+		<div class="col-start-2 my-2 self-center justify-self-center">
+			<Button disabled={!validContent || isLoading} {isLoading} bind:error bind:this={editPostSubmitButton} />
+		</div>
 	</div>
 </form>

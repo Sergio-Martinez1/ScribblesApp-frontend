@@ -1,12 +1,15 @@
 <script lang="ts">
 	import ArrowLeft from './Icon/ArrowLeft.svelte';
-	import Camera from '$lib/components/Icon/Camera.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { env } from '$env/dynamic/public';
+	import Button from './Button.component.svelte';
 
 	export let imagename: string = '';
 	export let dialogId: string = '';
 	export let cover_mode: boolean = false;
+
+	let isLoading: boolean = false;
+	let error: boolean = false;
 
 	let uploadFile: HTMLInputElement;
 
@@ -55,11 +58,37 @@
 				B: { x: coordsB.x - containerCoords.x, y: coordsB.y - containerCoords.y }
 			};
 		} else {
-			throw new Error('No elements found to get position');
+			error = true;
+			return {
+				A: { x: 0, y: 0 },
+				B: { x: 0, y: 0 }
+			};
 		}
 	}
 
 	function handleMouseMove(event: MouseEvent) {
+		if (!container) return;
+		containerCoords = container.getBoundingClientRect();
+		let coords = getCoords();
+		mouseNCoords = { x: event.clientX, y: event.clientY };
+
+		if (grab) {
+			if (a > 0) {
+				if (coords.B && coords.A) {
+					x = coords.B.x + (mouseNCoords.x - mouseOCoords.x);
+					if (x > coords.A.x) x = coords.A.x;
+					if (x + widthB < coords.A.x + widthA) x = coords.A.x + widthA - widthB;
+					y = coords.B.y + (mouseNCoords.y - mouseOCoords.y);
+					if (y > coords.A.y) y = coords.A.y;
+					if (y + heightB < coords.A.y + heightA) y = coords.A.y + heightA - heightB;
+				}
+			}
+			a++;
+		}
+		mouseOCoords = { x: event.clientX, y: event.clientY };
+	}
+
+	function handlePointerMove(event: PointerEvent) {
 		if (!container) return;
 		containerCoords = container.getBoundingClientRect();
 		let coords = getCoords();
@@ -112,6 +141,7 @@
 		element.showModal();
 		document.body.style.overflow = 'hidden';
 		document.addEventListener('mousemove', handleMouseMove);
+		document.addEventListener('pointermove', handlePointerMove);
 		containerCoords = container.getBoundingClientRect();
 
 		file = event.target.files?.[0];
@@ -189,35 +219,50 @@
 			croppedUrl = canvas2.toDataURL();
 			canvas2.remove();
 			document.removeEventListener('mousemove', handleMouseMove);
+			document.removeEventListener('pointermove', handlePointerMove);
 		}
 		canvas.remove();
 	}
 
 	function handleClose() {
-		let element = document.getElementById(`${dialogId}`) as HTMLDialogElement;
-		element.close();
 		document.body.style.overflow = 'auto';
 		croppedUrl = '';
 		if (imageSized) imageSized.src = '';
 		document.removeEventListener('mousemove', handleMouseMove);
+		document.removeEventListener('pointermove', handlePointerMove);
+		let element = document.getElementById(`${dialogId}`) as HTMLDialogElement;
+		element.close();
+		uploadFile.value = '';
 	}
 
 	const submit = async () => {
 		let formData = new FormData();
 		formData.append(`${imagename}`, fileCropped);
 
-		fetch(`${env.PUBLIC_SERVER_API_URL}/api/upload`, {
+		isLoading = true;
+		await fetch(`${env.PUBLIC_SERVER_API_URL}/api/upload`, {
 			method: 'post',
 			body: formData
 		})
 			.then(async (response) => {
 				if (response.status == 200) {
 					await invalidateAll();
+					handleClose();
+				} else if (response.status === 401) {
+					await invalidateAll();
+					handleClose();
+					isLoading = false;
+					error = true;
+				} else {
+					isLoading = false;
+					error = true;
 				}
 			})
-			.catch((error) => {});
-
-		handleClose();
+			.catch(() => {
+				isLoading = false;
+				error = true;
+			});
+		isLoading = false;
 	};
 </script>
 
@@ -244,7 +289,7 @@
 
 <dialog
 	id={dialogId}
-	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] w-[600px] max-h-[600px] h-[90vh] py-3"
+	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl shadow-[0px_0px_0px_1000px_rgba(18,21,23,0.7)] w-[600px] max-h-[600px] h-[90vh] p-4"
 >
 	<div id="edit_photo_form" class="grid grid-rows-[10%,90%] h-full">
 		<div class="grid grid-cols-[20%,1fr,20%] w-full h-fit mb-2 relative">
@@ -262,12 +307,21 @@
 				Edit profile photo
 			</p>
 			{#if !croppedUrl}
-				<button
-					on:click={crop}
-					type="button"
-					class="bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-white px-2.5 py-1 col-span-1 w-fit justify-self-end"
-					>Apply</button
-				>
+				{#if error}
+					<button
+						disabled={true}
+						type="button"
+						class="bg-squeezeRed rounded-full font-bold text-white px-2.5 py-1 col-span-1 w-fit justify-self-end disabled:opacity-80 disabled:cursor-not-allowed"
+						>ERROR</button
+					>
+				{:else}
+					<button
+						on:click={crop}
+						type="button"
+						class="bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-white px-2.5 py-1 col-span-1 w-fit justify-self-end"
+						>Apply</button
+					>
+				{/if}
 			{/if}
 		</div>
 
@@ -301,11 +355,15 @@
 							class="bg-squeezeRed hover:bg-red-600 active:bg-squeezeRed rounded-full font-bold text-md text-white px-4 py-2 w-24"
 							type="button">Cancel</button
 						>
-						<button
-							on:click={submit}
-							class="bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple rounded-full font-bold text-md text-white px-4 py-2 w-24"
-							>Confirm</button
-						>
+						<div class="col-start-2 my-2 self-center justify-self-center">
+							<Button
+								disabled={isLoading}
+								{isLoading}
+								bind:error
+								on:click={submit}
+								text={'Submit'}
+							/>
+						</div>
 					</div>
 				</div>
 			{:else}
@@ -320,6 +378,15 @@
 						grab = false;
 					}}
 					on:mouseleave={() => {
+						grab = false;
+					}}
+					on:pointerdown={() => {
+						grab = true;
+					}}
+					on:pointerup={() => {
+						grab = false;
+					}}
+					on:pointerleave={() => {
 						grab = false;
 					}}
 					on:wheel={handleWheel}

@@ -6,8 +6,11 @@
 	import Tags from '$lib/components/Tags.component.svelte';
 	import { clickOutside } from '$lib/utils/clickOutside';
 	import { applyAction, enhance } from '$app/forms';
-	import type { SubmitFunction } from '@sveltejs/kit';
+	import session from '../../stores/session';
 	import { invalidateAll } from '$app/navigation';
+	import type { Post } from '$lib/types';
+	import type { ActionData } from './$types';
+	import type { SubmitFunction } from '@sveltejs/kit';
 
 	export let like_on: boolean = false;
 	export let likes_count: number = 0;
@@ -17,22 +20,43 @@
 	export let vertical: boolean = false;
 	export let tags: string[];
 	export let post_by_tags_url: string = '/posts';
-	export let post_id: number;
+	export let post_id: number = -1;
+  export let my_user_id: number = -1;
+	export let form: ActionData;
 
 	let like_fill: string = like_on ? '#2C41FF' : 'none';
-	let like_stroke: string = like_on ? '#2C41FF' : '#ffffff';
+	let like_stroke: string = like_on ? 'stroke-jacketBlue' : 'stroke-gray-500 dark:stroke-white';
 	let tag_toogle: boolean = false;
 
 	function toggle_like() {
 		like_on = !like_on;
 		likes_count = like_on ? likes_count + 1 : likes_count - 1;
 		like_fill = like_on ? '#2C41FF' : 'none';
-		like_stroke = like_on ? '#2C41FF' : '#ffffff';
+		like_stroke = like_on ? 'stroke-jacketBlue' : 'stroke-gray-500 dark:stroke-white';
 	}
 
 	const notReload: SubmitFunction = () => {
 		return async ({ result }) => {
-			await applyAction(result);
+			if (result.type === 'success') {
+				await applyAction(result);
+				//se altera la referencia
+				$session.home.posts.map((post: Post) => {
+					if (post.id === post_id && post.reactions) {
+						if (like_on) {
+							post.reactions.push(form.createdReaction);
+						} else {
+							post.reactions = post.reactions.filter((reaction) => reaction.user_id !== my_user_id);
+						}
+					}
+          invalidateAll();
+					return post;
+				});
+			} else if (result.type === 'redirect') {
+				await applyAction(result);
+			} else {
+        like_on = false;
+				await applyAction(result);
+			}
 		};
 	};
 
@@ -54,15 +78,11 @@
 			class="like cursor-pointer flex {vertical ? 'flex-col items-center' : ''}"
 		>
 			<div class="w-[20px]">
-				<Like
-					fill={like_fill}
-					stroke={like_stroke}
-					tailwindStrokeClass={'stroke-gray-500 dark:stroke-white'}
-				/>
+				<Like fill={like_fill} tailwindStrokeClass={like_stroke} />
 			</div>
 			<!-- Likes Count -->
 			{#key likes_count}
-				<p in:fly={{ y: 10 }} class:active={like_on}>{likes_count}</p>
+				<p in:fly={{ y: 10 }} class={like_on ? 'text-jacketBlue' : ''}>{likes_count}</p>
 			{/key}
 		</button>
 	</form>

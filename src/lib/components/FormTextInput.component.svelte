@@ -1,14 +1,20 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import Plus from './Icon/Plus.svelte';
 	import Edit from './Icon/Edit.svelte';
 	import { tick } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { invalidateAll } from '$app/navigation';
+	import ButtonSmall from './ButtonSmall.component.svelte';
 
 	export let inputName: string;
 	export let formActionUrl: string;
 	export let data: string | null = '';
 	export let placeholder: string = 'write something';
+	let isLoading: boolean = false;
+	let error: boolean = false;
+  let submitButton: any;
 
 	let is_there_initial_content: boolean = data ? true : false;
 	let editable: boolean = false;
@@ -24,9 +30,31 @@
 			input.focus();
 		});
 	}
+
+	const submit: SubmitFunction = () => {
+		isLoading = true;
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				invalidateAll();
+				await applyAction(result);
+			} else if (result.type === 'redirect') {
+				await applyAction(result);
+			} else {
+				await applyAction(result);
+				isLoading = false;
+				error = true;
+			}
+			isLoading = false;
+		};
+	};
 </script>
 
-<form method="post" action={formActionUrl} use:enhance class="min-[440px]:flex-row flex flex-wrap gap-y-4">
+<form
+	method="post"
+	action={formActionUrl}
+	use:enhance={submit}
+	class="min-[440px]:flex-row flex flex-wrap gap-y-4"
+>
 	{#if !is_there_initial_content && !editable}
 		<button
 			type="button"
@@ -70,26 +98,33 @@
 				/></button
 			>
 		{:else}
-			<div class="flex">
+			<div class="flex items-center justify-center">
 				<button
 					in:fly|global={{ x: -10, duration: 180 }}
 					type="button"
-					class="text-white bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-16 rounded-full py-1.5 px-1.5 mr-2"
+					class="text-white bg-squeezeRed hover:bg-red-400 active:bg-squeezeRed w-20 h-8 rounded-full py-1.5 px-1.5 mr-2 flex items-center justify-center"
 					on:click={() => {
 						editable = false;
 						input.disabled = true;
 						content = data;
+						submitButton.resetButtonState();
 					}}
 				>
 					Cancel
 				</button>
-				<button
+
+				<div
 					in:fly|global={{ x: -10, duration: 180 }}
-					type="submit"
-					disabled={!validContent}
-					class="text-white bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple w-16 rounded-full py-1.5 px-1.5 disabled:bg-lessLavanda dark:disabled:bg-lessPurple disabled:opacity-[0.5]"
-					>Save</button
+					class="col-start-2 self-center justify-self-center"
 				>
+					<ButtonSmall
+						disabled={!validContent || isLoading}
+						{isLoading}
+						bind:error
+						bind:this={submitButton}
+						text={'Save'}
+					/>
+				</div>
 			</div>
 		{/if}
 	{/if}

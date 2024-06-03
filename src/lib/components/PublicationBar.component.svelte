@@ -11,6 +11,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { Post } from '$lib/types';
 	import type { ActionData } from './$types';
+	import Button from './Button.component.svelte';
 
 	export let form: ActionData;
 
@@ -27,6 +28,8 @@
 	let validContent: boolean = false;
 	let selectedImage: string = '';
 	let screenWidth: number;
+	let isLoading: boolean = false;
+	let error: boolean = false;
 
 	//DOM
 	let uploadFile: HTMLInputElement;
@@ -65,6 +68,8 @@
 		tags_toggle = false;
 		focus = false;
 		uploadFile.value = '';
+    isLoading = false;
+    error = false;
 	}
 
 	function handleAddPost(post: Post) {
@@ -75,22 +80,28 @@
 			publication_date: post.publication_date,
 			user_id: post.user_id,
 			user: post.user,
-      reactions: post.reactions,
+			reactions: post.reactions,
 			tags: post.tags,
 			num_comments: post.num_comments
 		});
 	}
 
 	const submit: SubmitFunction = () => {
+    isLoading = true;
 		return async ({ result }) => {
 			if (result.type === 'success') {
 				await applyAction(result);
-        handleAddPost(form.createdPost)
+				handleAddPost(form.createdPost);
 				handleClose();
 			} else if (result.type === 'redirect') {
 				await applyAction(result);
 				handleClose();
+			} else {
+				await applyAction(result);
+				isLoading = false;
+				error = true;
 			}
+			isLoading = false;
 		};
 	};
 </script>
@@ -98,7 +109,7 @@
 <svelte:window bind:innerWidth={screenWidth} />
 
 <form
-	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-5 py-2.5 h-fit relative"
+	class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-5 py-2.5 h-fit relative shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 	method="POST"
 	enctype="multipart/form-data"
 	action="/home?/createPost"
@@ -187,7 +198,6 @@
 			on:click={() => {
 				focus = true;
 				uploadFile.click();
-				if (screenWidth < 640) tags_toggle = true;
 			}}
 		>
 			<Image />
@@ -223,17 +233,17 @@
 			{#if (screenWidth < 640 && focus) || tags_toggle}
 				<!-- TAG CREATION -->
 				<div in:fly={{ y: -10 }} class="ml-2.5 mr-9 my-2">
-					<CreateTags bind:tags />
+					<CreateTags bind:tags focus={!focus || tags_toggle} />
 				</div>
 			{/if}
 			<!-- POST BUTTON -->
-			<button
-				type="submit"
-				disabled={!validContent}
-				in:fly={{ y: -10 }}
-				class="bg-krispyPurple active:bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple text-white w-28 h-10 p-2.5 my-2 rounded-2xl flex items-center justify-center col-start-2 disabled:bg-lessPurple disabled:opacity-[0.5]"
-				>Post</button
-			>
+			<div class="col-start-2 my-2 self-center justify-self-center">
+				<Button
+					disabled={!validContent || isLoading}
+					{isLoading}
+          bind:error={error}
+				/>
+			</div>
 		</div>
 	{/if}
 </form>
