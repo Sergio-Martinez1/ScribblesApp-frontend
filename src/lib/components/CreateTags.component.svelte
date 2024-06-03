@@ -1,19 +1,17 @@
 <script lang="ts">
 	import X from '$lib/components/Icon/X.svelte';
 	import { fly } from 'svelte/transition';
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		input.focus();
-	});
 
 	export let tags: string[] = [];
+	export let maxSize: string = '';
+  export let focus: boolean = false;
+	let focus_text: boolean = false;
 
 	let inputText = '';
 	let key: string;
-	let focus_text: boolean = false;
 	let input: HTMLDivElement;
-	export let maxSize: string = '';
+
+  $:if(focus && input) input.focus();
 
 	function handleSubmit() {
 		if (!inputText) return;
@@ -65,7 +63,7 @@
 			bind:value={inputText}
 			bind:this={input}
 			placeholder="Write tags for your post..."
-			class="bg-transparent dark:text-white outline-none w-full text-sm"
+			class="bg-transparent dark:text-white outline-transparent outline-[0px] w-full text-sm"
 			on:keydown={handleInput}
 			on:focus={() => {
 				focus_text = true;
