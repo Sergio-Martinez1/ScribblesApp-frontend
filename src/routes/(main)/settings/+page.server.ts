@@ -388,7 +388,7 @@ export const actions: Actions = {
     } else if (response.status === 403) {
       return fail(response.status, { incorrectPassword: true });
     } else {
-      return fail(response.status, { serverFail: true });
+      return fail(500, { serverFail: true });
     }
   },
   deleteAccount: async ({ fetch, cookies }) => {
