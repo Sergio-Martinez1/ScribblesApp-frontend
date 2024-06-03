@@ -28,7 +28,7 @@
 	$: id = plainMyUser && plainMyUser.id ? Number(plainMyUser.id) : -1;
 	$: profile_photo =
 		plainMyUser && plainMyUser.profile_photo !== 'null' ? plainMyUser.profile_photo : '';
-	$: my_reactions = 'my_reactions' in data ? data.my_reactions : null;
+	$: my_reactions = data.myReactions;
 	$: url = `${env.PUBLIC_SERVER_API_URL}/api/posts?offset=${$session.home.offset}&limit=${$session.home.limit}`;
 
 	async function loadPosts() {
@@ -83,6 +83,7 @@
 			}
 			return post;
 		});
+    $session.home.posts = posts;
 	}
 
 	function handleDontShowPost(event: CustomEvent) {
@@ -91,6 +92,13 @@
 			(post: TypePost) => post.id !== event.detail.id
 		);
 	}
+
+  function handelAddReaction(event: CustomEvent) {
+    posts = posts.map((post: TypePost) => {
+      if(post.id === event.detail.id) {
+      }
+    })
+  }
 
 	onMount(async () => {
 		invalidate('plainUser');
@@ -111,7 +119,7 @@
 		});
 
 		tick().then(() => {
-			scrollTo(0, $settings.scrollY);
+			scrollTo(0, $session.home.scrollY);
 			if (loadingPostsElement) {
 				observer?.observe(loadingPostsElement);
 			}
@@ -131,7 +139,7 @@
 			isLoading = true;
 			posts = [];
 		} else {
-			$settings.scrollY = window.scrollY;
+			$session.home.scrollY = window.scrollY;
 		}
 	});
 </script>
@@ -203,7 +211,7 @@
 
 <aside class="col-span-3 hidden md:inline-block">
 	<section class="flex flex-col gap-y-2 items-start mt-24 sticky top-6 max-h-screen">
-		<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-4 py-2.5 min-w-full">
+		<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl px-4 py-2.5 min-w-full shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]">
 			<h1 class="dark:text-white font-bold text-lg">Welcome</h1>
 			<p class="dark:text-white">This is your home page. Checkout the new updates.</p>
 		</div>
