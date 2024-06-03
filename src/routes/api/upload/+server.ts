@@ -1,4 +1,4 @@
-import { json, type RequestHandler } from "@sveltejs/kit";
+import { error as svelteError, json, type RequestHandler } from "@sveltejs/kit";
 import { env } from '$env/dynamic/private';
 import { fileURLToPath } from 'url';
 
@@ -18,17 +18,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
   if (!base_api_url) {
     console.error(`Error: Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`)
-    return json({
-      status: 500,
-      body: 'Error processing request'
-    });
+    svelteError(500, { message: 'Server fail ' })
   }
 
   if (!access_token) {
-    return json({
-      status: 401,
-      body: 'Please login'
-    });
+    svelteError(401, { message: 'Not authenticated' })
   }
 
   let image_url_request = async (file: File) => {
@@ -46,13 +40,15 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       response = await fetch(files_url, options);
     } catch (error) {
       console.error(`Error(api): Error en [${__route}].\n\t- Error al intentar obtener la url de la imagen\n\t- ${error}`)
-      return { url: '', status: 500 };
+      svelteError(500, { message: 'Server fail ' })
     }
     if (response.ok) {
       let img = await response.json();
       return { url: img.url, status: response.status };
+    } else if (response.status === 401) {
+      svelteError(401, { message: 'Not authenticated' })
     } else {
-      return { url: '', status: response.status };
+      svelteError(500, { message: 'Server fail ' })
     }
   };
 
@@ -62,29 +58,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   if (is_there_profile_photo) {
     profile_photo_url = await image_url_request(profile_photo);
     if (profile_photo_url.status === 401) {
-      return json({
-        status: profile_photo_url.status,
-        body: 'Please login'
-      });
+      svelteError(401, { message: 'Not authenticated' })
     } else if (profile_photo_url.status !== 201) {
-      return json({
-        status: profile_photo_url.status,
-        body: 'Error processing request'
-      });
+      svelteError(500, { message: 'Server fail ' })
     }
   }
   if (is_there_cover_photo) {
     cover_photo_url = await image_url_request(cover_photo);
     if (cover_photo_url.status === 401) {
-      return json({
-        status: cover_photo_url.status,
-        body: 'Please login'
-      });
+      svelteError(401, { message: 'Not authenticated' })
     } else if (cover_photo_url.status !== 201) {
-      return json({
-        status: cover_photo_url.status,
-        body: 'Error processing request'
-      });
+      svelteError(500, { message: 'Server fail ' })
     }
   }
 
@@ -108,10 +92,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     response = await fetch(update_url, options);
   } catch (error) {
     console.error(`Error(api): Error en [${__route}].\n\t- Error al intentar actualizar los datos del usuario\n\t- ${error}`)
-    return json({
-      status: 500,
-      body: 'Error processing request'
-    });
+    svelteError(500, { message: 'Server fail ' })
   }
 
   if (response.ok) {
@@ -120,14 +101,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       body: 'File upload sucessfully'
     });
   } else if (response.status === 401) {
-    return json({
-      status: response.status,
-      body: 'Please login'
-    });
+    svelteError(401, { message: 'Not authenticated' })
   } else {
-    return json({
-      status: response.status,
-      body: 'Error processing request'
-    });
+    svelteError(500, { message: 'Server fail ' })
   }
 };
