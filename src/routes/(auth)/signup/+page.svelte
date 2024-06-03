@@ -4,6 +4,6 @@
   export let form: ActionData;
 </script>
 
-<div class="col-span-full  bg-black flex">
+<div class="col-span-full bg-black flex">
   <Signup {form} />
 </div>
