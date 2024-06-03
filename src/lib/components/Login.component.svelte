@@ -6,7 +6,6 @@
 
 	export let form: ActionData;
 	let isLoading = false;
-	let focus = false;
 
 	const submit = () => {
 		isLoading = true;
@@ -29,15 +28,7 @@
 			<span class="text-krispyPurple font-bold">username</span>
 			<input
 				type="text"
-				class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold border-none outline-none {focus
-					? 'outline-2 outline-blue-500'
-					: ''}"
-				on:focus={() => {
-					focus = true;
-				}}
-				on:focusout={() => {
-					focus = false;
-				}}
+				class="px-4 bg-krispyPurple rounded-2xl h-9 text-white font-bold"
 				name="username"
 				value={form?.username ?? ''}
 			/>
@@ -93,16 +84,20 @@
 		{#if form?.serverFail}
 			<p in:fly={{ y: 10 }} class="error text-squeezeRed">An unexpected error has ocurred</p>
 		{/if}
-		<div class="flex flex-row gap-x-2 items-start">
-			<input type="checkbox" class="accent-krispyPurple rounded cursor-pointer w-6 h-6" checked />
-			<span class="text-krispyPurple font-bold">Remember me</span>
-		</div>
-		<a href="/recovery" class="text-krispyPurple underline">Forgot your password?</a>
+		<!-- <div class="flex flex-row gap-x-2 items-start"> -->
+		<!-- 	<input type="checkbox" class="accent-krispyPurple rounded cursor-pointer w-6 h-6" checked /> -->
+		<!-- 	<span class="text-krispyPurple font-bold">Remember me</span> -->
+		<!-- </div> -->
+		<!-- <a href="/recovery" class="text-krispyPurple underline">Forgot your password?</a> -->
 	</form>
 </div>
 
 <style lang="postcss">
 	input[type='checkbox']:not(:checked) {
 		background-color: red;
+	}
+
+	input:focus {
+		@apply outline outline-[3px] outline-blue-600;
 	}
 </style>
