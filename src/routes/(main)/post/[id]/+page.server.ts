@@ -7,7 +7,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __route = __filename.slice(__filename.indexOf('src'));
 
-export const load: PageServerLoad = async ({ fetch, params }) => {
+export const load: PageServerLoad = async ({ fetch, params, depends }) => {
+
+  depends('post');
+
   const base_api_url: string | undefined = env.API_URL;
   let fetchedPost = { data: null, status: 500 };
   let fetchedComments = { data: null, status: 500 };
