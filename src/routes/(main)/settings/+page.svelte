@@ -31,7 +31,7 @@
 		if (screenWidth >= 767) {
 			if (open_view == false) {
 				open_view = true;
-        viewSelector = 0;
+				viewSelector = 0;
 			}
 		}
 	}
@@ -39,6 +39,7 @@
 	function openView(i: number) {
 		open_view = true;
 		viewSelector = i;
+		scrollTo(0, 0);
 	}
 
 	function hideView() {
@@ -53,7 +54,7 @@
 	bind:scrollY={screenScroll}
 />
 <div
-	class="col-span-7 md:col-span-4 flex flex-col items-center gap-y-4 bg-lavandaGray dark:bg-purpleGray p-6 rounded-2xl sm:my-8 h-fit mt-4 mb-28 sticky top-8"
+	class="{open_view ? 'hidden md:flex' : ''} col-span-7 md:col-span-4 flex flex-col items-center gap-y-4 bg-lavandaGray dark:bg-purpleGray p-6 rounded-2xl sm:my-8 h-fit mt-4 mb-28 sticky top-8 shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
 >
 	<h1 class="dark:text-white font-bold text-3xl">Settings</h1>
 	{#each sectionsNames as sectionName, i}
@@ -76,71 +77,43 @@
 		</button>
 	{/each}
 </div>
-{#await data.streamed.myUser}
-	<div>Loading...</div>
-{:then user}
+
+{#await data.streamed.myUser then user}
 	{#if user?.status === 200 && user.data}
-		{#if screenWidth < 768}
-			{#if open_view}
-				<div
-					in:fly|global={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
-					out:fly={{ x: window.innerWidth, easing: quintOut, opacity: 1 }}
-					class="absolute w-full col-span-6 px-5 py-4 min-h-screen bg-lavandaDark dark:bg-purpleDark pb-28"
+		<div
+			class="absolute md:relative md:col-span-6 top-0 left-0 w-full min-h-screen px-5 pt-5 md:px-0 sm:pb-5 bg-lavandaDark dark:bg-purpleDark max-md:{open_view
+				? ''
+				: 'hidden'} "
+		>
+			<div
+				class="bg-lavandaGray dark:bg-purpleGray rounded-2xl h-fit p-6 flex flex-col gap-y-4 md:inline-block overflow-hidden w-full mb-24 shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
+			>
+				<button class="self-start active:bg-krispyPurple rounded-full md:hidden" on:click={hideView}
+					><ArrowLeft
+						width={40}
+						height={40}
+						tailwindStrokeClass={'stroke-black dark:stroke-white'}
+					/></button
 				>
-					<div
-						class="flex flex-col gap-y-4 bg-lavandaGray dark:bg-purpleGray rounded-2xl h-fit p-6"
-					>
-						<button class="self-start active:bg-krispyPurple rounded-full" on:click={hideView}
-							><ArrowLeft
-								width={40}
-								height={40}
-								tailwindStrokeClass={'stroke-black dark:stroke-white'}
-							/></button
-						>
-						{#if viewSelector == 0}
-							<EditProfile
-								profile_photo={user.data.profile_photo}
-								cover_photo={user.data.cover_photo}
-								description={user.data.description}
-								personal_url={user.data.personal_url}
-								location={user.data.location}
-								birthday={user.data.birthday}
-							/>
-						{:else if viewSelector == 1}
-							<ChangeUsername username={user.data.username} />
-						{:else if viewSelector == 2}
-							<ChangePassword {form} />
-						{:else if viewSelector == 3}
-							<DarkModeSelector dark_mode={user.data.dark_mode} />
-						{:else if viewSelector == 4}
-							<DeleteAccount />
-						{/if}
-					</div>
-				</div>
-			{/if}
-		{:else}
-			<div class="inline-block col-start-7 col-span-6 min-h-screen pt-8 pb-16">
-				<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl h-fit p-6">
-					{#if viewSelector == 0}
-						<EditProfile
-							profile_photo={user.data.profile_photo}
-							cover_photo={user.data.cover_photo}
-							description={user.data.description}
-							personal_url={user.data.personal_url}
-							location={user.data.location}
-							birthday={user.data.birthday}
-						/>
-					{:else if viewSelector == 1}
-						<ChangeUsername {form} username={user.data.username} />
-					{:else if viewSelector == 2}
-						<ChangePassword {form} />
-					{:else if viewSelector == 3}
-						<DarkModeSelector dark_mode={user.data.dark_mode} />
-					{:else if viewSelector == 4}
-						<DeleteAccount />
-					{/if}
-				</div>
+				{#if viewSelector == 0}
+					<EditProfile
+						profile_photo={user.data.profile_photo}
+						cover_photo={user.data.cover_photo}
+						description={user.data.description}
+						personal_url={user.data.personal_url}
+						location={user.data.location}
+						birthday={user.data.birthday}
+					/>
+				{:else if viewSelector == 1}
+					<ChangeUsername username={user.data.username} {form} />
+				{:else if viewSelector == 2}
+					<ChangePassword {form} />
+				{:else if viewSelector == 3}
+					<DarkModeSelector dark_mode={user.data.dark_mode} />
+				{:else if viewSelector == 4}
+					<DeleteAccount />
+				{/if}
 			</div>
-		{/if}
+		</div>
 	{/if}
 {/await}
