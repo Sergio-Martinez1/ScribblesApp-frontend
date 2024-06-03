@@ -15,7 +15,7 @@ export interface Post {
   },
   reactions: Array<{ id: number, user_id: number, post_id: number }> | null,
   tags: Array<{ content: string, post_id: number }> | null,
-  num_comments: number | null
+  num_comments: number
 }
 export interface Comment {
   id: number,
