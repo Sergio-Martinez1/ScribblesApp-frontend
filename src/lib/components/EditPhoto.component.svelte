@@ -3,6 +3,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { env } from '$env/dynamic/public';
 	import Button from './Button.component.svelte';
+	import session from '../../stores/session';
 
 	export let imagename: string = '';
 	export let dialogId: string = '';
@@ -246,6 +247,10 @@
 		})
 			.then(async (response) => {
 				if (response.status == 200) {
+					$session.home.posts = [];
+					$session.home.limit = 5;
+					$session.home.offset = 0;
+					$session.home.scrollY = 0;
 					await invalidateAll();
 					handleClose();
 				} else if (response.status === 401) {

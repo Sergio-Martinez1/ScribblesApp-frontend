@@ -3,6 +3,7 @@
 	import { applyAction, enhance } from '$app/forms';
 	import { fly } from 'svelte/transition';
 	import type { ActionResult } from '@sveltejs/kit';
+	import session from '../../stores/session';
 
 	export let form: ActionData;
 	let isLoading = false;
@@ -10,6 +11,12 @@
 	const submit = () => {
 		isLoading = true;
 		return ({ result }: { result: ActionResult }) => {
+      if(result.type === 'redirect'){
+        $session.home.posts = [];
+        $session.home.limit = 5;
+        $session.home.offset = 0;
+        $session.home.scrollY = 0;
+      }
 			isLoading = false;
 			applyAction(result);
 		};
