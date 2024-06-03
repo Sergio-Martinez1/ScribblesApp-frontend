@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import Image from './Icon/Image.svelte';
-	import X from './Icon/X.svelte';
 	import settings from '../../stores/settings';
-	import { afterNavigate, goto } from '$app/navigation';
-	import Logo from './Icon/Logo.svelte';
-	import { calculate_posted_time } from '$lib/utils/calculate_posted_time';
+	import { afterNavigate } from '$app/navigation';
 	import User from './Icon/User.svelte';
 
 	afterNavigate(({ from }) => {
@@ -14,11 +11,7 @@
 
 	//POST
 	export let post_thumbnail_url: string | null = '';
-	export let post_content: string | null = '';
-	export let user_photo_url: string | null = '';
-	export let user_name: string = '';
 	export let loading: boolean = false;
-	export let post_creation_date: string = '';
 
 	// REACTIONS
 	export let post_id: number = 0;
@@ -38,78 +31,30 @@
 		}
 		return false;
 	}
-
-	const navigateTo = (url: string) => {
-		goto(url, { noScroll: true, invalidateAll: false });
-	};
 </script>
 
-<div class="bg-lavandaGray dark:bg-purpleGray">
+<div class="bg-lavandaGray dark:bg-purpleGray w-full h-full">
 	{#if loading}
-		<div class="animate-pulse flex flex-col px-4">
-			<div class="flex gap-4 mb-3">
-				<div class="rounded-full bg-lavandaLight dark:bg-purpleLight h-[76px] w-[76px]" />
-				<div class="flex-1">
-					<div class="grid grid-cols-10 gap-4 h-[76px] items-center">
-						<div class="h-8 bg-lavandaLight dark:bg-purpleLight rounded-2xl col-span-2" />
-						<div class="h-8 bg-lavandaLight dark:bg-purpleLight rounded-2xl col-span-1" />
-					</div>
-				</div>
-			</div>
-			<div class="w-full h-48 bg-lavandaLight dark:bg-purpleLight rounded-2xl" />
-		</div>
+		<p>Loading...</p>
 	{:else}
-		<div class="absolute top-0 left-0 flex py-4 items-center z-10">
-			{#if $settings.previousPage.length}
-				<button
-					on:click={() => {
-						navigateTo($settings.previousPage);
-					}}
-					class="bg-krispyPurple hover:bg-lessLavanda dark:hover:bg-lessPurple active:bg-krispyPurple rounded-br-3xl rounded-tr-3xl w-12 h-12 flex items-center justify-center"
-					><X width={30} height={30} /></button
-				>
-			{/if}
-			<a href="/home" class="rounded-full ml-5"><Logo width={52} height={52} /></a>
-		</div>
-		<div class="flex h-screen relative bg-lavandaDark dark:bg-purpleDark">
-			<div class="w-full h-full dark:text-white flex items-center">
+		<div class="relative bg-lavandaDark dark:bg-purpleDark">
+			<div
+				class="{post_thumbnail_url
+					? ''
+					: ''} w-full h-full dark:text-white flex items-center justify-center"
+			>
 				{#if isValidImageUrl(post_thumbnail_url)}
-					<div class="w-full bg-black h-screen flex items-center">
-						<img class="object-contain w-full h-full" src={post_thumbnail_url} alt="Content" />
+					<div class="w-full bg-black h-full flex items-center justify-center">
+						<img class="object-contain" src={post_thumbnail_url} alt="Content" />
 					</div>
 				{:else}
-					<div class="bg-lavandaGray dark:bg-purpleGray rounded-2xl p-6 w-fit mx-auto">
-						<div class="mx-auto w-fit mb-6">
+					<div class="bg-lavandaGray dark:bg-purpleGray p-2 rounded-2xl w-fit mx-auto">
+						<div class="mx-auto w-fit mb-4">
 							<Image width={60} height={60} />
 						</div>
 						<p class="font-bold dark:text-white">Image can't be loaded.</p>
 					</div>
 				{/if}
-			</div>
-			<div class="w-full h-fit absolute bottom-0 flex px-4 pt-5 pb-10">
-				<div class="bg-white dark:bg-black w-full absolute top-0 left-0 h-full opacity-75 z-0" />
-				{#if user_photo_url}
-					<div class="w-16 h-16 mr-4 z-10">
-						<img src={user_photo_url} alt="" class="w-full h-full object-cover rounded-full" />
-					</div>
-				{:else}
-					<div class="mr-4 z-10">
-						<User
-							width={64}
-							height={64}
-							tailwindFillClass={'fill-lavandaLight dark:fill-purpleLight'}
-							tailwindStrokeClass={'stroke-black dark:stroke-white'}
-						/>
-					</div>
-				{/if}
-				<div class="z-10 dark:text-white">
-					<div>
-						<p class="font-bold">{user_name} · {calculate_posted_time(post_creation_date)}</p>
-					</div>
-					{#if post_content}
-						<p>{post_content}</p>
-					{/if}
-				</div>
 			</div>
 		</div>
 
