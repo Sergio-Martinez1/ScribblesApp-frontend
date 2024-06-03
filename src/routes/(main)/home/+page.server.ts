@@ -9,8 +9,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __route = __filename.slice(__filename.indexOf('src'));
 
 export const load: PageServerLoad = ({ fetch }) => {
-
-
   const base_api_url: string | undefined = env.API_URL;
   let fetchedTags = { data: null, status: 500 };
   let top_tags_response: Promise<{ data: Array<TopTag> | null, status: number }> = Promise.resolve(fetchedTags);
@@ -56,12 +54,15 @@ export const actions: Actions = {
       return fail(400, { stateMissing: true });
     }
     const access_token = cookies.get('access_token');
+
     if (!access_token) redirect(303, '/login');
     const base_api_url: string = env.API_URL;
+
     if (!base_api_url) {
       console.error(`Error(Action): Error en [${__route}].\n\t- No se encontro la url de la api en el entorno`);
       return fail(500, { serverFail: true });
     }
+
     if (state_on === 'true') {
       const url = `${base_api_url}/reactions/`;
       const body = {
@@ -79,7 +80,9 @@ export const actions: Actions = {
 
       try {
         const response = await fetch(url, options);
-        if (response.ok) return;
+        if (response.ok) {
+          return { createdReaction: await response.json() };
+        }
         else if (response.status !== 401) {
           return fail(response.status, { serverFail: true });
         }
@@ -145,10 +148,10 @@ export const actions: Actions = {
           let img = await response.json();
           return img.url;
         }
-        error(response.status, response.statusText);
+        return fail(response.status, { serverFail: true });
       } catch (error) {
         console.error(`Error(Action): Error en [${__route}].\n\t- Error al obtener url de la imagen\n\t- ${error}`)
-        return ''
+        return fail(500, { serverFail: true });
       }
     };
 
@@ -256,10 +259,10 @@ export const actions: Actions = {
           let img = await response.json();
           return img.url;
         }
-        error(response.status, response.statusText);
+        return fail(response.status, { serverFail: true });
       } catch (error) {
         console.error(`Error(Action): Error en [${__route}].\n\t- Error al intentar obtener la url de la imagen\n\t- ${error}`)
-        return ''
+        return fail(500, { serverFail: true });
       }
     };
 
@@ -289,7 +292,7 @@ export const actions: Actions = {
     try {
       const response = await fetch(post_url, options);
       if (response.ok) {
-        return {updatedPost: await response.json()};
+        return { updatedPost: await response.json() };
       }
       else if (response.status !== 401) {
         return fail(response.status, { serverFail: true });
