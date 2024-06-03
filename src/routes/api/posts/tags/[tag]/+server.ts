@@ -15,6 +15,7 @@ export const GET: RequestHandler = async ({ cookies, url, params }) => {
   const offset = url.searchParams.get('offset') ?? '0';
   const limit = url.searchParams.get('limit') ?? '10';
   const tag_posts_url = `${api_url}/posts/tags/${params.tag}?offset=${offset}&limit=${limit}`;
+  const tag_posts_url_personal = `${api_url}/posts/tags/${params.tag}/personal?offset=${offset}&limit=${limit}`;
   let fetchedPosts: { data: Array<Post> | null, status: number } = { data: null, status: 500 };
 
   if (!api_url) {
@@ -52,7 +53,7 @@ export const GET: RequestHandler = async ({ cookies, url, params }) => {
   };
 
   try {
-    const response = await fetch(tag_posts_url, options);
+    const response = await fetch(tag_posts_url_personal, options);
     fetchedPosts.status = response.status;
     if (response.ok) {
       fetchedPosts.data = await response.json();
