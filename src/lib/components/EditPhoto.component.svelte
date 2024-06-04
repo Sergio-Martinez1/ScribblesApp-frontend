@@ -11,13 +11,13 @@
 
 	let isLoading: boolean = false;
 	let error: boolean = false;
-
 	let uploadFile: HTMLInputElement;
 
 	//DINAMIC ELEMENT
 	export let widthB: number = 0;
 	export let heightB: number = 0;
 	let aspectRatio: number;
+
 	//INITIAL POSITION
 	let x: number;
 	let y: number;
@@ -41,12 +41,13 @@
 
 	let widthA: number;
 	let heightA: number;
+	let imageSizedWidth = widthB;
+	let imageSizedHeight = heightB;
+
 	const CoverWidth = 900;
 	const CoverHeight = 300;
 	const ProfileWidth = 340;
 	const ProfileHeight = 340;
-	let imageSizedWidth = widthB;
-	let imageSizedHeight = heightB;
 
 	function getCoords() {
 		containerCoords = container.getBoundingClientRect();
@@ -196,9 +197,9 @@
 		let startX = ((coords.A.x - coords.B.x) / divRed.offsetWidth) * newWidth; // Posición inicial de corte en X
 		let startY = ((coords.A.y - coords.B.y) / divRed.offsetHeight) * newHeight; // Posición inicial de corte en Y
 
-		canvas.width = image.width;
-		canvas.height = image.height;
-		context?.drawImage(image, 0, 0, image.width, image.height, 0, 0, newWidth, newHeight);
+		canvas.width = newWidth;
+		canvas.height = newHeight;
+		context?.drawImage(image, 0, 0, newWidth, newHeight);
 
 		let croppedImage = context?.getImageData(
 			startX,
