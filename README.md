@@ -12,7 +12,7 @@ This project is a social-network like app, you can:
 ## Before you getting started
 You'll need to configure the "Scribbles Api" to see the full functionality of the application.
 - Go to the api repository https://github.com/Sergio-Martinez1/ScribblesApp-Api
-- Following the instructions in there you'll create this folder squeleton:
+- Following the instructions in there you'll create this folder skeleton:
 ```
 scribblesapp
 |-- ScribblesApp-api
