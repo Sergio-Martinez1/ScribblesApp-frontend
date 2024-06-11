@@ -6,11 +6,12 @@
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import type { Post as TypePost } from '$lib/types';
-	import type { PageData } from './$types';
+	import type { ActionData, PageData } from './$types';
 	import { page } from '$app/stores';
-  import {env} from '$env/dynamic/public'
+	import { env } from '$env/dynamic/public';
 
 	export let data: PageData;
+	export let form: ActionData;
 	let scrollData: Array<TypePost> = [];
 	let loadingPostsElement: HTMLElement | null;
 	let offset: number = 20;
@@ -30,11 +31,13 @@
 		observer = new IntersectionObserver(async (entries) => {
 			entries.forEach(async (entry) => {
 				if (entry.isIntersecting) {
-					infiniteScrollData = await fetchPosts(url);
-					if (infiniteScrollData.data) {
-						scrollData = [...scrollData, ...infiniteScrollData.data];
-						offset += 10;
-					}
+					setTimeout(async () => {
+						infiniteScrollData = await fetchPosts(url);
+						if (infiniteScrollData.data) {
+							scrollData = [...scrollData, ...infiniteScrollData.data];
+							offset += 10;
+						}
+					}, 300);
 				}
 			});
 		});
@@ -84,7 +87,7 @@
 	{:then user}
 		{#if user?.status === 200 && user.data}
 			<div class="col-span-10 lg:col-span-9 mt-8 h-fit">
-				<CoverPhoto coverPhotoUrl={user.data?.cover_photo}/>
+				<CoverPhoto coverPhotoUrl={user.data?.cover_photo} />
 			</div>
 			<div
 				class="flex flex-col col-span-10 lg:grid grid-cols-7 md:grid-cols-10 my-4 lg:max-h-[190px] overflow-visible"
@@ -93,10 +96,7 @@
 					<div
 						class="w-full h-fit flex flex-col items-center justify-center self-end relative bottom-5 md:bottom-8"
 					>
-						<ProfilePhoto
-							profilePhoto={user.data.profile_photo}
-							username={user.data.username}
-						/>
+						<ProfilePhoto profilePhoto={user.data.profile_photo} username={user.data.username} />
 					</div>
 				</div>
 
@@ -136,7 +136,7 @@
 	>
 		<div class="flex flex-col gap-y-8">
 			{#await data.streamed?.posts}
-				<Post loading={true} />
+				<Post loading={true} {form} />
 			{:then myPosts}
 				{#if myPosts?.status === 200 && myPosts.data}
 					{#each myPosts.data as post}
@@ -158,6 +158,7 @@
 							creator_id={post.user.id}
 							myUser_id={id}
 							post_id={post.id}
+							{form}
 						/>
 					{/each}
 					{#each scrollData as post}
@@ -179,13 +180,36 @@
 							creator_id={post.user?.id}
 							myUser_id={id}
 							post_id={post.id}
+							{form}
 						/>
 					{/each}
 					{#if infiniteScrollData.status == 200}
 						<div bind:this={loadingPostsElement}>
-							<Post loading={true} />
+							<div
+								class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10"
+							>
+								<svg
+									class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									/>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+							</div>
 						</div>
-						<Post loading={true} />
 					{:else if infiniteScrollData.status == 404}
 						<div
 							class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10"
@@ -193,12 +217,16 @@
 							No more posts to see...
 						</div>
 					{:else}
-						<div class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full">
+						<div
+							class="w-full bg-lavandaLight dark:bg-purpleLight dark:text-white flex justify-center rounded-full"
+						>
 							Please reload the page
 						</div>
 					{/if}
 				{:else if myPosts?.status === 404}
-					<div class="w-full rounded-2xl bg-lavandaGray dark:bg-purpleGray flex items-center justify-center h-20">
+					<div
+						class="w-full rounded-2xl bg-lavandaGray dark:bg-purpleGray flex items-center justify-center h-20"
+					>
 						<p class="dark:text-white opacity-60">This seems a little quiet...</p>
 					</div>
 				{:else}

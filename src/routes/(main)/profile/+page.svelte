@@ -6,7 +6,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { fetchPosts } from '$lib/utils/infiniteScroll';
 	import type { Post as TypePost } from '$lib/types';
-  import {env} from '$env/dynamic/public'
+	import { env } from '$env/dynamic/public';
 	import type { ActionData, PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
 
@@ -31,11 +31,13 @@
 		observer = new IntersectionObserver(async (entries) => {
 			entries.forEach(async (entry) => {
 				if (entry.isIntersecting) {
-					infiniteScrollData = await fetchPosts(url);
-					if (infiniteScrollData.data) {
-						scrollData = [...scrollData, ...infiniteScrollData.data];
-						offset += 10;
-					}
+					setTimeout(async () => {
+						infiniteScrollData = await fetchPosts(url);
+						if (infiniteScrollData.data) {
+							scrollData = [...scrollData, ...infiniteScrollData.data];
+							offset += 10;
+						}
+					}, 300);
 				}
 			});
 		});
@@ -61,9 +63,9 @@
 		}
 		return false;
 	}
-  function handleEvents() {
-    invalidateAll()
-  }
+	function handleEvents() {
+		invalidateAll();
+	}
 </script>
 
 <div class="col-span-7 md:col-span-10 md:grid sm:col-start-3 md:gapx-[20px] md:grid-cols-10 h-fit">
@@ -163,10 +165,10 @@
 							creator_id={post.user.id}
 							myUser_id={id}
 							post_id={post.id}
-              on:deletepost={handleEvents}
-              on:updatepost={handleEvents}
-              on:dontshowpost={handleEvents}
-              {form}
+							on:deletepost={handleEvents}
+							on:updatepost={handleEvents}
+							on:dontshowpost={handleEvents}
+							{form}
 						/>
 					{/each}
 					{#each scrollData as post}
@@ -188,17 +190,39 @@
 							creator_id={post.user?.id}
 							myUser_id={id}
 							post_id={post.id}
-              on:deletepost={handleEvents}
-              on:updatepost={handleEvents}
-              on:dontshowpost={handleEvents}
-              {form}
+							on:deletepost={handleEvents}
+							on:updatepost={handleEvents}
+							on:dontshowpost={handleEvents}
+							{form}
 						/>
 					{/each}
 					{#if infiniteScrollData.status == 200}
 						<div bind:this={loadingPostsElement}>
-							<Post loading={true} {form}/>
+							<div
+								class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10"
+							>
+								<svg
+									class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									/>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									/>
+								</svg>
+							</div>
 						</div>
-						<Post loading={true} {form}/>
 					{:else if infiniteScrollData.status == 404}
 						<div
 							class="w-full bg-lavandaGray dark:bg-purpleGray dark:text-white justify-center rounded-2xl flex items-center h-10 shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)]"
