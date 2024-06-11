@@ -9,9 +9,9 @@
 	let errorOnUpdateColorScheme: boolean = false;
 
 	$: $settings.dark_mode =
-		data.plainMyUser && data.plainMyUser.dark_mode ? data.plainMyUser.dark_mode : 'disabled';
+		data.plainMyUser && data.plainMyUser.dark_mode ? data.plainMyUser.dark_mode : 'enabled';
 	$: color_scheme =
-		data.plainMyUser && data.plainMyUser.color_scheme ? data.plainMyUser.color_scheme : '';
+		data.plainMyUser && data.plainMyUser.color_scheme ? data.plainMyUser.color_scheme : 'dark';
 	$: {
 		switch (color_scheme) {
 			case 'dark':
