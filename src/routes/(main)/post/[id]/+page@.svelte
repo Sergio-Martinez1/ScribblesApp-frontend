@@ -126,7 +126,7 @@
 		{@const post = postData.data}
 		{@const post_thumbnail = postData.data?.thumbnail}
 		<div
-			class="min-h-screen bg-lavandaDark dark:bg-purpleDark pb-[81px] md:pb-0 md:pt-[61px] md:realtive md:h-screen grid max-md:grid-rows-[61px_1fr] grid-cols-[1fr] {post_thumbnail
+			class="min-h-screen bg-lavandaDark dark:bg-purpleDark pb-[81px] md:pb-0 md:realtive md:h-screen grid max-md:grid-rows-[61px_1fr] grid-cols-[1fr] {post_thumbnail
 				? 'md:grid-cols-[1fr_360px]'
 				: 'md:grid-cols-[550px] justify-center'}"
 		>
@@ -153,7 +153,7 @@
 			<main
 				class="bg-lavandaGray dark:bg-purpleGray shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)] md:rounded-2xl {post_thumbnail
 					? ''
-					: 'my-2 md:m-2'}"
+					: 'my-2 md:m-2'} md:h-screen md:pt-[61px]"
 			>
 				<div class="{post_thumbnail ? '' : 'hidden'} md:h-full">
 					<PostDetailThumbnail post_thumbnail_url={post_thumbnail} />
@@ -206,7 +206,7 @@
 			<aside
 				class="hidden md:{post_thumbnail
 					? 'inline-block'
-					: 'hidden'} overflow-y-auto pb-[79px] relative rounded-2xl m-2 shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)] bg-lavandaGray dark:bg-purpleGray"
+					: 'hidden'} overflow-y-auto pb-[79px] relative rounded-2xl m-2 mt-[65px] shadow-[0_1px_2px_1px_rgba(0,0,0,0.15)] bg-lavandaGray dark:bg-purpleGray "
 			>
 				<PostDetailDescription
 					{form}
