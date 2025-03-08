@@ -7,8 +7,19 @@ This project is a social-network like app, you can:
 - Publish and delete posts with images and tags.
 - Add reactions to other's posts.
 - Comment on other's posts.
-- Block posts that you dont like. 
-
+- Block posts that you dont like.
+### Home page
+![Home page](https://ibb.co/j9Y4DhF8)
+### Edit post
+![Edit post](https://ibb.co/Lzw2VS9y)
+### Post page
+![Post page](https://ibb.co/JWGCm42F)
+### Profile page
+![Profile page](https://ibb.co/jp8HmSy)
+### Settings page
+![Settings page](https://ibb.co/YFY6kkfP)
+### Edit profile image
+![Edit profile image](https://ibb.co/BHkbpFQR)
 ## Before you getting started
 You'll need to configure the "Scribbles Api" to see the full functionality of the application.
 - Go to the api repository https://github.com/Sergio-Martinez1/ScribblesApp-Api
