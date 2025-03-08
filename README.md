@@ -13,13 +13,13 @@ This project is a social-network like app, you can:
 ### Edit post
 ![Edit post](https://i.ibb.co/kgnWNKqT/Screenshot-2025-03-08-105254.png)
 ### Post page
-![Post page](https://ibb.co/JWGCm42F)
+![Post page](https://i.ibb.co/mr2SbwtF/Screenshot-2025-03-08-105313.png)
 ### Profile page
-![Profile page](https://ibb.co/jp8HmSy)
+![Profile page](https://i.ibb.co/ZZfN50B/Screenshot-2025-03-08-105357.png)
 ### Settings page
-![Settings page](https://ibb.co/YFY6kkfP)
+![Settings page](https://i.ibb.co/LXbMtt9Y/Screenshot-2025-03-08-105415.png)
 ### Edit profile image
-![Edit profile image](https://ibb.co/BHkbpFQR)
+![Edit profile image](https://i.ibb.co/fVJfgLy7/Screenshot-2025-03-08-105531.png)
 ## Before you getting started
 You'll need to configure the "Scribbles Api" to see the full functionality of the application.
 - Go to the api repository https://github.com/Sergio-Martinez1/ScribblesApp-Api
