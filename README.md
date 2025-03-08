@@ -9,9 +9,9 @@ This project is a social-network like app, you can:
 - Comment on other's posts.
 - Block posts that you dont like.
 ### Home page
-![Home page](https://ibb.co/j9Y4DhF8)
+![Home page](https://i.ibb.co/wZq64y1d/Screenshot-2025-03-08-105202.png)
 ### Edit post
-![Edit post](https://ibb.co/Lzw2VS9y)
+![Edit post](https://i.ibb.co/kgnWNKqT/Screenshot-2025-03-08-105254.png)
 ### Post page
 ![Post page](https://ibb.co/JWGCm42F)
 ### Profile page
